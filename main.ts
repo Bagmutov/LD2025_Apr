@@ -1,5 +1,6 @@
 import { GAME_LD } from "./game.js";
 import { initInput } from "./input.js";
+import { addButton, drawButtons } from "./objects/button.js";
 import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 
 export namespace LD_GLOB {
@@ -39,6 +40,11 @@ namespace LD_STARTER {
     initInput();
     initImages();
     GAME_LD.init();
+    let but = addButton(null, 100, 100, 50);
+    but.ms_down = ()=>{console.log(`down`);}
+    but.ms_move = (dx)=>{console.log(`move ${dx}`);}
+    but.ms_up = ()=>{console.log(`up`);}
+    but.ms_click = ()=>{console.log(`click`);}
 
     console.log(`Starting LD 2025 v${LD_GLOB.version}`);
     loadingLoop();
@@ -100,6 +106,7 @@ function drawMenu() {
 function drawGame() {
   LD_GLOB.mainDst.drawImage(background, 0, 0);
   GAME_LD.drawGame(LD_GLOB.mainDst);
+  drawButtons(LD_GLOB.mainDst);
 }
 function initCanvas() {
   LD_GLOB.canvas = <HTMLCanvasElement>document.getElementById("can");
