@@ -8,9 +8,19 @@ export class Vector {
   }
 
   add(other: Vector): Vector {
-    this.x += other.x;
-    this.y += other.y;
-    return this;
+    return new Vector(this.x + other.x, this.y + other.y);
+  }
+
+  sub(other: Vector): Vector {
+    return new Vector(this.x - other.x, this.y - other.y);
+  }
+
+  lenSq(): number {
+    return this.x * this.x + this.y * this.y;
+  }
+
+  len(): number {
+    return Math.sqrt(this.lenSq());
   }
 
   multiply(other: number): Vector {
@@ -23,6 +33,11 @@ export class Vector {
 
   oblique(other: Vector): number {
     return this.x * other.y - this.y * other.x;
+  }
+
+  normalize(): Vector {
+    let len = this.len();
+    return new Vector(this.x / len, this.y / len);
   }
 }
 

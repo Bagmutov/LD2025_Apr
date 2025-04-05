@@ -89,3 +89,4 @@ export function positionCanvas(
 export function dist2(dx: number, dy: number) {
   return dx * dx + dy * dy;
 }
+

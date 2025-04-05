@@ -1,5 +1,6 @@
 {
   "files.exclude": {
     "**/_js": true
-  }
+  },
+  "editor.formatOnSave": false
 }

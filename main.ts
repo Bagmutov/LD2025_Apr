@@ -18,6 +18,8 @@ export namespace LD_GLOB {
     main_6: "#00d57aff",
     main_7: "#87efc4ff",
   };
+  export let pervDraw: number;
+
   export function updateLoading() {
     loading_percent = Math.max(
       0,
