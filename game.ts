@@ -5,8 +5,10 @@ import { drawCircle, drawRoundRect } from "./tools.js";
 
 
 export namespace GAME_LD {
+
     let big_objects: BigObject[] = [];
     let small_objects: SmallObject[] = [];
+
     export function initGame() {
         clearAll();
         addBigObject(300, 300, 30);
@@ -32,6 +34,7 @@ export namespace GAME_LD {
     export function step() {
         stepN++;
         let ind = 0;
+
         for (let ind = 0; ind < big_objects.length; ind++) {
             const obj = big_objects[ind];
 
@@ -49,6 +52,7 @@ export namespace GAME_LD {
             }
 
         }
+
         for (let sm of small_objects) {
             sm.x += sm.vx;
             sm.y += sm.vy;
@@ -127,6 +131,7 @@ export class BigObject {
         this.vy += vy;
     }
 }
+
 export class SmallObject {
     x: number;
     y: number;
