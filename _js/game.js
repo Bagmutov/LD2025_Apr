@@ -27,11 +27,11 @@ export var GAME_LD;
         let ind = 0;
         for (let ind = 0; ind < big_objects.length; ind++) {
             const obj = big_objects[ind];
-            obj.x += obj.vx;
+            obj.x += obj.vx; // изменить координату объекта
             obj.y += obj.vy;
             obj.vx *= .95;
             obj.vy *= .95;
-            for (let ind2 = ind + 1; ind2 < big_objects.length; ind2++) {
+            for (let ind2 = ind + 1; ind2 < big_objects.length; ind2++) { // Столкновение двух объектов
                 const obj2 = big_objects[ind2];
                 if (obj.checkCollision(obj2)) {
                     obj2.addSpeed((obj2.x - obj.x) * .01, (obj2.y - obj.y) * .01);

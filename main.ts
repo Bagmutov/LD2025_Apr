@@ -2,31 +2,31 @@ import { GAME_LD } from "./game.js";
 import { initInput } from "./input.js";
 import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 
-export namespace LD_GLOB{
-    export let version='0.1';
-    export let canv:HTMLCanvasElement;
-    export let mainctx:CanvasRenderingContext2D;
-    export let game_state:'loading'|'menu'|'game' = 'menu';
-    export let loaded:boolean = false; 
-    export let loading_percent=0;
-    export const COLORS={
-        main_1:'#112e50ff',
-        main_2:'#0a4c69ff',
-        main_3:'#0c747dff',
-        main_4:'#0e917bff',
-        main_5:'#0ab177ff',
-        main_6:'#00d57aff',
-        main_7:'#87efc4ff'
+export namespace LD_GLOB {
+    export let version = '0.1';
+    export let canv: HTMLCanvasElement;
+    export let mainctx: CanvasRenderingContext2D;
+    export let game_state: 'loading' | 'menu' | 'game' = 'menu';
+    export let loaded: boolean = false;
+    export let loading_percent = 0;
+    export const COLORS = {
+        main_1: '#112e50ff',
+        main_2: '#0a4c69ff',
+        main_3: '#0c747dff',
+        main_4: '#0e917bff',
+        main_5: '#0ab177ff',
+        main_6: '#00d57aff',
+        main_7: '#87efc4ff'
     }
-    export function updateLoading(){
-        loading_percent=Math.max(0,Math.min(1,(loaded_imgs+buffN)/(imageNames.length+buffOverall)));
-        if(loading_percent==1) loaded = true;
+    export function updateLoading() {
+        loading_percent = Math.max(0, Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall)));
+        if (loading_percent == 1) loaded = true;
     }
-    export function getImage(name:imageNamesTp):HTMLImageElement{ return images[name]; }
+    export function getImage(name: imageNamesTp): HTMLImageElement { return images[name]; }
 }
 
-namespace LD_STARTER{
-    export function initialization(){
+namespace LD_STARTER {
+    export function initialization() {
         initCanvas();
         initBackground();
         initInput();
@@ -37,71 +37,71 @@ namespace LD_STARTER{
         loadingLoop();
     }
 }
-function loadingLoop(){ // loops while the game loads
+function loadingLoop() { // loops while the game loads
     drawLoadingScreen();
-    if(LD_GLOB.game_state != 'loading'){
+    if (LD_GLOB.game_state != 'loading') {
         requestAnimationFrame(menuLoop);
-    }else{
+    } else {
         requestAnimationFrame(loadingLoop);
     }
 }
-function menuLoop(){
+function menuLoop() {
     drawMenu();
-    if(LD_GLOB.game_state == 'game'){
+    if (LD_GLOB.game_state == 'game') {
         requestAnimationFrame(mainLoop);
-    }else{
+    } else {
         requestAnimationFrame(menuLoop);
     }
 }
-function mainLoop(){
+function mainLoop() {
     drawGame();
     GAME_LD.step();
-    if(LD_GLOB.game_state == 'game'){
+    if (LD_GLOB.game_state == 'game') {
         requestAnimationFrame(mainLoop);
-    }else{
+    } else {
         requestAnimationFrame(menuLoop);
     }
 }
-let c_x=0, c_y=0, background:HTMLCanvasElement, background_ctx:CanvasRenderingContext2D;
-function drawLoadingScreen(){
-    LD_GLOB.mainctx.drawImage(background,0,0);
-    drawCircle(LD_GLOB.mainctx, c_x, c_y, c_x*.5+5,LD_GLOB.COLORS.main_5);
-    drawCircle(LD_GLOB.mainctx, c_x, c_y, LD_GLOB.loading_percent*c_x*.5,(LD_GLOB.loading_percent<1)?LD_GLOB.COLORS.main_6:LD_GLOB.COLORS.main_7);
+let c_x = 0, c_y = 0, background: HTMLCanvasElement, background_ctx: CanvasRenderingContext2D;
+function drawLoadingScreen() {
+    LD_GLOB.mainctx.drawImage(background, 0, 0);
+    drawCircle(LD_GLOB.mainctx, c_x, c_y, c_x * .5 + 5, LD_GLOB.COLORS.main_5);
+    drawCircle(LD_GLOB.mainctx, c_x, c_y, LD_GLOB.loading_percent * c_x * .5, (LD_GLOB.loading_percent < 1) ? LD_GLOB.COLORS.main_6 : LD_GLOB.COLORS.main_7);
     LD_GLOB.mainctx.fillStyle = LD_GLOB.COLORS.main_7;
-    if(LD_GLOB.loaded){
-        LD_GLOB.mainctx.fillText('Click here',c_x-50,c_y+c_x*.6);
-    }else LD_GLOB.mainctx.fillText('Loading...',c_x-50,c_y+c_x*.6);
+    if (LD_GLOB.loaded) {
+        LD_GLOB.mainctx.fillText('Click here', c_x - 50, c_y + c_x * .6);
+    } else LD_GLOB.mainctx.fillText('Loading...', c_x - 50, c_y + c_x * .6);
     LD_GLOB.updateLoading();// TEMP
 }
-function drawMenu(){
-    LD_GLOB.mainctx.drawImage(background,0,0);
+function drawMenu() {
+    LD_GLOB.mainctx.drawImage(background, 0, 0);
     LD_GLOB.mainctx.fillStyle = LD_GLOB.COLORS.main_7;
-    LD_GLOB.mainctx.fillText('MENU. Press Enter.',c_x-50,c_y*1.9);
+    LD_GLOB.mainctx.fillText('MENU. Press Enter.', c_x - 50, c_y * 1.9);
     // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
     GAME_LD.drawGame(LD_GLOB.mainctx);
 }
-function drawGame(){
-    LD_GLOB.mainctx.drawImage(background,0,0);
+function drawGame() {
+    LD_GLOB.mainctx.drawImage(background, 0, 0);
     GAME_LD.drawGame(LD_GLOB.mainctx);
 }
-function initCanvas(){
+function initCanvas() {
     LD_GLOB.canv = <HTMLCanvasElement>document.getElementById('can');
-    positionCanvas( LD_GLOB.canv );
+    positionCanvas(LD_GLOB.canv);
     LD_GLOB.mainctx = LD_GLOB.canv.getContext('2d');
-    LD_GLOB.mainctx.font=20+'px Shantell Sans';
-    c_x = LD_GLOB.canv.width/2;
-    c_y = LD_GLOB.canv.height/2;
+    LD_GLOB.mainctx.font = 20 + 'px Shantell Sans';
+    c_x = LD_GLOB.canv.width / 2;
+    c_y = LD_GLOB.canv.height / 2;
 }
 
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
 const imageNames = ["face"] as const;
-type imageNamesTp = typeof imageNames[number] ;
-const images: {[ind:string]:HTMLImageElement} = {};
+type imageNamesTp = typeof imageNames[number];
+const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;
 // Load images into an array
-function onload_fun(){
+function onload_fun() {
     loaded_imgs++;
     console.log(`images loaded ${loaded_imgs} / ${imageNames.length}`);
     LD_GLOB.updateLoading();
@@ -109,27 +109,27 @@ function onload_fun(){
         all_loaded();
     }
 };
-function initImages(){
+function initImages() {
     imageNames.forEach((name) => {
         const img = new Image();
-        img.src = imageFolder + name+'.png';
+        img.src = imageFolder + name + '.png';
         images[name] = (img);
         img.onload = onload_fun;
     });
 }
-function all_loaded(){
+function all_loaded() {
     console.log(`all images loaded`);
 }
 
-function initBackground(){
+function initBackground() {
     background = document.createElement('canvas');
-    positionCanvas( background );
+    positionCanvas(background);
     background_ctx = background.getContext('2d');
-    let rad = background.height*.03;
-    drawRoundRect(background_ctx,0,0,0,LD_GLOB.canv.width,LD_GLOB.canv.height,LD_GLOB.COLORS.main_1);
-    drawRoundRect(background_ctx,rad*1,rad*1,rad*1,LD_GLOB.canv.width-rad*1*2,LD_GLOB.canv.height-rad*1*2,LD_GLOB.COLORS.main_2);
-    drawRoundRect(background_ctx,rad*2,rad*2,rad*2,LD_GLOB.canv.width-rad*2*2,LD_GLOB.canv.height-rad*2*2,LD_GLOB.COLORS.main_3);
-    drawRoundRect(background_ctx,rad*3,rad*3,rad*3,LD_GLOB.canv.width-rad*3*2,LD_GLOB.canv.height-rad*3*2,LD_GLOB.COLORS.main_4);
+    let rad = background.height * .03;
+    drawRoundRect(background_ctx, 0, 0, 0, LD_GLOB.canv.width, LD_GLOB.canv.height, LD_GLOB.COLORS.main_1);
+    drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
+    drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
+    drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
 }
 
 
@@ -137,44 +137,45 @@ function initBackground(){
 
 const soundNames = ['bubble_high'] as const;
 type soundNamesTp = typeof soundNames[number];
-var audio_context:AudioContext;
+var audio_context: AudioContext;
 window.addEventListener('load', initSounds, false);
 function initSounds() {
     try {
-            audio_context = new AudioContext();
-            console.log('currTime:'+audio_context.currentTime);
-            //Here path should be searching from .html, not .js. It works both ways locally, but only 1st one works from itch.
-            buffOverall = soundNames.length;
-            soundNames.forEach((name)=>{
-                loadSound(`./sound/${name}.mp3`,name);
-            })
-            // buffN+=999;
-    }catch(e) {		alert('Web Audio API is not supported in this browser');   }
+        audio_context = new AudioContext();
+        console.log('currTime:' + audio_context.currentTime);
+        //Here path should be searching from .html, not .js. It works both ways locally, but only 1st one works from itch.
+        buffOverall = soundNames.length;
+        soundNames.forEach((name) => {
+            loadSound(`./sound/${name}.mp3`, name);
+        })
+        // buffN+=999;
+    } catch (e) { alert('Web Audio API is not supported in this browser'); }
 }
 
-var all_buffers:{[ind:string]:AudioBuffer} = {};
-var buffN=0;
-let buffOverall=0;
+var all_buffers: { [ind: string]: AudioBuffer } = {};
+var buffN = 0;
+let buffOverall = 0;
 
-function loadSound(url:string, buf_name:string) {
+function loadSound(url: string, buf_name: string) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
 
     // Decode asynchronously
-    request.onload = function() {
-            audio_context.decodeAudioData(request.response, function(buffer) {
-                    all_buffers[buf_name] = buffer;
-                    buffN++;
-                    LD_GLOB.updateLoading();
-                    if(buffN==buffOverall)console.log('ALL SOUNDS LOADED in ' + audio_context.currentTime);
-            }, (e)=>{console.log('ERROR DECODING AUDIO');});
-            console.log('Sound Loaded curTime: '+audio_context.currentTime);
+    request.onload = function () {
+        audio_context.decodeAudioData(request.response, function (buffer) {
+            all_buffers[buf_name] = buffer;
+            buffN++;
+            LD_GLOB.updateLoading();
+            if (buffN == buffOverall) console.log('ALL SOUNDS LOADED in ' + audio_context.currentTime);
+        }, (e) => { console.log('ERROR DECODING AUDIO'); });
+        console.log('Sound Loaded curTime: ' + audio_context.currentTime);
     }
     request.send();
 }
-export function playSound(sound_name:soundNamesTp, vol:number=1, wait:number=0,loop:boolean=false):AudioBufferSourceNode {
-    let buffer:AudioBuffer = all_buffers[sound_name];
+
+export function playSound(sound_name: soundNamesTp, vol: number = 1, wait: number = 0, loop: boolean = false): AudioBufferSourceNode {
+    let buffer: AudioBuffer = all_buffers[sound_name];
     var source = audio_context.createBufferSource(); // creates a sound source
     const gainNode = audio_context.createGain();
 
@@ -182,11 +183,11 @@ export function playSound(sound_name:soundNamesTp, vol:number=1, wait:number=0,l
     source.connect(gainNode);       // connect the source to the context's destination (the speakers)
     gainNode.connect(audio_context.destination);
     gainNode.gain.setValueAtTime(vol, audio_context.currentTime);
-    
+
     // if(wait!=0)console.log('waiting sound: '+context.currentTime+' wait: '+wait);
-    source.loop=loop;
-    source.start(audio_context.currentTime+wait/100);                          // play the source now
+    source.loop = loop;
+    source.start(audio_context.currentTime + wait / 100);                          // play the source now
     return source;
 }
 
-window['starterLD']=LD_STARTER.initialization;
+window['starterLD'] = LD_STARTER.initialization;
