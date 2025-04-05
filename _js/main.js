@@ -84,11 +84,11 @@ function drawMenu() {
     LD_GLOB.mainctx.fillStyle = LD_GLOB.COLORS.main_7;
     LD_GLOB.mainctx.fillText('MENU. Press Enter.', c_x - 50, c_y * 1.9);
     // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
-    GAME_LD.drawGameGrid(LD_GLOB.mainctx);
+    GAME_LD.drawGame(LD_GLOB.mainctx);
 }
 function drawGame() {
     LD_GLOB.mainctx.drawImage(background, 0, 0);
-    GAME_LD.drawGameGrid(LD_GLOB.mainctx);
+    GAME_LD.drawGame(LD_GLOB.mainctx);
 }
 function initCanvas() {
     LD_GLOB.canv = document.getElementById('can');
