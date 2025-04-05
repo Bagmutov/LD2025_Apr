@@ -61,4 +61,17 @@ export function positionCanvas(canvas, { setStyleWH = false, wscale = 1, hscale 
 export function dist2(dx, dy) {
     return dx * dx + dy * dy;
 }
+//finds which el minimizes fun
+export function arrFindMin(arr, fun) {
+    var d = Infinity, d2, imin;
+    for (var i = 0; i < arr.length; i++) {
+        // if(arr[i]){
+        d2 = fun(arr[i]);
+        if (d2 < d) {
+            imin = i;
+            d = d2;
+        }
+    }
+    return (d == Infinity) ? null : { o: arr[imin], i: imin, d: d };
+}
 //# sourceMappingURL=tools.js.map
