@@ -12,8 +12,7 @@ export function drawCircle(ctx, x, y, r, clr = null, stroke = 0, ang = [0, 6.29]
     else
         ctx.fill();
 }
-;
-export function drawRoundRect(ctx, x, y, r, w = ctx.canvas.width, h = ctx.canvas.height, clr = '#000000', corn = [true, true, true, true], stroke = 0) {
+export function drawRoundRect(ctx, x, y, r, w = ctx.canvas.width, h = ctx.canvas.height, clr = "#000000", corn = [true, true, true, true], stroke = 0) {
     var x1 = x + r, x2 = x + w - r, y1 = y + r, y2 = y + h - r;
     ctx.beginPath();
     if (corn[0])
@@ -46,17 +45,20 @@ export function drawRoundRect(ctx, x, y, r, w = ctx.canvas.width, h = ctx.canvas
         ctx.fill();
     }
 }
-export function positionCanvas(canvas, { setStyleWH = false, wscale = 1, hscale = 1, w = null, h = null, x = 0, y = 0 } = {}) {
-    canvas.width = (w || (window.innerWidth - 0)) * wscale;
-    canvas.height = (h || (window.innerHeight - 0)) * hscale;
+export function positionCanvas(canvas, { setStyleWH = false, wscale = 1, hscale = 1, w = null, h = null, x = 0, y = 0, } = {}) {
+    canvas.width = (w || window.innerWidth - 0) * wscale;
+    canvas.height = (h || window.innerHeight - 0) * hscale;
     if (setStyleWH) {
-        canvas.style.width = canvas.width + 'px';
-        canvas.style.height = canvas.height + 'px';
+        canvas.style.width = canvas.width + "px";
+        canvas.style.height = canvas.height + "px";
     }
     if (x || y) {
         canvas.style.left = x + "px";
         canvas.style.top = y + "px";
         canvas.style.position = "absolute";
     }
+}
+export function dist2(dx, dy) {
+    return dx * dx + dy * dy;
 }
 //# sourceMappingURL=tools.js.map

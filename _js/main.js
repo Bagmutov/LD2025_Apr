@@ -3,18 +3,18 @@ import { initInput } from "./input.js";
 import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 export var LD_GLOB;
 (function (LD_GLOB) {
-    LD_GLOB.version = '0.1';
-    LD_GLOB.game_state = 'menu';
+    LD_GLOB.version = "0.1";
+    LD_GLOB.game_state = "menu";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
     LD_GLOB.COLORS = {
-        main_1: '#112e50ff',
-        main_2: '#0a4c69ff',
-        main_3: '#0c747dff',
-        main_4: '#0e917bff',
-        main_5: '#0ab177ff',
-        main_6: '#00d57aff',
-        main_7: '#87efc4ff'
+        main_1: "#112e50ff",
+        main_2: "#0a4c69ff",
+        main_3: "#0c747dff",
+        main_4: "#0e917bff",
+        main_5: "#0ab177ff",
+        main_6: "#00d57aff",
+        main_7: "#87efc4ff",
     };
     function updateLoading() {
         LD_GLOB.loading_percent = Math.max(0, Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall)));
@@ -22,7 +22,9 @@ export var LD_GLOB;
             LD_GLOB.loaded = true;
     }
     LD_GLOB.updateLoading = updateLoading;
-    function getImage(name) { return images[name]; }
+    function getImage(name) {
+        return images[name];
+    }
     LD_GLOB.getImage = getImage;
 })(LD_GLOB || (LD_GLOB = {}));
 var LD_STARTER;
@@ -32,15 +34,16 @@ var LD_STARTER;
         initBackground();
         initInput();
         initImages();
-        GAME_LD.initGame();
+        GAME_LD.init();
         console.log(`Starting LD 2025 v${LD_GLOB.version}`);
         loadingLoop();
     }
     LD_STARTER.initialization = initialization;
 })(LD_STARTER || (LD_STARTER = {}));
 function loadingLoop() {
+    // loops while the game loads
     drawLoadingScreen();
-    if (LD_GLOB.game_state != 'loading') {
+    if (LD_GLOB.game_state != "loading") {
         requestAnimationFrame(menuLoop);
     }
     else {
@@ -49,7 +52,7 @@ function loadingLoop() {
 }
 function menuLoop() {
     drawMenu();
-    if (LD_GLOB.game_state == 'game') {
+    if (LD_GLOB.game_state == "game") {
         requestAnimationFrame(mainLoop);
     }
     else {
@@ -58,8 +61,8 @@ function menuLoop() {
 }
 function mainLoop() {
     drawGame();
-    GAME_LD.step();
-    if (LD_GLOB.game_state == 'game') {
+    GAME_LD.loop();
+    if (LD_GLOB.game_state == "game") {
         requestAnimationFrame(mainLoop);
     }
     else {
@@ -68,39 +71,39 @@ function mainLoop() {
 }
 let c_x = 0, c_y = 0, background, background_ctx;
 function drawLoadingScreen() {
-    LD_GLOB.mainctx.drawImage(background, 0, 0);
-    drawCircle(LD_GLOB.mainctx, c_x, c_y, c_x * .5 + 5, LD_GLOB.COLORS.main_5);
-    drawCircle(LD_GLOB.mainctx, c_x, c_y, LD_GLOB.loading_percent * c_x * .5, (LD_GLOB.loading_percent < 1) ? LD_GLOB.COLORS.main_6 : LD_GLOB.COLORS.main_7);
-    LD_GLOB.mainctx.fillStyle = LD_GLOB.COLORS.main_7;
+    LD_GLOB.mainDst.drawImage(background, 0, 0);
+    drawCircle(LD_GLOB.mainDst, c_x, c_y, c_x * 0.5 + 5, LD_GLOB.COLORS.main_5);
+    drawCircle(LD_GLOB.mainDst, c_x, c_y, LD_GLOB.loading_percent * c_x * 0.5, LD_GLOB.loading_percent < 1 ? LD_GLOB.COLORS.main_6 : LD_GLOB.COLORS.main_7);
+    LD_GLOB.mainDst.fillStyle = LD_GLOB.COLORS.main_7;
     if (LD_GLOB.loaded) {
-        LD_GLOB.mainctx.fillText('Click here', c_x - 50, c_y + c_x * .6);
+        LD_GLOB.mainDst.fillText("Click here", c_x - 50, c_y + c_x * 0.6);
     }
     else
-        LD_GLOB.mainctx.fillText('Loading...', c_x - 50, c_y + c_x * .6);
+        LD_GLOB.mainDst.fillText("Loading...", c_x - 50, c_y + c_x * 0.6);
     LD_GLOB.updateLoading(); // TEMP
 }
 function drawMenu() {
-    LD_GLOB.mainctx.drawImage(background, 0, 0);
-    LD_GLOB.mainctx.fillStyle = LD_GLOB.COLORS.main_7;
-    LD_GLOB.mainctx.fillText('MENU. Press Enter.', c_x - 50, c_y * 1.9);
+    LD_GLOB.mainDst.drawImage(background, 0, 0);
+    LD_GLOB.mainDst.fillStyle = LD_GLOB.COLORS.main_7;
+    LD_GLOB.mainDst.fillText("MENU. Press Enter.", c_x - 80, c_y * 1.9);
     // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
-    GAME_LD.drawGame(LD_GLOB.mainctx);
+    GAME_LD.drawGame(LD_GLOB.mainDst);
 }
 function drawGame() {
-    LD_GLOB.mainctx.drawImage(background, 0, 0);
-    GAME_LD.drawGame(LD_GLOB.mainctx);
+    LD_GLOB.mainDst.drawImage(background, 0, 0);
+    GAME_LD.drawGame(LD_GLOB.mainDst);
 }
 function initCanvas() {
-    LD_GLOB.canv = document.getElementById('can');
-    positionCanvas(LD_GLOB.canv);
-    LD_GLOB.mainctx = LD_GLOB.canv.getContext('2d');
-    LD_GLOB.mainctx.font = 20 + 'px Shantell Sans';
-    c_x = LD_GLOB.canv.width / 2;
-    c_y = LD_GLOB.canv.height / 2;
+    LD_GLOB.canvas = document.getElementById("can");
+    positionCanvas(LD_GLOB.canvas);
+    LD_GLOB.mainDst = LD_GLOB.canvas.getContext("2d");
+    LD_GLOB.mainDst.font = 20 + "px Shantell Sans";
+    c_x = LD_GLOB.canvas.width / 2;
+    c_y = LD_GLOB.canvas.height / 2;
 }
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["face"];
+const imageNames = ["planet"];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array
@@ -112,12 +115,11 @@ function onload_fun() {
         all_loaded();
     }
 }
-;
 function initImages() {
     imageNames.forEach((name) => {
         const img = new Image();
-        img.src = imageFolder + name + '.png';
-        images[name] = (img);
+        img.src = imageFolder + name + ".png";
+        images[name] = img;
         img.onload = onload_fun;
     });
 }
@@ -125,23 +127,23 @@ function all_loaded() {
     console.log(`all images loaded`);
 }
 function initBackground() {
-    background = document.createElement('canvas');
+    background = document.createElement("canvas");
     positionCanvas(background);
-    background_ctx = background.getContext('2d');
-    let rad = background.height * .03;
-    drawRoundRect(background_ctx, 0, 0, 0, LD_GLOB.canv.width, LD_GLOB.canv.height, LD_GLOB.COLORS.main_1);
-    drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
-    drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
-    drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
+    background_ctx = background.getContext("2d");
+    let rad = background.height * 0.03;
+    drawRoundRect(background_ctx, 0, 0, 0, LD_GLOB.canvas.width, LD_GLOB.canvas.height, LD_GLOB.COLORS.main_1);
+    // drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
+    // drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
+    // drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
 }
 //     ----------------------- SOUND --------------------------
-const soundNames = ['bubble_high'];
+const soundNames = ["bubble_high"];
 var audio_context;
-window.addEventListener('load', initSounds, false);
+window.addEventListener("load", initSounds, false);
 function initSounds() {
     try {
         audio_context = new AudioContext();
-        console.log('currTime:' + audio_context.currentTime);
+        console.log("currTime:" + audio_context.currentTime);
         //Here path should be searching from .html, not .js. It works both ways locally, but only 1st one works from itch.
         buffOverall = soundNames.length;
         soundNames.forEach((name) => {
@@ -150,7 +152,7 @@ function initSounds() {
         // buffN+=999;
     }
     catch (e) {
-        alert('Web Audio API is not supported in this browser');
+        alert("Web Audio API is not supported in this browser");
     }
 }
 var all_buffers = {};
@@ -158,8 +160,8 @@ var buffN = 0;
 let buffOverall = 0;
 function loadSound(url, buf_name) {
     var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
+    request.open("GET", url, true);
+    request.responseType = "arraybuffer";
     // Decode asynchronously
     request.onload = function () {
         audio_context.decodeAudioData(request.response, function (buffer) {
@@ -167,9 +169,11 @@ function loadSound(url, buf_name) {
             buffN++;
             LD_GLOB.updateLoading();
             if (buffN == buffOverall)
-                console.log('ALL SOUNDS LOADED in ' + audio_context.currentTime);
-        }, (e) => { console.log('ERROR DECODING AUDIO'); });
-        console.log('Sound Loaded curTime: ' + audio_context.currentTime);
+                console.log("ALL SOUNDS LOADED in " + audio_context.currentTime);
+        }, (e) => {
+            console.log("ERROR DECODING AUDIO");
+        });
+        console.log("Sound Loaded curTime: " + audio_context.currentTime);
     };
     request.send();
 }
@@ -186,5 +190,5 @@ export function playSound(sound_name, vol = 1, wait = 0, loop = false) {
     source.start(audio_context.currentTime + wait / 100); // play the source now
     return source;
 }
-window['starterLD'] = LD_STARTER.initialization;
+window["starterLD"] = LD_STARTER.initialization;
 //# sourceMappingURL=main.js.map
