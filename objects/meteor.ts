@@ -1,10 +1,10 @@
 import { Circle } from "./circle.js";
 import { Vector } from "./vector.js";
 import { GAME_LD } from "../game.js";
+import { dist2 } from "../tools.js";
 
 export class Meteor extends Circle {
   hp: number;
-  velocity: Vector;
 
   constructor(
     x: number,
@@ -21,11 +21,9 @@ export class Meteor extends Circle {
   }
 
   step(delta: number) {
-    let a = GAME_LD.getAcseleration(this.coordinates);
-    this.velocity = this.velocity.add(a);
-
-    this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
-
+    this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
+    super.step(delta);
+    if(dist2(this.coordinates.x,this.coordinates.y)>2000*2000) GAME_LD.delCircleObject(this);
     // idk
     // if (meteor.checkCollision(planet)) {
     //   planet.hp -= 1;

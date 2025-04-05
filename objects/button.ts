@@ -15,7 +15,7 @@ import { LD_GLOB } from "../main.js";
 
 
 
-export function addButton(obj:Circle, dx:number, dy:number, rad:number):Button{
+export function crtButton(obj:Circle, dx:number, dy:number, rad:number):Button{
     let but = new Button(dx,dy,obj,rad);
     all_buttons.push(but);
     return but;
@@ -39,7 +39,7 @@ export function mouseMoveButtons(e:MouseEvent){
         if(ms_over_but.ms_move) ms_over_but.ms_move.call(ms_over_but, e.clientX-ms_dwn_xy.x,e.clientY-ms_dwn_xy.y);
     }else{
         let res = arrFindMin(all_buttons, (but)=>dist2(but.x-e.clientX, but.y-e.clientY));
-        if(res.o && res.d<res.o.rad2){
+        if(res && res.o && res.d<res.o.rad2){
             ms_over_but = res.o;
             ms_over_but.state = 1;
         } else if(ms_over_but){

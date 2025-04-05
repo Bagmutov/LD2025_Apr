@@ -1,6 +1,6 @@
 import { GAME_LD } from "./game.js";
 import { initInput } from "./input.js";
-import { addButton, drawButtons } from "./objects/button.js";
+import { crtButton, drawButtons } from "./objects/button.js";
 import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 
 export namespace LD_GLOB {
@@ -40,11 +40,6 @@ namespace LD_STARTER {
     initInput();
     initImages();
     GAME_LD.init();
-    let but = addButton(null, 100, 100, 50);
-    but.ms_down = ()=>{console.log(`down`);}
-    but.ms_move = (dx)=>{console.log(`move ${dx}`);}
-    but.ms_up = ()=>{console.log(`up`);}
-    but.ms_click = ()=>{console.log(`click`);}
 
     console.log(`Starting LD 2025 v${LD_GLOB.version}`);
     loadingLoop();
@@ -69,7 +64,7 @@ function menuLoop() {
 }
 function mainLoop() {
   drawGame();
-  GAME_LD.loop();
+  GAME_LD.stepGame();
   if (LD_GLOB.game_state == "game") {
     requestAnimationFrame(mainLoop);
   } else {
@@ -102,6 +97,7 @@ function drawMenu() {
   LD_GLOB.mainDst.fillText("MENU. Press Enter.", c_x - 80, c_y * 1.9);
   // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
   GAME_LD.drawGame(LD_GLOB.mainDst);
+  drawButtons(LD_GLOB.mainDst);
 }
 function drawGame() {
   LD_GLOB.mainDst.drawImage(background, 0, 0);
