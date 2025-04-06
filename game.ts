@@ -2,7 +2,7 @@ import { imageNamesTp, LD_GLOB } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
-import { Circle } from "./objects/circle.js";
+import { Circle, PhisicMode } from "./objects/circle.js";
 import { arrDel } from "./tools.js";
 import { ResourceType } from "./objects/resource/resource.js";
 import { Launchee } from "./objects/abilities/launchee.js";
@@ -18,7 +18,7 @@ export namespace GAME_CONFIG {
     radius: number;
     image: imageNamesTp;
     mass: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
   export enum MeteorType {
     smallMeteor = 'smallMeteor',
@@ -29,7 +29,7 @@ export namespace GAME_CONFIG {
     stability: number;
     radius: number;
     image: imageNamesTp;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
   export enum HookType {
     standartHook = 'standartHook',
@@ -42,7 +42,7 @@ export namespace GAME_CONFIG {
     backwardSpeed: number;
     powerLavel: number;
     maxLenth: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
 
   export enum BombType {
@@ -52,7 +52,7 @@ export namespace GAME_CONFIG {
     stability: number;
     radius: number;
     image: imageNamesTp;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
 
     speed: number;
     maxDist: number;
@@ -77,7 +77,7 @@ export namespace GAME_CONFIG {
     backwardSpeed: number;
     powerLavel: number;
     maxLenth: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
   export enum BuildingType {
     hookTier1 = "hookTier1",
@@ -104,22 +104,37 @@ export namespace GAME_CONFIG {
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, useGravity: false},
+    [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
   };
   export const MeteorConfig: Record<MeteorType, MeteorConfigData> = {
-    [MeteorType.smallMeteor]: {stability: 1, radius: 8, image: "planet", useGravity: true},
-    [MeteorType.mediumMeteor]: {stability: 2, radius: 12, image: "planet", useGravity: true},
-    [MeteorType.largeMeteor]: {stability: 3, radius: 20, image: "planet", useGravity: true},
+    [MeteorType.smallMeteor]: {
+      stability: 1,
+      radius: 8,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
+    [MeteorType.mediumMeteor]: {
+      stability: 2,
+      radius: 12,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
+    [MeteorType.largeMeteor]: {
+      stability: 3,
+      radius: 20,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
   };
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standartHook]: {stability: 10,radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false},
+    [HookType.standartHook]: {stability: 10,radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart},
   };
   export const BombConfig: Record<BombType, BombConfigData> = {
     [BombType.standartBomb]: {
       stability: 10,
       radius: 20,
       image: 'bomb',
-      useGravity: false,
+      phisicMode: PhisicMode.standart,
       speed: 400,
       maxDist: 1000,
 
@@ -215,7 +230,7 @@ export namespace GAME_LD {
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),
         GAME_CONFIG.MeteorType.mediumMeteor,
-        new Vector(0, 0)
+        new Vector(200, 30)
       )
     );
   }
@@ -241,7 +256,7 @@ export namespace GAME_LD {
             .sub(point);
         let len = dir.len()
         if(len==0)continue;   // to avoid division by 0
-        let a = dir.multiply(planet.mass / len*.03)
+        let a = dir.multiply(planet.mass*500 / len**3)
         res = res.add(a);
     }
     return res;

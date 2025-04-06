@@ -24,7 +24,7 @@ export class Planet extends Circle {
       coordinate,
       config.radius,
       LD_GLOB.getImage(config.image),
-      config.useGravity,
+      config.phisicMode,
       config.stability,
     );
     this.mass = config.mass;

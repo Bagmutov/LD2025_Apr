@@ -2,7 +2,7 @@ import { Launchee } from "./launchee.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
-import { Circle } from "../circle.js";
+import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
 
 
@@ -16,7 +16,7 @@ export class Hook extends Launchee{
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity, config.stability);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.stability);
     this.forwardSpeed = config.forwardSpeed;
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
@@ -43,7 +43,7 @@ export class Hook extends Launchee{
         if (tempHokedObjects.length != 0){
             this.hokedObjest = tempHokedObjects[0];
             this.isPushed = false;
-            this.hokedObjest.useGravity = false;
+            this.hokedObjest.phisicMode = PhisicMode.none;
             this.hokedObjest.coordinates = this.coordinates;
         }
     } else{

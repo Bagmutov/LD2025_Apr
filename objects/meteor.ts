@@ -13,7 +13,7 @@ export class Meteor extends Circle {
     velocity: Vector
   ) {
     let config = GAME_CONFIG.MeteorConfig[type]
-    super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.useGravity, config.stability);
+    super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.phisicMode, config.stability);
     this.velocity = velocity;
   }
 

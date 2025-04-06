@@ -2,6 +2,7 @@ import { LD_GLOB } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
+import { PhisicMode } from "./objects/circle.js";
 import { arrDel } from "./tools.js";
 import { Building } from "./objects/buildings/building.js";
 export var GAME_CONFIG;
@@ -44,22 +45,37 @@ export var GAME_CONFIG;
         AbilityType["spaseShip"] = "spaseShip";
     })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { stability: 5, radius: 70, image: "planet", mass: 200, useGravity: false },
+        [PlanetType.planet]: { stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking },
     };
     GAME_CONFIG.MeteorConfig = {
-        [MeteorType.smallMeteor]: { stability: 1, radius: 8, image: "planet", useGravity: true },
-        [MeteorType.mediumMeteor]: { stability: 2, radius: 12, image: "planet", useGravity: true },
-        [MeteorType.largeMeteor]: { stability: 3, radius: 20, image: "planet", useGravity: true },
+        [MeteorType.smallMeteor]: {
+            stability: 1,
+            radius: 8,
+            image: "planet",
+            phisicMode: PhisicMode.gravity,
+        },
+        [MeteorType.mediumMeteor]: {
+            stability: 2,
+            radius: 12,
+            image: "planet",
+            phisicMode: PhisicMode.gravity,
+        },
+        [MeteorType.largeMeteor]: {
+            stability: 3,
+            radius: 20,
+            image: "planet",
+            phisicMode: PhisicMode.gravity,
+        },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standartHook]: { stability: 10, radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
+        [HookType.standartHook]: { stability: 10, radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart },
     };
     GAME_CONFIG.BombConfig = {
         [BombType.standartBomb]: {
             stability: 10,
             radius: 20,
             image: 'bomb',
-            useGravity: false,
+            phisicMode: PhisicMode.standart,
             speed: 400,
             maxDist: 1000,
             explosionRadius: 40,
@@ -137,7 +153,7 @@ export var GAME_LD;
         GAME_LD.startBuilding = new Building(GAME_CONFIG.BuildingType.bombTier1);
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
-        addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));
+        addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(200, 30)));
     }
     GAME_LD.init = init;
     function addCircleObject(obj) {
@@ -168,7 +184,7 @@ export var GAME_LD;
             let len = dir.len();
             if (len == 0)
                 continue; // to avoid division by 0
-            let a = dir.multiply(planet.mass / len * .03);
+            let a = dir.multiply(planet.mass * 500 / Math.pow(len, 3));
             res = res.add(a);
         }
         return res;

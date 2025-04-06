@@ -2,7 +2,7 @@ import { Launchee } from "./launchee.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
-import { Circle } from "../circle.js";
+import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
 
 
@@ -29,7 +29,7 @@ export class Bomb extends Launchee {
       config.radius,
       LD_GLOB.getImage(config.image),
       planet,
-      config.useGravity,
+      config.phisicMode,
       config.stability,
     );
     this.speed = config.speed;
@@ -54,7 +54,7 @@ export class Bomb extends Launchee {
     }
     if (this.exploseFrame < this.explosionImages.length){
       this.image = this.explosionImages[Math.floor(this.exploseFrame)];
-      this.exploseFrame += 0.5;
+      this.exploseFrame += 0.33333333333;
       super.draw(dst);
     }
   }
@@ -93,7 +93,7 @@ export class Bomb extends Launchee {
       this.coordinates,
       this.blastWaveRadius,
       this.image,
-      false,
+      PhisicMode.none,
       this.stability
     );
     let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
