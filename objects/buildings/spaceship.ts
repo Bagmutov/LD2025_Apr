@@ -1,0 +1,17 @@
+import { Ability } from "../abilities/ability.js";
+import { Planet } from "../planet.js";
+import { Vector } from "../vector.js";
+import { GAME_CONFIG, GAME_LD } from "../../game.js";
+import { Circle } from "../circle.js";
+import { Meteor } from "../meteor.js";
+import { LD_GLOB } from "../../main.js";
+import { Hook } from "../abilities/hook.js";
+
+
+export class Spaceship extends Hook{
+
+  constructor(direction: Vector, type: GAME_CONFIG.HookType, planet: Planet){
+    super(direction, type, planet);
+  }
+
+}
