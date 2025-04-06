@@ -1,9 +1,10 @@
-import { Launchee } from "./ability.js";
+import { Launchee } from "./launchee.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
-import { Circle } from "../circle.js";
+import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
+import { drawLine } from "../../tools.js";
 
 
 export class Hook extends Launchee{
@@ -16,7 +17,7 @@ export class Hook extends Launchee{
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.stability);
     this.forwardSpeed = config.forwardSpeed;
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
@@ -25,15 +26,24 @@ export class Hook extends Launchee{
   launch(direction: Vector, force: number): void {
     this.addVelocity(direction.multiply(force*this.forwardSpeed))
   }
+  draw(dst: CanvasRenderingContext2D): void {
+    drawLine(
+      dst,
+      this.coordinates.x,
+      this.coordinates.y,
+      this.planet.coordinates.x,
+      this.planet.coordinates.y,
+      LD_GLOB.COLORS.main_4,
+      4
+    );
+    super.draw(dst);
+  }
 
   step(delta: number){
-    console.log(1);
     if (this.coordinates.sub(this.planet.coordinates).len() > this.maxLenth){
-        console.log(2);
         this.isPushed = false;
     }
     if (!this.isPushed){
-        console.log(3);
         this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
         if (this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
           this.destroy()
@@ -42,17 +52,14 @@ export class Hook extends Launchee{
     super.step(delta);
 
     if (this.hokedObjest == null){
-        console.log(4);
         let tempHokedObjects = GAME_LD.getColisions(this, GAME_LD.Layers.Meteor);
         if (tempHokedObjects.length != 0){
-            console.log(5);
             this.hokedObjest = tempHokedObjects[0];
             this.isPushed = false;
-            this.hokedObjest.useGravity = false;
+            this.hokedObjest.phisicMode = PhisicMode.none;
             this.hokedObjest.coordinates = this.coordinates;
         }
     } else{
-        console.log(6);
         this.hokedObjest.coordinates = this.coordinates;
     }
   }

@@ -2,74 +2,100 @@ import { imageNamesTp, LD_GLOB } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
-import { Circle } from "./objects/circle.js";
+import { Circle, PhisicMode } from "./objects/circle.js";
 import { arrDel } from "./tools.js";
 import { ResourceType } from "./objects/resource/resource.js";
-import { Launchee } from "./objects/abilities/ability.js";
+import { Launchee } from "./objects/abilities/launchee.js";
 import { Building } from "./objects/buildings/building.js";
+import { Bomb } from "./objects/abilities/bomb.js";
 
 export namespace GAME_CONFIG {
   export enum PlanetType {
     planet = 'planet',
   }
   export type PlanetConfigData = {
+    stability: number;
     radius: number;
     image: imageNamesTp;
     mass: number;
-    useGravity: boolean;
-  }
+    phisicMode: PhisicMode;
+  };
   export enum MeteorType {
     smallMeteor = 'smallMeteor',
     mediumMeteor = 'mediumMeteor',
     largeMeteor = 'largeMeteor',
   }
   export type MeteorConfigData = {
+    stability: number;
     radius: number;
     image: imageNamesTp;
-    hoockingPowerLavel: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
   export enum HookType {
-    standart,
+    standartHook = 'standartHook',
   }
   export type HookConfigData = {
+    stability: number;
     radius: number;
     image: imageNamesTp;
     forwardSpeed: number;
     backwardSpeed: number;
     powerLavel: number;
     maxLenth: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
 
   export enum BombType {
-    standart,
+    standartBomb = 'standartBomb',
   }
   export type BombConfigData = {
+    stability: number;
+    radius: number;
+    image: imageNamesTp;
+    phisicMode: PhisicMode;
+
+    speed: number;
+    maxDist: number;
+
+    explosionRadius: number;
+    blastWaveRadius: number;
+
+    explosionStregth: number;
+    blastWaveStregth: number;
+    blastWaveVelocityAdd: number;
+
+    explosionImages: imageNamesTp[];
+  };
+  export enum SpaceShipType {
+    standartSpaseShip = 'standartSpaseShip',
+  }
+  export type SpaceShipConfigData = {
+    stability: number;
     radius: number;
     image: imageNamesTp;
     forwardSpeed: number;
-    backwardSpeed: number;
     powerLavel: number;
-    maxLenth: number;
-    useGravity: boolean;
+    phisicMode: PhisicMode;
   };
   export enum BuildingType {
-    starting,
     hookTier1,
     hookTier2,
-    hookTier3, 
+    hookTier3,
+    bombTier1,
+    starting,
   }
   export enum AbilityType {
-    hook,
-    bomb,
-    spaseShip,
+    hook = "hook",
+    bomb = "bomb",
+    spaseShip = "spaseShip",
   }
   export type BuildingConfigData = {
     radius: number;
+
     image_build: imageNamesTp;
     image_icon: imageNamesTp;
-    abilytyConfig: HookType | BombType;
+
+    abilytyConfig: HookType | BombType | SpaceShipType;
     abilityType: AbilityType;
     cost: Map<ResourceType, number>;
     nextUpgrades: BuildingType[];
@@ -78,19 +104,70 @@ export namespace GAME_CONFIG {
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {radius: 40, image: "planet", mass: 200, useGravity: false},
+    [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
   };
+
+
+
+
   export const MeteorConfig: Record<MeteorType, MeteorConfigData> = {
-    [MeteorType.smallMeteor]: {radius: 3, image: "planet", hoockingPowerLavel: 1, useGravity: true},
-    [MeteorType.mediumMeteor]: {radius: 5, image: "planet", hoockingPowerLavel: 2, useGravity: true},
-    [MeteorType.largeMeteor]: {radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true},
+    [MeteorType.smallMeteor]: {
+      stability: 1,
+      radius: 8,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
+    [MeteorType.mediumMeteor]: {
+      stability: 2,
+      radius: 12,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
+    [MeteorType.largeMeteor]: {
+      stability: 3,
+      radius: 20,
+      image: "planet",
+      phisicMode: PhisicMode.gravity,
+    },
   };
+
+
+
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standart]: {radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false},
+    [HookType.standartHook]: {stability: 10,radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart},
   };
   export const BombConfig: Record<BombType, BombConfigData> = {
-    [BombType.standart]: {radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false},
+    [BombType.standartBomb]: {
+      stability: 10,
+      radius: 20,
+      image: 'bomb',
+      phisicMode: PhisicMode.standart,
+      speed: 400,
+      maxDist: 1000,
+
+      explosionRadius: 40,
+      blastWaveRadius: 70,
+
+      explosionStregth: 1,
+      blastWaveStregth: 8,
+      blastWaveVelocityAdd: 200,
+
+      explosionImages: ['bombe1', 'bombe2'],
+    },
   };
+
+  export const SpaceShipConfig: Record<SpaceShipType, SpaceShipConfigData> = {
+    [SpaceShipType.standartSpaseShip] : {
+      stability: 10,
+      radius: 10,
+      image: 'planet', //TODO
+      forwardSpeed: 400,
+      powerLavel: 4,
+      phisicMode: PhisicMode.standart
+    }
+  }
+
+
   export const Other = {
     spaceship_cost: 
       new Map<ResourceType, number>([
@@ -114,14 +191,14 @@ export namespace GAME_CONFIG {
         [ResourceType.gold, 0],
         [ResourceType.iron, 0],
       ]),
-      nextUpgrades: [BuildingType.hookTier1,BuildingType.hookTier2,],
+      nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
     },
     [BuildingType.hookTier1]: {
       radius: 15,
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standart,
+      abilytyConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -129,11 +206,11 @@ export namespace GAME_CONFIG {
       nextUpgrades: [BuildingType.hookTier2],
     },
     [BuildingType.hookTier2]: {
-      radius: 15,
+      radius: 12,
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standart,
+      abilytyConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -145,7 +222,19 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standart,
+      abilytyConfig: HookType.standartHook,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.gold, 10],
+        [ResourceType.iron, 10],
+      ]),
+      nextUpgrades: [],
+    },
+    [BuildingType.bombTier1]: {
+      radius: 15,
+      image_build: "build1",
+      image_icon: 'bomb',
+      abilityType: AbilityType.bomb,
+      abilytyConfig: BombType.standartBomb,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -171,12 +260,14 @@ export namespace GAME_LD {
     Meteor:      1 << 1,
     Hook:        1 << 2,
     SpaseShip:   1 << 3,
+    Bomb:        1 << 4,
   };
 
   let planets: Planet[] = [];
   let meteors: Meteor[] = [];
 
   let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
+
   // export let startBuilding;
   export const buildings:{ [k in GAME_CONFIG.BuildingType]?: Building } = {};
 
@@ -193,7 +284,7 @@ export namespace GAME_LD {
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),
         GAME_CONFIG.MeteorType.mediumMeteor,
-        new Vector(0, 0)
+        new Vector(200, 30)
       )
     );
   }
@@ -219,7 +310,7 @@ export namespace GAME_LD {
             .sub(point);
         let len = dir.len()
         if(len==0)continue;   // to avoid division by 0
-        let a = dir.multiply(planet.mass / len*.03)
+        let a = dir.multiply(planet.mass*500 / len**3)
         res = res.add(a);
     }
     return res;

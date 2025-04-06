@@ -2,24 +2,35 @@ import { GAME_LD } from "../game.js";
 import { drawCircle, dist2, makeCopy } from "../tools.js";
 import { Vector } from "./vector.js";
 
+export enum PhisicMode {
+  none,
+  gravity,
+  braking,
+  standart,
+}
+
+
 export class Circle {
   coordinates: Vector;
   radius: number;
   image: HTMLImageElement;
-  useGravity: boolean = false;
+  phisicMode: PhisicMode;
   velocity: Vector = new Vector(0, 0);
   my_array: (typeof this)[] = null; // set this when obj is created. Then use it when deleting obj.
+  stability: number;
 
   constructor(
     coordinates: Vector,
     radius: number,
     image: HTMLImageElement,
-    useGravity: boolean
+    useGravity: PhisicMode,
+    stability: number,
   ) {
     this.coordinates = coordinates;
     this.radius = radius;
     this.image = image;
-    this.useGravity = useGravity;
+    this.phisicMode = useGravity;
+    this.stability = stability;
   }
 
   draw(dst: CanvasRenderingContext2D) {
@@ -33,8 +44,10 @@ export class Circle {
   }
 
   step(delta: number) {
-    if (this.useGravity) {
+    if (this.phisicMode == PhisicMode.gravity) {
       this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
+    } else if (this.phisicMode == PhisicMode.braking){
+      this.addVelocity(this.velocity.multiply(-.01));
     }
     this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
   }
@@ -44,7 +57,9 @@ export class Circle {
   //   if (vel) obj.addVelocity(vel);
   //   obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
   // }
-
+  addParent(obj: Circle) {
+    GAME_LD.addCircleObject(obj);
+  }
   checkCollision(other: Circle): boolean {
     return (
       Math.sqrt(
@@ -58,6 +73,7 @@ export class Circle {
   }
 
   addVelocity(dxy: Vector) {
+    if (this.phisicMode == PhisicMode.none) return;
     this.velocity = this.velocity.add(dxy);
   }
   destroy() {

@@ -2,7 +2,8 @@ import { GAME_CONFIG } from "../../game.js";
 import { LD_GLOB } from "../../main.js";
 import { Bomb } from "../abilities/bomb.js";
 import { Hook } from "../abilities/hook.js";
-import { Spaceship as SpaceShip } from "../abilities/spaceship.js";
+import { Launchee } from "../abilities/launchee.js";
+import { SpaceShip } from "../abilities/spaseShip.js";
 import { Planet } from "../planet.js";
 import { ResourceType } from "../resource/resource.js";
 
@@ -26,7 +27,6 @@ export class Building {
   nextUpgrades: GAME_CONFIG.BuildingType[] = [];
 
   constructor(type: GAME_CONFIG.BuildingType) {
-    console.log("building create");
     let config = GAME_CONFIG.BuildingConfig[type];
     this.image_build = LD_GLOB.getImage(config.image_build);
     this.radius = config.radius;
@@ -68,8 +68,8 @@ export class Building {
     );
   }
 
-  buildAbility(planet: Planet) {
-    switch (this.abilityConfig) {
+  buildLaunchee(planet: Planet): Launchee {
+    switch (this.abilityType) {
       case GAME_CONFIG.AbilityType.hook:
         return new Hook(this.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.bomb:

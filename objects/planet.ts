@@ -1,12 +1,9 @@
 import { GAME_LD, GAME_CONFIG } from "../game.js";
 import { LD_GLOB } from "../main.js";
 import { drawLine } from "../tools.js";
-import { Hook } from "./abilities/hook.js";
-import { Spaceship } from "./abilities/spaceship.js";
 import { Building } from "./buildings/building.js";
 import { Button, crtButton, delButton } from "./button.js";
 import { Circle } from "./circle.js";
-import { Meteor } from "./meteor.js";
 import { Inventory } from "./resource/inventory.js";
 import { Vector } from "./vector.js";
 
@@ -28,11 +25,11 @@ export class Planet extends Circle {
       coordinate,
       config.radius,
       LD_GLOB.getImage(config.image),
-      config.useGravity
+      config.phisicMode,
+      config.stability,
     );
     this.mass = config.mass;
     this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
-
   }
   draw(dst: CanvasRenderingContext2D): void {
     super.draw(dst);
@@ -110,9 +107,9 @@ export class Planet extends Circle {
             // launchee.launch(this.launch_xy.normalize(), this.launch_xy.len());
             this.temp_launch = false;
           }else if (this.building != null && this.building.abilityConfig!=null) {
-            let launchee = this.building.buildAbility(this);
-            GAME_LD.addCircleObject(launchee);
-            launchee.launch(this.launch_xy.normalize(-1), this.launch_xy.len());
+            let launchee = this.building.buildLaunchee(this);
+            this.addParent(launchee);
+            launchee.launch(this.launch_xy.normalize(-1), this.launch_xy.len()/this.launch_xy_max_len);
           }
           this.updateLaunchButton();
           this.launch_xy = null;
