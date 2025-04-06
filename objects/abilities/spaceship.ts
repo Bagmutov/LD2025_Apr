@@ -1,11 +1,11 @@
-import { Ability } from "../abilities/ability.js";
+import { Launchee } from "./ability.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle } from "../circle.js";
 import { Meteor } from "../meteor.js";
 import { LD_GLOB } from "../../main.js";
-import { Hook } from "../abilities/hook.js";
+import { Hook } from "./hook.js";
 
 
 export class Spaceship extends Hook{
