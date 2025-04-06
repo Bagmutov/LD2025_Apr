@@ -1,4 +1,4 @@
-import { Launchee } from "./ability.js";
+import { Launchee } from "./launchee.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";

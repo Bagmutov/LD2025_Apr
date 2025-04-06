@@ -41,9 +41,9 @@ export class Planet extends Circle {
     };
     but.ms_up = () => {
       if (this.building != null) {
-        let launchee = this.building.buildAbility(this);
+        let launchee = this.building.buildLaunchee(this);
         this.addParent(launchee);
-        launchee.launch(this.launch_xy.normalize(), this.launch_xy.len()/this.launch_xy_max_len);
+        launchee.launch(this.launch_xy.multiply(-1).normalize(), this.launch_xy.len()/this.launch_xy_max_len);
       }
       this.launch_xy = null;
     };

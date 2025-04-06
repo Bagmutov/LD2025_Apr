@@ -1,7 +1,6 @@
 import { Vector } from "../vector.js";
 import { Planet } from "../planet.js";
 import { Circle } from "../circle.js";
-import { LD_GLOB } from "../../main.js";
 import { GAME_LD } from "../../game.js";
 
 export class Launchee extends Circle{

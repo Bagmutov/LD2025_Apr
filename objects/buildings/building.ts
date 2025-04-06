@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from "../../game";
-import { LD_GLOB } from "../../main";
-import { Bomb } from "../abilities/bomb";
-import { Hook } from "../abilities/hook";
-import { Spaceship as SpaceShip } from "../abilities/spaceship";
-import { Planet } from "../planet";
-import { ResourceType } from "../resource/resource";
+import { GAME_CONFIG } from "../../game.js";
+import { LD_GLOB } from "../../main.js";
+import { Bomb } from "../abilities/bomb.js";
+import { Hook } from "../abilities/hook.js";
+import { Launchee } from "../abilities/launchee.js";
+import { Planet } from "../planet.js";
+import { ResourceType } from "../resource/resource.js";
 
 // function isEnumValue<T extends Record<string, string | number>>(
 //   enumObj: T,
@@ -25,7 +25,6 @@ export class Building {
   nextUpgrades: Building[] = [];
 
   constructor(type: GAME_CONFIG.BuildingType) {
-    console.log("building create");
     let config = GAME_CONFIG.BuildingConfig[type];
     this.image = LD_GLOB.getImage(config.image);
     this.abilityType = config.abilityType;
@@ -40,6 +39,7 @@ export class Building {
         this.abilityConfig = config.abilytyConfig;
         break;
     }
+    console.log(this);
     for (let next of config.nextUpgrades){
         this.nextUpgrades.push(new Building(next));
     }
@@ -63,14 +63,14 @@ export class Building {
     );
   }
 
-  buildAbility(planet: Planet) {
-    switch (this.abilityConfig) {
+  buildLaunchee(planet: Planet): Launchee {
+    switch (this.abilityType) {
       case GAME_CONFIG.AbilityType.hook:
         return new Hook(this.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.bomb:
         return new Bomb(this.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.spaseShip:
-        return new SpaceShip(this.abilityConfig, planet);
+        // return new SpaceShip(this.abilityConfig, planet);
     }
   }
 }
