@@ -1,3 +1,4 @@
+import { GAME_CONFIG } from "../../game";
 import { Circle } from "../circle";
 import { Planet } from "../planet";
 import { Inventory } from "../resource/inventory"
@@ -7,38 +8,19 @@ export class Building {
     level : number;
     resourse1 : number;
     resourse2 : number;
-    coordinates: Vector;
-    radius: number
-    building_draw: Circle;
+    next_upgrades: Building[];
 
 
 
-    constructor(coordinates: Vector, radius: number) {
+
+    constructor() {
         this.level = 1;
-        this.coordinates = coordinates;
-        this.radius = radius;
-
-
-        const img = new Image();
-        //img.decoding = "sync";
-        //img.src = "house1";
-        
-        this.building_draw = new Circle(coordinates, (radius - 1), img);
     }
 
-    tryUpgrade(inventory_resourse1_count: number, inventory_resourse2_count: number, ) {
+    tryUpgrade(inventory_resourse1_count: number, inventory_resourse2_count: number) {
         // проверка на ресурсы
         if ((inventory_resourse1_count >= this.resourse1) && (inventory_resourse2_count >= this.resourse2)) {
             this.level += 1;
-
-            // TODO добавить оплату ресурсов с планеты
-
-            // обновление картинки
-            const img = new Image();
-            img.decoding = "sync";
-            img.src = "house2";
-            
-            this.building_draw = new Circle(this.coordinates, (this.radius - 1), img);
             return true;
         }
         else {
@@ -46,15 +28,30 @@ export class Building {
         }
     }
 
-    draw(dst: CanvasRenderingContext2D){
+    drawMe(dst: CanvasRenderingContext2D, coordinates: Vector, radius: number){
+        const img = new Image();
+        //img.decoding = "sync";
+        //img.src = "house1";
         // отрисовка строения
-        this.building_draw.draw(dst);
+        dst.drawImage(img,
+            coordinates.x - radius,
+            coordinates.y - radius,
+            radius * 2,
+            radius * 2)
     }
 
-    doing(){
-        // действие конкретного строения
+    step(){
+        
     }
 
 
+    
+    changePlanet(planet: Planet){
+        var resourse1_from_planet = 2;
+        var resourse2_from_planet = 3;
+        if (this.tryUpgrade(resourse1_from_planet, resourse2_from_planet)){
+            planet.building = this.next_upgrades[0];
+        }
+    }
 
 }
