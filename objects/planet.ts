@@ -2,6 +2,7 @@ import { GAME_LD, GAME_CONFIG } from "../game.js";
 import { LD_GLOB } from "../main.js";
 import { drawLine } from "../tools.js";
 import { Hook } from "./abilities/hook.js";
+import { Building } from "./buildings/building.js";
 import { crtButton } from "./button.js";
 import { Circle } from "./circle.js";
 import { Meteor } from "./meteor.js";
@@ -12,6 +13,12 @@ export class Planet extends Circle {
   hp: number;
   mass: number;
   launch_xy:Vector = null;
+
+
+  building: Building = null;
+
+
+
   constructor(
     coordinate: Vector,
     type: GAME_CONFIG.PlanetType
@@ -20,6 +27,8 @@ export class Planet extends Circle {
     super(coordinate, config.radius, LD_GLOB.getImage(config.image));
     this.mass = config.mass;
     this.useGravity = true;
+
+
     let but = crtButton(this, 0, 0, this.radius+5);
     but.ms_down=()=>{
       this.launch_xy = new Vector(0,0);
@@ -35,8 +44,14 @@ export class Planet extends Circle {
       this.launchObject(obj_child, null);
       this.launch_xy = null;
     };
+
+
+
   }
   draw(dst: CanvasRenderingContext2D): void {
+    if (this.building != null){
+      this.building.draw(dst);
+    }
     super.draw(dst);
     if(this.launch_xy){
       drawLine(dst,this.coordinates.x,this.coordinates.y,this.coordinates.x+this.launch_xy.x,this.coordinates.y+this.launch_xy.y,LD_GLOB.COLORS.main_6, 4);
