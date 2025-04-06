@@ -74,16 +74,14 @@ export namespace GAME_CONFIG {
     radius: number;
     image: imageNamesTp;
     forwardSpeed: number;
-    backwardSpeed: number;
     powerLavel: number;
-    maxLenth: number;
     phisicMode: PhisicMode;
   };
   export enum BuildingType {
     hookTier1,
     hookTier2,
     hookTier3,
-    bombTier1",
+    bombTier1,
     starting,
   }
   export enum AbilityType {
@@ -94,7 +92,9 @@ export namespace GAME_CONFIG {
   export type BuildingConfigData = {
     radius: number;
 
-    image: imageNamesTp;
+    image_build: imageNamesTp;
+    image_icon: imageNamesTp;
+
     abilytyConfig: HookType | BombType | SpaceShipType;
     abilityType: AbilityType;
     cost: Map<ResourceType, number>;
@@ -106,6 +106,10 @@ export namespace GAME_CONFIG {
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
     [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
   };
+
+
+
+
   export const MeteorConfig: Record<MeteorType, MeteorConfigData> = {
     [MeteorType.smallMeteor]: {
       stability: 1,
@@ -126,6 +130,9 @@ export namespace GAME_CONFIG {
       phisicMode: PhisicMode.gravity,
     },
   };
+
+
+
   export const HookConfig: Record<HookType, HookConfigData> = {
     [HookType.standartHook]: {stability: 10,radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart},
   };
@@ -148,6 +155,19 @@ export namespace GAME_CONFIG {
       explosionImages: ['bombe1', 'bombe2'],
     },
   };
+
+  export const SpaceShipConfig: Record<SpaceShipType, SpaceShipConfigData> = {
+    [SpaceShipType.standartSpaseShip] : {
+      stability: 10,
+      radius: 10,
+      image: 'planet', //TODO
+      forwardSpeed: 400,
+      powerLavel: 4,
+      phisicMode: PhisicMode.standart
+    }
+  }
+
+
   export const Other = {
     spaceship_cost: 
       new Map<ResourceType, number>([
@@ -171,14 +191,14 @@ export namespace GAME_CONFIG {
         [ResourceType.gold, 0],
         [ResourceType.iron, 0],
       ]),
-      nextUpgrades: [BuildingType.hookTier1,BuildingType.hookTier2,],
+      nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
     },
     [BuildingType.hookTier1]: {
       radius: 15,
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standart,
+      abilytyConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -187,10 +207,11 @@ export namespace GAME_CONFIG {
     },
     [BuildingType.hookTier2]: {
       radius: 12,
-      image: "planet",
+      image_build: "build1",
+      image_icon: "icon1",
       abilityType: AbilityType.hook,
       abilytyConfig: HookType.standartHook,
-      coast: new Map<ResourceType, number>([
+      cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
       ]),
@@ -198,10 +219,11 @@ export namespace GAME_CONFIG {
     },
     [BuildingType.hookTier3]: {
       radius: 15,
-      image: "planet",
+      image_build: "build1",
+      image_icon: "icon1",
       abilityType: AbilityType.hook,
       abilytyConfig: HookType.standartHook,
-      coast: new Map<ResourceType, number>([
+      cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
       ]),
@@ -209,10 +231,11 @@ export namespace GAME_CONFIG {
     },
     [BuildingType.bombTier1]: {
       radius: 15,
-      image: "planet",
+      image_build: "build1",
+      image_icon: 'bomb',
       abilityType: AbilityType.bomb,
       abilytyConfig: BombType.standartBomb,
-      coast: new Map<ResourceType, number>([
+      cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
       ]),

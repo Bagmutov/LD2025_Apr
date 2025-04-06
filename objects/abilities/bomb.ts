@@ -4,6 +4,7 @@ import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
+import { Button, crtButton, delButton } from "../button.js";
 
 
 export class Bomb extends Launchee {
@@ -21,6 +22,7 @@ export class Bomb extends Launchee {
   
   exploseFrame: number;
   exploseStart = false;
+  explodeButton: Button;
   
 
   constructor(type: GAME_CONFIG.BombType, planet: Planet) {
@@ -42,6 +44,10 @@ export class Bomb extends Launchee {
     for (let immageName of config.explosionImages){
       this.explosionImages.push(LD_GLOB.getImage(immageName));
     }
+    this.explodeButton = crtButton(this, 0, 0, this.radius + 5);
+      this.explodeButton.ms_down = () => {
+        this.explode();
+      }
   }
   launch(direction: Vector, force: number): void {
     this.addVelocity(direction.multiply(force * this.speed));
@@ -102,5 +108,9 @@ export class Bomb extends Launchee {
         circle.addVelocity(circle.coordinates.sub(this.coordinates).normalize().multiply(this.blastWaveVelocityAdd))
       }
     }
+  }
+  destroy(): void {
+    delButton(this.explodeButton);
+    super.destroy();
   }
 }

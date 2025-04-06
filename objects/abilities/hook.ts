@@ -4,6 +4,7 @@ import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
+import { drawLine } from "../../tools.js";
 
 
 export class Hook extends Launchee{
@@ -24,6 +25,18 @@ export class Hook extends Launchee{
   }
   launch(direction: Vector, force: number): void {
     this.addVelocity(direction.multiply(force*this.forwardSpeed))
+  }
+  draw(dst: CanvasRenderingContext2D): void {
+    drawLine(
+      dst,
+      this.coordinates.x,
+      this.coordinates.y,
+      this.planet.coordinates.x,
+      this.planet.coordinates.y,
+      LD_GLOB.COLORS.main_4,
+      4
+    );
+    super.draw(dst);
   }
 
   step(delta: number){

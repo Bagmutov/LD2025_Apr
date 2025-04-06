@@ -31,10 +31,11 @@ export var GAME_CONFIG;
     })(SpaceShipType = GAME_CONFIG.SpaceShipType || (GAME_CONFIG.SpaceShipType = {}));
     let BuildingType;
     (function (BuildingType) {
-        BuildingType[BuildingType["starting"] = 0] = "starting";
-        BuildingType[BuildingType["hookTier1"] = 1] = "hookTier1";
-        BuildingType[BuildingType["hookTier2"] = 2] = "hookTier2";
-        BuildingType[BuildingType["hookTier3"] = 3] = "hookTier3";
+        BuildingType[BuildingType["hookTier1"] = 0] = "hookTier1";
+        BuildingType[BuildingType["hookTier2"] = 1] = "hookTier2";
+        BuildingType[BuildingType["hookTier3"] = 2] = "hookTier3";
+        BuildingType[BuildingType["bombTier1"] = 3] = "bombTier1";
+        BuildingType[BuildingType["starting"] = 4] = "starting";
     })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
     let AbilityType;
     (function (AbilityType) {
@@ -84,6 +85,16 @@ export var GAME_CONFIG;
             explosionImages: ['bombe1', 'bombe2'],
         },
     };
+    GAME_CONFIG.SpaceShipConfig = {
+        [SpaceShipType.standartSpaseShip]: {
+            stability: 10,
+            radius: 10,
+            image: 'planet', //TODO
+            forwardSpeed: 400,
+            powerLavel: 4,
+            phisicMode: PhisicMode.standart
+        }
+    };
     GAME_CONFIG.Other = {
         spaceship_cost: new Map([
             ["gold" /* ResourceType.gold */, 0],
@@ -106,7 +117,7 @@ export var GAME_CONFIG;
                 ["gold" /* ResourceType.gold */, 0],
                 ["iron" /* ResourceType.iron */, 0],
             ]),
-            nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2,],
+            nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
         },
         [BuildingType.hookTier1]: {
             radius: 15,
@@ -114,20 +125,19 @@ export var GAME_CONFIG;
             image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standartHook,
-            coast: new Map([
-
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
             nextUpgrades: [BuildingType.hookTier2],
         },
         [BuildingType.hookTier2]: {
-
             radius: 12,
-            image: "planet",
+            image_build: "build1",
+            image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standartHook,
-            coast: new Map([
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
@@ -135,10 +145,11 @@ export var GAME_CONFIG;
         },
         [BuildingType.hookTier3]: {
             radius: 15,
-            image: "planet",
+            image_build: "build1",
+            image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standartHook,
-            coast: new Map([
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
@@ -146,10 +157,11 @@ export var GAME_CONFIG;
         },
         [BuildingType.bombTier1]: {
             radius: 15,
-            image: "planet",
+            image_build: "build1",
+            image_icon: 'bomb',
             abilityType: AbilityType.bomb,
             abilytyConfig: BombType.standartBomb,
-            coast: new Map(
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),

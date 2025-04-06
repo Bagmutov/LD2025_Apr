@@ -3,7 +3,7 @@ import { LD_GLOB } from "../../main.js";
 import { Bomb } from "../abilities/bomb.js";
 import { Hook } from "../abilities/hook.js";
 import { Launchee } from "../abilities/launchee.js";
-import { Spaceship as SpaceShip } from "../abilities/spaceship.js";
+import { SpaceShip } from "../abilities/spaseShip.js";
 import { Planet } from "../planet.js";
 import { ResourceType } from "../resource/resource.js";
 
@@ -75,7 +75,7 @@ export class Building {
       case GAME_CONFIG.AbilityType.bomb:
         return new Bomb(this.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.spaseShip:
-        // return new SpaceShip(this.abilityConfig, planet);
+        return new SpaceShip(this.abilityConfig, planet);
     }
   }
 }
