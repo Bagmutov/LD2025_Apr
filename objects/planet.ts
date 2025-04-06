@@ -29,7 +29,7 @@ export class Planet extends Circle {
       config.stability,
     );
     this.mass = config.mass;
-    this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
+    // this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
   }
   draw(dst: CanvasRenderingContext2D): void {
     super.draw(dst);
@@ -67,28 +67,32 @@ export class Planet extends Circle {
       const next = GAME_LD.buildings[bld.nextUpgrades[ind]];
       but = crtButton(this, Math.cos(ang)*this.radius*1.5,Math.sin(ang)*this.radius*1.5, icon_rad, next.image_icon);
       but.ms_click = ()=>{
-        if(this.inventory.canPay(next.cost)){
-          this.inventory.pay(next.cost);
+        if(this.inventory.canPay(next.config.cost)){
+          this.inventory.pay(next.config.cost);
           this.build(next);
         }
       }
       this.upgrade_buttons.push(but);
       ang -= 3.1415/6;
     }
-    but = crtButton(this, Math.cos(-1.57)*this.radius*1.5,Math.sin(-1.57)*this.radius*1.5, icon_rad, 
-                    LD_GLOB.getImage(<any>GAME_CONFIG.Other.space_icon_name));
-    but.ms_click = ()=>{
-      if(this.inventory.canPay(GAME_CONFIG.Other.spaceship_cost)){
-        this.inventory.pay(GAME_CONFIG.Other.spaceship_cost);
-        this.temp_launch = true;
-        this.updateLaunchButton();
+    if(!bld.config.evil){
+      but = crtButton(this, Math.cos(-1.57)*this.radius*1.5,Math.sin(-1.57)*this.radius*1.5, icon_rad, 
+                      LD_GLOB.getImage(<any>GAME_CONFIG.Other.space_icon_name));
+      but.ms_click = ()=>{
+        if(this.inventory.canPay(GAME_CONFIG.Other.spaceship_cost)){
+          this.inventory.pay(GAME_CONFIG.Other.spaceship_cost);
+          this.temp_launch = true;
+          this.updateLaunchButton();
+        }
       }
+    } else {
+      GAME_LD.diseasedPlanets.push(this);
     }
     this.upgrade_buttons.push(but)
     this.updateLaunchButton();
   }
   updateLaunchButton(){
-    if((this.building.abilityType != null || this.temp_launch)){
+    if((this.building.config.abilityType != null || this.temp_launch)){
       if(!this.launch_but){
         let but = crtButton(this, 0, 0, this.radius + 5);
         but.ms_down = () => {
@@ -106,7 +110,7 @@ export class Planet extends Circle {
             // GAME_LD.addCircleObject(launchee);
             // launchee.launch(this.launch_xy.normalize(), this.launch_xy.len());
             this.temp_launch = false;
-          }else if (this.building != null && this.building.abilityConfig!=null) {
+          }else if (this.building != null && this.building.config.abilityConfig!=null) {
             let launchee = this.building.buildLaunchee(this);
             this.addParent(launchee);
             launchee.launch(this.launch_xy.normalize(-1), this.launch_xy.len()/this.launch_xy_max_len);

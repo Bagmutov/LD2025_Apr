@@ -39,14 +39,17 @@ export function mouseMoveButtons(e:MouseEvent){
     if(ms_dwn_but){
         if(ms_over_but.ms_move) ms_over_but.ms_move.call(ms_over_but, e.clientX-ms_dwn_xy.x,e.clientY-ms_dwn_xy.y);
     }else{
-        let res = arrFindMin(all_buttons, (but)=>dist2(but.x-e.clientX, but.y-e.clientY));
-        if(res && res.o && res.d<res.o.rad2){
-            ms_over_but = res.o;
-            ms_over_but.state = 1;
-        } else if(ms_over_but){
-            ms_over_but.state = 0;
-            ms_over_but = null;
-        }
+        checkMsOver(e);
+    }
+}
+function checkMsOver(e:MouseEvent){
+    let res = arrFindMin(all_buttons, (but)=>dist2(but.x-e.clientX, but.y-e.clientY));
+    if(res && res.o && res.d<res.o.rad2){
+        ms_over_but = res.o;
+        ms_over_but.state = 1;
+    } else if(ms_over_but){
+        ms_over_but.state = 0;
+        ms_over_but = null;
     }
 }
 export function mouseUpButtons(e:MouseEvent){
@@ -60,6 +63,8 @@ export function mouseUpButtons(e:MouseEvent){
         ms_dwn_but = null;
         ms_dwn_xy = null;
     }
+    ms_over_but = null;
+    checkMsOver(e);
 }
 export function drawButtons(ctx:CanvasRenderingContext2D) {
     for(let but of all_buttons){

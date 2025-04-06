@@ -5,7 +5,7 @@ import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 export var LD_GLOB;
 (function (LD_GLOB) {
     LD_GLOB.version = "0.1";
-    LD_GLOB.game_state = "menu";
+    LD_GLOB.game_state = "game";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
     LD_GLOB.COLORS = {
@@ -106,7 +106,7 @@ function initCanvas() {
 }
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet", "bomb", "bombe1", "bombe2", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3'];
+const imageNames = ["planet", "bomb", "bombe1", "bombe2", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease'];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array

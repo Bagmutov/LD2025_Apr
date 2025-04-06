@@ -8,6 +8,7 @@ import { ResourceType } from "./objects/resource/resource.js";
 import { Launchee } from "./objects/abilities/launchee.js";
 import { Building } from "./objects/buildings/building.js";
 import { Bomb } from "./objects/abilities/bomb.js";
+import { launchDisease } from "./objects/meteor_disease.js";
 
 export namespace GAME_CONFIG {
   export enum PlanetType {
@@ -83,6 +84,7 @@ export namespace GAME_CONFIG {
     hookTier3,
     bombTier1,
     starting,
+    disease1,
   }
   export enum AbilityType {
     hook = "hook",
@@ -95,16 +97,17 @@ export namespace GAME_CONFIG {
     image_build: imageNamesTp;
     image_icon: imageNamesTp;
 
-    abilytyConfig: HookType | BombType | SpaceShipType;
+    abilityConfig: HookType | BombType | SpaceShipType;
     abilityType: AbilityType;
     cost: Map<ResourceType, number>;
     nextUpgrades: BuildingType[];
+    evil?:boolean;
   };
   
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
+    [PlanetType.planet]: {stability: 5, radius: 40, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
   };
 
 
@@ -180,25 +183,32 @@ export namespace GAME_CONFIG {
     space_img_rad: 15,
     space_build_image: <HTMLImageElement>null,
   }
+  export const MeteorDiseaseConfig = {
+    radius:10,
+    image:'disease' as imageNamesTp,
+    phisicMode:PhisicMode.standart,
+    stability:1,
+    vel:20
+  }
   export const BuildingConfig: Record<BuildingType, BuildingConfigData> = {
     [BuildingType.starting]: {
       radius: 15,
       image_build: "build0",
       image_icon: "icon1",
       abilityType: null,
-      abilytyConfig: null,
+      abilityConfig: null,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 0],
         [ResourceType.iron, 0],
       ]),
-      nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
+      nextUpgrades: [BuildingType.hookTier1, BuildingType.bombTier1],
     },
     [BuildingType.hookTier1]: {
       radius: 15,
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standartHook,
+      abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -206,11 +216,11 @@ export namespace GAME_CONFIG {
       nextUpgrades: [BuildingType.hookTier2],
     },
     [BuildingType.hookTier2]: {
-      radius: 12,
+      radius: 15,
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standartHook,
+      abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -222,7 +232,7 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standartHook,
+      abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -234,7 +244,20 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: 'bomb',
       abilityType: AbilityType.bomb,
-      abilytyConfig: BombType.standartBomb,
+      abilityConfig: BombType.standartBomb,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.gold, 10],
+        [ResourceType.iron, 10],
+      ]),
+      nextUpgrades: [],
+    },
+    [BuildingType.disease1]: {
+      evil:true,
+      radius: 15,
+      image_build: "disease",
+      image_icon: 'bomb',
+      abilityType: null,
+      abilityConfig: null,
       cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
@@ -263,8 +286,9 @@ export namespace GAME_LD {
     Bomb:        1 << 4,
   };
 
-  let planets: Planet[] = [];
+  export let planets: Planet[] = [];
   let meteors: Meteor[] = [];
+  export let diseasedPlanets: Planet[] = []; //This is horrible. We assume obj wouldn't loose diseased building ever
 
   let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
 
@@ -278,8 +302,14 @@ export namespace GAME_LD {
                     .filter((v) => isNaN(Number(v)))){ //creates one building of each type
       buildings[key] = new Building(<any> key);
     }
-    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.6), GAME_CONFIG.PlanetType.planet));
-    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.3,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
+    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.7), GAME_CONFIG.PlanetType.planet));
+    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.5,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
+    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.planet);
+    obj.build(buildings[GAME_CONFIG.BuildingType.disease1]);
+    addCircleObject(obj);
+    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.planet);
+    obj.build(buildings[GAME_CONFIG.BuildingType.starting]);
+    addCircleObject(obj);
     addCircleObject(
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),
@@ -343,10 +373,17 @@ export namespace GAME_LD {
     }
   }
 
+  let diseaseTimer=1;
   export function stepGame() {
     let delta = (new Date().getTime() - lastFrame) / 1000;
+    
     for(let obj of objects){
-        obj.step(delta);
+      obj.step(delta);
+    }
+    diseaseTimer-=delta;
+    if(diseaseTimer<0){
+      diseaseTimer=Math.max(1,4-.5*diseasedPlanets.length)+Math.random()*5;
+      if(diseasedPlanets.length>0) launchDisease(diseasedPlanets[~~(diseasedPlanets.length*Math.random())]);
     }
     lastFrame = new Date().getTime();
   }
