@@ -1,18 +1,15 @@
+import { GAME_CONFIG } from "../game.js";
 import { Circle } from "./circle.js";
+import { Vector } from "./vector.js";
 
 export class Planet extends Circle {
-  hp: number;
-  G: number;
+  mass: number;
   constructor(
-    x: number,
-    y: number,
-    radius: number,
-    texture: HTMLImageElement,
-    hp: number,
-    G: number
+    coordinate: Vector,
+    type: GAME_CONFIG.PlanetType
   ) {
-    super(x, y, radius, texture);
-    this.G = G;
-    this.hp = hp;
+    let config = GAME_CONFIG.PlanetConfig[type];
+    super(coordinate, config.radius, config.image);
+    this.mass = config.mass;
   }
 }

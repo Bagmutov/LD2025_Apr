@@ -1,35 +1,37 @@
 import { Circle } from "./circle.js";
 import { Vector } from "./vector.js";
-import { GAME_LD } from "../game.js";
+import { GAME_CONFIG, GAME_LD } from "../game.js";
 
 export class Meteor extends Circle {
-  hp: number;
   velocity: Vector;
 
   constructor(
-    x: number,
-    y: number,
-    radius: number,
-    texture: HTMLImageElement,
-    hp: number,
+    coordinate: Vector,
+    type: GAME_CONFIG.MeteorType,
     velocity: Vector
   ) {
-    super(x, y, radius, texture);
-
-    this.hp = hp;
+    let config = GAME_CONFIG.MeteorConfig[type]
+    super(coordinate, config.radius, config.image);
     this.velocity = velocity;
+    this.useGravity = true;
   }
 
   step(delta: number) {
-    let a = GAME_LD.getAcseleration(this.coordinates);
-    this.velocity = this.velocity.add(a);
+    if (this.useGravity){
+      let a = GAME_LD.getAcseleration(this.coordinates);
+      this.velocity = this.velocity.add(a);
+    }
 
     this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
 
-    // idk
-    // if (meteor.checkCollision(planet)) {
-    //   planet.hp -= 1;
-    //   meteors.splice(i, 1);
-    // }
+    let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
+    if (colisions.length != 0){
+      this.explode(); 
+    }
+  }
+  explode(){
+    let i;
+    GAME_LD.objectsByLayer[GAME_LD.Layers.Meteor].find(obj => this === obj, i);
+    GAME_LD.objectsByLayer[GAME_LD.Layers.Meteor].splice(i, 1);
   }
 }

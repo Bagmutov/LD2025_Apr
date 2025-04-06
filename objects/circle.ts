@@ -5,9 +5,10 @@ export class Circle {
   coordinates: Vector;
   radius: number;
   image: HTMLImageElement;
+  useGravity: boolean;
 
-  constructor(x: number, y: number, radius: number, image: HTMLImageElement) {
-    this.coordinates = new Vector(x, y);
+  constructor(coordinates: Vector, radius: number, image: HTMLImageElement) {
+    this.coordinates = coordinates;
     this.radius = radius;
     this.image = image;
   }
@@ -32,5 +33,8 @@ export class Circle {
       ) <
       this.radius + other.radius
     );
+  }
+  step(delta: number){
+
   }
 }
