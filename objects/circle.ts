@@ -1,4 +1,5 @@
-import { drawCircle, dist2 } from "../tools.js";
+import { GAME_LD } from "../game.js";
+import { drawCircle, dist2, makeCopy } from "../tools.js";
 import { Vector } from "./vector.js";
 
 export class Circle {
@@ -6,6 +7,8 @@ export class Circle {
   radius: number;
   image: HTMLImageElement;
   useGravity: boolean;
+  velocity: Vector = new Vector(0,0);
+  my_array:(typeof this)[] = null; // set this when obj is created. Then use it when deleting obj. 
 
   constructor(coordinates: Vector, radius: number, image: HTMLImageElement) {
     this.coordinates = coordinates;
@@ -23,6 +26,19 @@ export class Circle {
     );
   }
 
+  step(delta:number){
+    if (this.useGravity){
+      this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
+    }
+    this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
+  }
+
+  launchObject(obj:Circle, vel:Vector){
+    GAME_LD.addCircleObject(obj);
+    obj.addVelocity(vel);
+    obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
+  }
+
   checkCollision(other: Circle): boolean {
     return (
       Math.sqrt(
@@ -34,7 +50,8 @@ export class Circle {
       this.radius + other.radius
     );
   }
-  step(delta: number){
 
+  addVelocity(dxy:Vector){
+    this.velocity = this.velocity.add(dxy);
   }
 }

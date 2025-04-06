@@ -45,6 +45,17 @@ export function drawRoundRect(ctx, x, y, r, w = ctx.canvas.width, h = ctx.canvas
         ctx.fill();
     }
 }
+export function drawLine(ctx, x1, y1, x2, y2, clr = null, lineW = null) {
+    if (clr)
+        ctx.strokeStyle = clr;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    if (lineW)
+        ctx.lineWidth = lineW;
+    ctx.stroke();
+}
+;
 export function positionCanvas(canvas, { setStyleWH = false, wscale = 1, hscale = 1, w = null, h = null, x = 0, y = 0, } = {}) {
     canvas.width = (w || window.innerWidth - 0) * wscale;
     canvas.height = (h || window.innerHeight - 0) * hscale;
@@ -73,5 +84,44 @@ export function arrFindMin(arr, fun) {
         }
     }
     return (d == Infinity) ? null : { o: arr[imin], i: imin, d: d };
+}
+//removes element from array
+export function arrDel(arr, o) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === o) {
+            arr.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
+}
+//checks if it an Object or Function
+export function isObject(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+}
+;
+//makes a copy of an object with all insides copied as well
+export function makeCopy(src) {
+    // if the value is a nested object, recursively copy all it's properties
+    if (isObject(src)) {
+        let target;
+        if (Array.isArray(src)) {
+            target = [];
+            for (let el = 0; el < src["length"]; el++)
+                target[el] = makeCopy(src[el]);
+        }
+        else {
+            target = {};
+            for (let prop in src)
+                if (src.hasOwnProperty(prop))
+                    target[prop] = makeCopy(src[prop]);
+            return target;
+        }
+        return target;
+    }
+    else {
+        return src;
+    }
 }
 //# sourceMappingURL=tools.js.map

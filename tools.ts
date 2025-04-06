@@ -52,6 +52,14 @@ export function drawRoundRect(
     ctx.fill();
   }
 }
+export function drawLine(ctx:CanvasRenderingContext2D,x1:number,y1:number,x2:number,y2:number,clr:string = null, lineW=null){
+	if(clr)ctx.strokeStyle=clr;
+	ctx.beginPath();
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	if(lineW)ctx.lineWidth=lineW;
+	ctx.stroke();
+};
 
 export function positionCanvas(
   canvas: HTMLCanvasElement,
@@ -103,4 +111,42 @@ export function arrFindMin<T>(arr:T[], fun:(a:T)=>number):{o:T,i:number,d:number
 			}
 		}
 	return (d==Infinity)?null:{o:arr[imin],i:imin,d:d};
+}
+
+//removes element from array
+export function arrDel<O>(arr:Array<O>, o:O):boolean{
+	for( var i = 0; i < arr.length; i++){ 
+		if ( arr[i] === o) {
+		  arr.splice(i, 1); 
+		  return true;
+		}
+	}
+	return false;
+}
+
+//checks if it an Object or Function
+export function isObject(obj) {
+	var type = typeof obj;
+	return type === 'function' || type === 'object' && !!obj;
+};
+//makes a copy of an object with all insides copied as well
+export function makeCopy<T>(src:T):T {
+	// if the value is a nested object, recursively copy all it's properties
+	if (isObject(src)) {
+		let target:any;
+		if(Array.isArray(src)){
+			target = [];
+			for(let el=0; el<src["length"];el++)
+				target[el]=makeCopy(src[el]);
+		}else{
+			target = {};
+			for (let prop in src) 
+				if (src.hasOwnProperty(prop)) 
+					target[prop] = makeCopy(src[prop]);
+			return target;
+		}
+		return target;
+	} else {
+		return src;
+	}
 }

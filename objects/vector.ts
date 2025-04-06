@@ -35,9 +35,9 @@ export class Vector {
     return this.x * other.y - this.y * other.x;
   }
 
-  normalize(): Vector {
+  normalize(new_len:number=1): Vector {
     let len = this.len();
-    return new Vector(this.x / len, this.y / len);
+    return new Vector(this.x / len * new_len, this.y / len * new_len);
   }
 }
 
