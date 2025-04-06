@@ -23,7 +23,7 @@ export class Building {
         //img.decoding = "sync";
         //img.src = "house1";
         
-        this.building_draw = new Circle(coordinates, (radius - 1), img);
+        this.building_draw = new Circle(coordinates, (radius - 1), img, false);
     }
 
     tryUpgrade(inventory_resourse1_count: number, inventory_resourse2_count: number, ) {
@@ -38,7 +38,7 @@ export class Building {
             img.decoding = "sync";
             img.src = "house2";
             
-            this.building_draw = new Circle(this.coordinates, (this.radius - 1), img);
+            this.building_draw = new Circle(this.coordinates, (this.radius - 1), img, false);
             return true;
         }
         else {

@@ -16,7 +16,7 @@ export class Hook extends Ability{
 
   constructor(direction: Vector, type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(direction.multiply(config.speed), config.radius, LD_GLOB.getImage(config.image), planet);
+    super(direction.multiply(config.speed), config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
     this.speed = config.speed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;

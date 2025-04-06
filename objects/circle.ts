@@ -6,14 +6,15 @@ export class Circle {
   coordinates: Vector;
   radius: number;
   image: HTMLImageElement;
-  useGravity: boolean;
+  useGravity: boolean = false;
   velocity: Vector = new Vector(0,0);
   my_array:(typeof this)[] = null; // set this when obj is created. Then use it when deleting obj. 
 
-  constructor(coordinates: Vector, radius: number, image: HTMLImageElement) {
+  constructor(coordinates: Vector, radius: number, image: HTMLImageElement, useGravity: boolean) {
     this.coordinates = coordinates;
     this.radius = radius;
     this.image = image;
+    this.useGravity = useGravity;
   }
 
   draw(dst: CanvasRenderingContext2D) {

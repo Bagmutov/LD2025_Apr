@@ -24,9 +24,8 @@ export class Planet extends Circle {
     type: GAME_CONFIG.PlanetType
   ) {
     let config = GAME_CONFIG.PlanetConfig[type];
-    super(coordinate, config.radius, LD_GLOB.getImage(config.image));
+    super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.useGravity);
     this.mass = config.mass;
-    this.useGravity = true;
 
 
     let but = crtButton(this, 0, 0, this.radius+5);
@@ -44,9 +43,6 @@ export class Planet extends Circle {
       this.launchObject(obj_child, null);
       this.launch_xy = null;
     };
-
-
-
   }
   draw(dst: CanvasRenderingContext2D): void {
     if (this.building != null){
@@ -58,7 +54,6 @@ export class Planet extends Circle {
     }
   }
   step(delta:number){
-    // this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
     super.step(delta);
   }
 }

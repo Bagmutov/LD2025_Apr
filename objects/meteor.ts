@@ -13,9 +13,8 @@ export class Meteor extends Circle {
     velocity: Vector
   ) {
     let config = GAME_CONFIG.MeteorConfig[type]
-    super(coordinate, config.radius, LD_GLOB.getImage(config.image));
+    super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.useGravity);
     this.velocity = velocity;
-    this.useGravity = true;
   }
 
   step(delta: number) {
@@ -24,11 +23,10 @@ export class Meteor extends Circle {
     
     let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
     if (colisions.length != 0){
-      // this.explode(); 
+      this.explode(); 
     }
   }
   explode(){
-    let i;
     GAME_LD.delCircleObject(this);
   }
 }

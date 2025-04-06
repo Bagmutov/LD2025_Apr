@@ -13,6 +13,7 @@ export namespace GAME_CONFIG {
     radius: number;
     image: imageNamesTp;
     mass: number;
+    useGravity: boolean;
   }
   export enum MeteorType {
     smallMeteor = 'smallMeteor',
@@ -22,8 +23,9 @@ export namespace GAME_CONFIG {
   export type MeteorConfigData = {
     radius: number;
     image: imageNamesTp;
-    hoockingPowerLavel: number
-  }
+    hoockingPowerLavel: number;
+    useGravity: boolean;
+  };
   export enum HookType {
     standart,
   }
@@ -33,19 +35,20 @@ export namespace GAME_CONFIG {
     speed: number;
     powerLavel: number;
     maxLenth: number;
-  }
+    useGravity: boolean;
+  };
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {radius: 20, image: "planet", mass: 200},
+    [PlanetType.planet]: {radius: 20, image: "planet", mass: 200, useGravity: false},
   };
   export const MeteorConfig: Record<MeteorType, MeteorConfigData> = {
-    [MeteorType.smallMeteor]: {radius: 3, image: "planet", hoockingPowerLavel: 1},
-    [MeteorType.mediumMeteor]: {radius: 5, image: "planet", hoockingPowerLavel: 2},
-    [MeteorType.largeMeteor]: {radius: 10, image: "planet", hoockingPowerLavel: 3},
+    [MeteorType.smallMeteor]: {radius: 3, image: "planet", hoockingPowerLavel: 1, useGravity: true},
+    [MeteorType.mediumMeteor]: {radius: 5, image: "planet", hoockingPowerLavel: 2, useGravity: true},
+    [MeteorType.largeMeteor]: {radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true},
   };
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standart]: {radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100},
+    [HookType.standart]: {radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100, useGravity: false},
   };
 
 }
@@ -77,8 +80,6 @@ export namespace GAME_LD {
     lastFrame = new Date().getTime();
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.6), GAME_CONFIG.PlanetType.planet));
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.3,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
-    planets[0].addVelocity(new Vector(100,0));
-    planets[1].addVelocity(new Vector(-100,0));
     addCircleObject(
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),

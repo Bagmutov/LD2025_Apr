@@ -20,15 +20,15 @@ export var GAME_CONFIG;
         HookType[HookType["standart"] = 0] = "standart";
     })(HookType = GAME_CONFIG.HookType || (GAME_CONFIG.HookType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { radius: 20, image: "planet", mass: 200 },
+        [PlanetType.planet]: { radius: 20, image: "planet", mass: 200, useGravity: false },
     };
     GAME_CONFIG.MeteorConfig = {
-        [MeteorType.smallMeteor]: { radius: 3, image: "planet", hoockingPowerLavel: 1 },
-        [MeteorType.mediumMeteor]: { radius: 5, image: "planet", hoockingPowerLavel: 2 },
-        [MeteorType.largeMeteor]: { radius: 10, image: "planet", hoockingPowerLavel: 3 },
+        [MeteorType.smallMeteor]: { radius: 3, image: "planet", hoockingPowerLavel: 1, useGravity: true },
+        [MeteorType.mediumMeteor]: { radius: 5, image: "planet", hoockingPowerLavel: 2, useGravity: true },
+        [MeteorType.largeMeteor]: { radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standart]: { radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100 },
+        [HookType.standart]: { radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100, useGravity: false },
     };
 })(GAME_CONFIG || (GAME_CONFIG = {}));
 export var GAME_LD;
@@ -49,8 +49,6 @@ export var GAME_LD;
         GAME_LD.lastFrame = new Date().getTime();
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
-        planets[0].addVelocity(new Vector(100, 0));
-        planets[1].addVelocity(new Vector(-100, 0));
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));
     }
     GAME_LD.init = init;
