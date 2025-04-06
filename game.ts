@@ -80,12 +80,11 @@ export namespace GAME_CONFIG {
     phisicMode: PhisicMode;
   };
   export enum BuildingType {
-    hookTier1 = "hookTier1",
-    hookTier2 = "hookTier2",
-    hookTier3 = "hookTier3",
-    bombTier1 = "bombTier1",
-    // bombTier2 = "bombTier2",
-    // bombTier3 = "bombTier3",
+    hookTier1,
+    hookTier2,
+    hookTier3,
+    bombTier1",
+    starting,
   }
   export enum AbilityType {
     hook = "hook",
@@ -94,10 +93,11 @@ export namespace GAME_CONFIG {
   }
   export type BuildingConfigData = {
     radius: number;
+
     image: imageNamesTp;
     abilytyConfig: HookType | BombType | SpaceShipType;
     abilityType: AbilityType;
-    coast: Map<ResourceType, number>;
+    cost: Map<ResourceType, number>;
     nextUpgrades: BuildingType[];
   };
   
@@ -148,13 +148,38 @@ export namespace GAME_CONFIG {
       explosionImages: ['bombe1', 'bombe2'],
     },
   };
+  export const Other = {
+    spaceship_cost: 
+      new Map<ResourceType, number>([
+        [ResourceType.gold, 0],
+        [ResourceType.iron, 1],
+      ]),
+    space_icon_name: 'icon3',
+    space_icon_rad: 15,
+    space_img_name: 'build3',
+    space_img_rad: 15,
+    space_build_image: <HTMLImageElement>null,
+  }
   export const BuildingConfig: Record<BuildingType, BuildingConfigData> = {
+    [BuildingType.starting]: {
+      radius: 15,
+      image_build: "build0",
+      image_icon: "icon1",
+      abilityType: null,
+      abilytyConfig: null,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.gold, 0],
+        [ResourceType.iron, 0],
+      ]),
+      nextUpgrades: [BuildingType.hookTier1,BuildingType.hookTier2,],
+    },
     [BuildingType.hookTier1]: {
-      radius: 10,
-      image: "planet",
+      radius: 15,
+      image_build: "build1",
+      image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilytyConfig: HookType.standartHook,
-      coast: new Map<ResourceType, number>([
+      abilytyConfig: HookType.standart,
+      cost: new Map<ResourceType, number>([
         [ResourceType.gold, 10],
         [ResourceType.iron, 10],
       ]),
@@ -219,11 +244,17 @@ export namespace GAME_LD {
   let meteors: Meteor[] = [];
 
   let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
-  export let startBuilding: Building;
+
+  // export let startBuilding;
+  export const buildings:{ [k in GAME_CONFIG.BuildingType]?: Building } = {};
 
   export function init() {
     lastFrame = new Date().getTime();
-    startBuilding = new Building(GAME_CONFIG.BuildingType.bombTier1);
+    GAME_CONFIG.Other.space_build_image = LD_GLOB.getImage(<any>GAME_CONFIG.Other.space_img_name);
+    for(let key in Object.keys(GAME_CONFIG.BuildingType)
+                    .filter((v) => isNaN(Number(v)))){ //creates one building of each type
+      buildings[key] = new Building(<any> key);
+    }
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.6), GAME_CONFIG.PlanetType.planet));
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.3,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
     addCircleObject(

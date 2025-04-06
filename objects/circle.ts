@@ -60,7 +60,6 @@ export class Circle {
   addParent(obj: Circle) {
     GAME_LD.addCircleObject(obj);
   }
-
   checkCollision(other: Circle): boolean {
     return (
       Math.sqrt(
