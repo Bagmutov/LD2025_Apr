@@ -5,13 +5,13 @@ import { Planet } from "../planet";
 import { Inventory } from "../resource/inventory"
 import { Vector } from "../vector";
 import { Building } from "./building";
-import { Hook2 } from "./hook2";
+import { Spaceship } from "./spaceship";
 
-export class Hook1 extends Building {
+
+export class Bomb1 extends Building {
     level : number;
     resourse1 : number;
     resourse2 : number;
-    next_upgrades: Building[] ;
     direction: Vector;
     planet: Planet;
 
@@ -19,12 +19,11 @@ export class Hook1 extends Building {
         super();
         this.direction = direction;
         this.planet = planet;
-        this.next_upgrades = [new Hook2(direction, planet)]
     }
 
     
     override step(){
-        new Hook(this.direction, GAME_CONFIG.HookType.standart, this.planet);
+        new Spaceship(this.direction, GAME_CONFIG.HookType.standart, this.planet);
     }
 
 
