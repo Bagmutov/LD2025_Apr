@@ -1,14 +1,20 @@
 import { Vector } from "../vector.js";
 import { Planet } from "../planet.js";
 import { Circle } from "../circle.js";
+import { LD_GLOB } from "../../main.js";
+import { GAME_LD } from "../../game.js";
 
 export class Ability extends Circle{
   planet: Planet;
-  velocity: Vector;
 
-  constructor(velocity: Vector, radius: number, image: HTMLImageElement, planet: Planet) {
-    super(planet.coordinates, radius, image);
+  constructor(radius: number, image: HTMLImageElement, planet: Planet, useGravity: boolean) {
+    super(planet.coordinates, radius, image, useGravity);
     this.planet = planet;
-    this.velocity = velocity;
+  }
+  step(delta: number): void {
+    super.step(delta);
+  }
+  destroy(){
+    GAME_LD.delCircleObject(this);
   }
 }

@@ -24,9 +24,8 @@ export class Planet extends Circle {
     type: GAME_CONFIG.PlanetType
   ) {
     let config = GAME_CONFIG.PlanetConfig[type];
-    super(coordinate, config.radius, LD_GLOB.getImage(config.image));
+    super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.useGravity);
     this.mass = config.mass;
-    this.useGravity = true;
 
 
     let but = crtButton(this, 0, 0, this.radius+5);
@@ -39,14 +38,13 @@ export class Planet extends Circle {
       if(this.launch_xy.lenSq()>200*200) this.launch_xy = this.launch_xy.normalize(200);
     };
     but.ms_up=()=>{
-      let obj_child = new Meteor(new Vector(0, 10), GAME_CONFIG.MeteorType.largeMeteor, new Vector(-this.launch_xy.x*2,-this.launch_xy.y*2));
-      // let obj_child = new Hook(new Vector(-this.launch_xy.x*2,-this.launch_xy.y*2), GAME_CONFIG.HookType.standart, this);
-      this.launchObject(obj_child, null);
+      let obj_child = new Hook(GAME_CONFIG.HookType.standart, this);
+      this.launchObject(obj_child, this.launch_xy.multiply(obj_child.forwardSpeed));
+      console.log(
+        `object launched hook vith vel (${this.launch_xy.x}, ${this.launch_xy.y}), speed: ${obj_child.forwardSpeed}`
+      );
       this.launch_xy = null;
     };
-
-
-
   }
   draw(dst: CanvasRenderingContext2D): void {
     if (this.building != null){
@@ -58,7 +56,6 @@ export class Planet extends Circle {
     }
   }
   step(delta:number){
-    // this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
     super.step(delta);
   }
 }

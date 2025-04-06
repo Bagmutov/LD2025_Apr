@@ -6,14 +6,20 @@ export class Circle {
   coordinates: Vector;
   radius: number;
   image: HTMLImageElement;
-  useGravity: boolean;
-  velocity: Vector = new Vector(0,0);
-  my_array:(typeof this)[] = null; // set this when obj is created. Then use it when deleting obj. 
+  useGravity: boolean = false;
+  velocity: Vector = new Vector(0, 0);
+  my_array: (typeof this)[] = null; // set this when obj is created. Then use it when deleting obj.
 
-  constructor(coordinates: Vector, radius: number, image: HTMLImageElement) {
+  constructor(
+    coordinates: Vector,
+    radius: number,
+    image: HTMLImageElement,
+    useGravity: boolean
+  ) {
     this.coordinates = coordinates;
     this.radius = radius;
     this.image = image;
+    this.useGravity = useGravity;
   }
 
   draw(dst: CanvasRenderingContext2D) {
@@ -26,16 +32,16 @@ export class Circle {
     );
   }
 
-  step(delta:number){
-    if (this.useGravity){
+  step(delta: number) {
+    if (this.useGravity) {
       this.addVelocity(GAME_LD.getAcseleration(this.coordinates));
     }
     this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
   }
 
-  launchObject(obj:Circle, vel:Vector = null){
+  launchObject(obj: Circle, vel: Vector = null) {
     GAME_LD.addCircleObject(obj);
-    if(vel)obj.addVelocity(vel);
+    if (vel) obj.addVelocity(vel);
     obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
   }
 
@@ -51,7 +57,10 @@ export class Circle {
     );
   }
 
-  addVelocity(dxy:Vector){
+  addVelocity(dxy: Vector) {
     this.velocity = this.velocity.add(dxy);
+  }
+  destroy() {
+    GAME_LD.delCircleObject(this);
   }
 }
