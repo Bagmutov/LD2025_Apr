@@ -44,12 +44,12 @@ export var GAME_CONFIG;
         AbilityType["spaseShip"] = "spaseShip";
     })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { stability: 4, radius: 40, image: "planet", mass: 200, useGravity: false },
+        [PlanetType.planet]: { stability: 5, radius: 70, image: "planet", mass: 200, useGravity: false },
     };
     GAME_CONFIG.MeteorConfig = {
-        [MeteorType.smallMeteor]: { stability: 1, radius: 3, image: "planet", useGravity: true },
-        [MeteorType.mediumMeteor]: { stability: 2, radius: 5, image: "planet", useGravity: true },
-        [MeteorType.largeMeteor]: { stability: 3, radius: 10, image: "planet", useGravity: true },
+        [MeteorType.smallMeteor]: { stability: 1, radius: 8, image: "planet", useGravity: true },
+        [MeteorType.mediumMeteor]: { stability: 2, radius: 12, image: "planet", useGravity: true },
+        [MeteorType.largeMeteor]: { stability: 3, radius: 20, image: "planet", useGravity: true },
     };
     GAME_CONFIG.HookConfig = {
         [HookType.standartHook]: { stability: 10, radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
@@ -57,17 +57,17 @@ export var GAME_CONFIG;
     GAME_CONFIG.BombConfig = {
         [BombType.standartBomb]: {
             stability: 10,
-            radius: 10,
-            image: "planet",
+            radius: 20,
+            image: 'bomb',
             useGravity: false,
-            speed: 800,
+            speed: 400,
             maxDist: 1000,
-            explosionRadius: 30,
-            blastWaveRadius: 50,
+            explosionRadius: 40,
+            blastWaveRadius: 70,
             explosionStregth: 1,
-            blastWaveStregth: 3,
-            blastWaveVelocityAdd: 100,
-            explosionImages: ['planet', 'planet', 'planet'],
+            blastWaveStregth: 8,
+            blastWaveVelocityAdd: 200,
+            explosionImages: ['bombe1', 'bombe2'],
         },
     };
     GAME_CONFIG.BuildingConfig = {

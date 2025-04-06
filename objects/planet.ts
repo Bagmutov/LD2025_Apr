@@ -24,7 +24,8 @@ export class Planet extends Circle {
       coordinate,
       config.radius,
       LD_GLOB.getImage(config.image),
-      config.useGravity
+      config.useGravity,
+      config.stability,
     );
     this.mass = config.mass;
     this.building = GAME_LD.startBuilding;

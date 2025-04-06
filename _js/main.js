@@ -106,7 +106,7 @@ function initCanvas() {
 }
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet"];
+const imageNames = ["planet", "bomb", "bombe1", "bombe2"];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array

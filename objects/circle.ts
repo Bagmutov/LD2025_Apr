@@ -15,12 +15,14 @@ export class Circle {
     coordinates: Vector,
     radius: number,
     image: HTMLImageElement,
-    useGravity: boolean
+    useGravity: boolean,
+    stability: number,
   ) {
     this.coordinates = coordinates;
     this.radius = radius;
     this.image = image;
     this.useGravity = useGravity;
+    this.stability = stability;
   }
 
   draw(dst: CanvasRenderingContext2D) {

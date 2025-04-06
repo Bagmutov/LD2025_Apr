@@ -29,7 +29,8 @@ export class Bomb extends Launchee {
       config.radius,
       LD_GLOB.getImage(config.image),
       planet,
-      config.useGravity
+      config.useGravity,
+      config.stability,
     );
     this.speed = config.speed;
     this.maxDist = config.maxDist;
@@ -88,7 +89,13 @@ export class Bomb extends Launchee {
         circle.destroy();
       }
     }
-    let blastWaveCircle = new Circle(this.coordinates, this.blastWaveRadius, this.image, false);
+    let blastWaveCircle = new Circle(
+      this.coordinates,
+      this.blastWaveRadius,
+      this.image,
+      false,
+      this.stability
+    );
     let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
     for (let circle of objectsUnderBlastWave){
       if (circle.stability < this.blastWaveStregth) {

@@ -16,7 +16,7 @@ export class Hook extends Launchee{
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity, config.stability);
     this.forwardSpeed = config.forwardSpeed;
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
