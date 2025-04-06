@@ -2,8 +2,8 @@ import { ResourceType } from "./resource";
 
 export class Inventory {
   countOfResources: Record<ResourceType, number> = {
-    [ResourceType.gold]: 0,
-    [ResourceType.iron]: 0,
+    [ResourceType.gold]: 100,
+    [ResourceType.iron]: 100,
   }
 
   addResource(res: ResourceType, count: number): void {
@@ -22,7 +22,7 @@ export class Inventory {
     return result;
   }
 
-  raise(reqResources: Map<ResourceType, number>): void {
+  pay(reqResources: Map<ResourceType, number>): void {
     for (const keyVal of reqResources) {
       let resource = keyVal[0];
       let reqNumber = keyVal[1];

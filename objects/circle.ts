@@ -44,9 +44,6 @@ export class Circle {
   //   if (vel) obj.addVelocity(vel);
   //   obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
   // }
-  addParent(obj: Circle){
-    GAME_LD.addCircleObject(obj);
-  }
 
   checkCollision(other: Circle): boolean {
     return (

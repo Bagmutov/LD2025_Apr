@@ -1,6 +1,7 @@
 import { arrFindMin, dist2, drawCircle } from "../tools.js";
 import { Circle } from "./circle.js";
 import { LD_GLOB } from "../main.js";
+import { GAME_CONFIG, GAME_LD } from "../game.js";
 
 // USE:
 //  let but = addButton(my_planet,15,15,20);
@@ -15,8 +16,8 @@ import { LD_GLOB } from "../main.js";
 
 
 
-export function crtButton(obj:Circle, dx:number, dy:number, rad:number):Button{
-    let but = new Button(dx,dy,obj,rad);
+export function crtButton(obj:Circle, dx:number, dy:number, rad:number, icon:HTMLImageElement=null):Button{
+    let but = new Button(dx,dy,obj,rad,icon);
     all_buttons.push(but);
     return but;
 }
@@ -62,10 +63,8 @@ export function mouseUpButtons(e:MouseEvent){
 }
 export function drawButtons(ctx:CanvasRenderingContext2D) {
     for(let but of all_buttons){
-        if(but.obj)
-            drawCircle(ctx,but.obj.coordinates.x+but.dx,but.obj.coordinates.y+but.dy,but.rad, LD_GLOB.COLORS.main_7,2+but.state);
-        else
-            drawCircle(ctx, but.dx, but.dy, but.rad, LD_GLOB.COLORS.main_7, 2+but.state);
+        if(but.icon) ctx.drawImage(but.icon,but.x-GAME_CONFIG.Other.space_icon_rad,but.y-GAME_CONFIG.Other.space_icon_rad);
+        drawCircle(ctx,but.x,but.y,but.rad, LD_GLOB.COLORS.main_7,2+but.state);
     }
 }
 
@@ -75,7 +74,7 @@ export class Button{
     get x():number{return (this.obj)?this.obj.coordinates.x+this.dx: this.dx};
     get y():number{return (this.obj)?this.obj.coordinates.y+this.dy: this.dy};
     get rad2():number{return this.rad*this.rad;}
-    constructor(public dx:number, public dy:number, public obj:Circle, public rad:number){
+    constructor(public dx:number, public dy:number, public obj:Circle, public rad:number, public icon:HTMLImageElement = null){
 
     }
     ms_down:()=>void;

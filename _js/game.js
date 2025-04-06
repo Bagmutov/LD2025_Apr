@@ -26,9 +26,10 @@ export var GAME_CONFIG;
     })(BombType = GAME_CONFIG.BombType || (GAME_CONFIG.BombType = {}));
     let BuildingType;
     (function (BuildingType) {
-        BuildingType[BuildingType["hookTier1"] = 0] = "hookTier1";
-        BuildingType[BuildingType["hookTier2"] = 1] = "hookTier2";
-        BuildingType[BuildingType["hookTier3"] = 2] = "hookTier3";
+        BuildingType[BuildingType["starting"] = 0] = "starting";
+        BuildingType[BuildingType["hookTier1"] = 1] = "hookTier1";
+        BuildingType[BuildingType["hookTier2"] = 2] = "hookTier2";
+        BuildingType[BuildingType["hookTier3"] = 3] = "hookTier3";
     })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
     let AbilityType;
     (function (AbilityType) {
@@ -50,35 +51,61 @@ export var GAME_CONFIG;
     GAME_CONFIG.BombConfig = {
         [BombType.standart]: { radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
     };
+    GAME_CONFIG.Other = {
+        spaceship_cost: new Map([
+            ["gold" /* ResourceType.gold */, 0],
+            ["iron" /* ResourceType.iron */, 1],
+        ]),
+        space_icon_name: 'icon3',
+        space_icon_rad: 15,
+        space_img_name: 'build3',
+        space_img_rad: 15,
+        space_build_image: null,
+    };
     GAME_CONFIG.BuildingConfig = {
+        [BuildingType.starting]: {
+            radius: 15,
+            image_build: "build0",
+            image_icon: "icon1",
+            abilityType: null,
+            abilytyConfig: null,
+            cost: new Map([
+                ["gold" /* ResourceType.gold */, 0],
+                ["iron" /* ResourceType.iron */, 0],
+            ]),
+            nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2,],
+        },
         [BuildingType.hookTier1]: {
-            radius: 10,
-            image: "planet",
+            radius: 15,
+            image_build: "build1",
+            image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standart,
-            coast: new Map([
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
             nextUpgrades: [BuildingType.hookTier2],
         },
         [BuildingType.hookTier2]: {
-            radius: 10,
-            image: "planet",
+            radius: 15,
+            image_build: "build1",
+            image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standart,
-            coast: new Map([
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
             nextUpgrades: [BuildingType.hookTier3],
         },
         [BuildingType.hookTier3]: {
-            radius: 10,
-            image: "planet",
+            radius: 15,
+            image_build: "build1",
+            image_icon: "icon1",
             abilityType: AbilityType.hook,
             abilytyConfig: HookType.standart,
-            coast: new Map([
+            cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
             ]),
@@ -100,9 +127,15 @@ export var GAME_LD;
     let planets = [];
     let meteors = [];
     let objects = []; // here will be all objects, with duplicates in planets, meteors etc
-    GAME_LD.startBuilding = new Building(GAME_CONFIG.BuildingType.hookTier1);
+    // export let startBuilding;
+    GAME_LD.buildings = {};
     function init() {
         GAME_LD.lastFrame = new Date().getTime();
+        GAME_CONFIG.Other.space_build_image = LD_GLOB.getImage(GAME_CONFIG.Other.space_img_name);
+        for (let key in Object.keys(GAME_CONFIG.BuildingType)
+            .filter((v) => isNaN(Number(v)))) { //creates one building of each type
+            GAME_LD.buildings[key] = new Building(key);
+        }
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));

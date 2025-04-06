@@ -1,10 +1,10 @@
-import { GAME_CONFIG } from "../../game";
-import { LD_GLOB } from "../../main";
-import { Bomb } from "../abilities/bomb";
-import { Hook } from "../abilities/hook";
-import { Spaceship as SpaceShip } from "../abilities/spaceship";
-import { Planet } from "../planet";
-import { ResourceType } from "../resource/resource";
+import { GAME_CONFIG } from "../../game.js";
+import { LD_GLOB } from "../../main.js";
+import { Bomb } from "../abilities/bomb.js";
+import { Hook } from "../abilities/hook.js";
+import { Spaceship as SpaceShip } from "../abilities/spaceship.js";
+import { Planet } from "../planet.js";
+import { ResourceType } from "../resource/resource.js";
 
 // function isEnumValue<T extends Record<string, string | number>>(
 //   enumObj: T,
@@ -17,17 +17,20 @@ import { ResourceType } from "../resource/resource";
 
 
 export class Building {
-  image: HTMLImageElement;
+  image_build: HTMLImageElement;
+  image_icon: HTMLImageElement;
   radius: number;
   abilityConfig;
   abilityType: GAME_CONFIG.AbilityType;
   cost: Map<ResourceType, number>;
-  nextUpgrades: Building[] = [];
+  nextUpgrades: GAME_CONFIG.BuildingType[] = [];
 
   constructor(type: GAME_CONFIG.BuildingType) {
     console.log("building create");
     let config = GAME_CONFIG.BuildingConfig[type];
-    this.image = LD_GLOB.getImage(config.image);
+    this.image_build = LD_GLOB.getImage(config.image_build);
+    this.radius = config.radius;
+    this.image_icon = LD_GLOB.getImage(config.image_icon);
     this.abilityType = config.abilityType;
     switch (this.abilityType) {
       case GAME_CONFIG.AbilityType.hook:
@@ -40,22 +43,24 @@ export class Building {
         this.abilityConfig = config.abilytyConfig;
         break;
     }
+    this.cost = config.cost;
     for (let next of config.nextUpgrades){
-        this.nextUpgrades.push(new Building(next));
+        this.nextUpgrades.push(next);
     }
   }
 
-  tryUpgrade(planet: Planet, upgrageId: number): Building {
-    if (upgrageId > this.nextUpgrades.length - 1)
-    if (planet.inventory.canPay(this.nextUpgrades[upgrageId].cost)) {
-      return this.nextUpgrades[upgrageId];
-    }
-    return this;
-  }
+  //I don't think we need this
+  // tryUpgrade(planet: Planet, upgrageId: number): Building {
+  //   if (upgrageId > this.nextUpgrades.length - 1)
+  //   if (planet.inventory.canPay(this.nextUpgrades[upgrageId].cost)) {
+  //     return this.nextUpgrades[upgrageId];
+  //   }
+  //   return this;
+  // }
 
   draw(dst: CanvasRenderingContext2D, planet: Planet) {
     dst.drawImage(
-      this.image,
+      this.image_build,
       planet.coordinates.x - this.radius,
       planet.coordinates.y - this.radius,
       this.radius * 2,
