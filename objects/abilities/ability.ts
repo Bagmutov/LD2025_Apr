@@ -4,7 +4,7 @@ import { Circle } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
 import { GAME_LD } from "../../game.js";
 
-export class Ability extends Circle{
+export class Launchee extends Circle{
   planet: Planet;
 
   constructor(radius: number, image: HTMLImageElement, planet: Planet, useGravity: boolean) {
@@ -16,5 +16,8 @@ export class Ability extends Circle{
   }
   destroy(){
     GAME_LD.delCircleObject(this);
+  }
+  launch(direction: Vector, force: number){
+    
   }
 }

@@ -3,6 +3,7 @@ import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
 import { arrDel } from "./tools.js";
+import { Building } from "./objects/buildings/building.js";
 export var GAME_CONFIG;
 (function (GAME_CONFIG) {
     let PlanetType;
@@ -19,8 +20,24 @@ export var GAME_CONFIG;
     (function (HookType) {
         HookType[HookType["standart"] = 0] = "standart";
     })(HookType = GAME_CONFIG.HookType || (GAME_CONFIG.HookType = {}));
+    let BombType;
+    (function (BombType) {
+        BombType[BombType["standart"] = 0] = "standart";
+    })(BombType = GAME_CONFIG.BombType || (GAME_CONFIG.BombType = {}));
+    let BuildingType;
+    (function (BuildingType) {
+        BuildingType[BuildingType["hookTier1"] = 0] = "hookTier1";
+        BuildingType[BuildingType["hookTier2"] = 1] = "hookTier2";
+        BuildingType[BuildingType["hookTier3"] = 2] = "hookTier3";
+    })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
+    let AbilityType;
+    (function (AbilityType) {
+        AbilityType[AbilityType["hook"] = 0] = "hook";
+        AbilityType[AbilityType["bomb"] = 1] = "bomb";
+        AbilityType[AbilityType["spaseShip"] = 2] = "spaseShip";
+    })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { radius: 20, image: "planet", mass: 200, useGravity: false },
+        [PlanetType.planet]: { radius: 40, image: "planet", mass: 200, useGravity: false },
     };
     GAME_CONFIG.MeteorConfig = {
         [MeteorType.smallMeteor]: { radius: 3, image: "planet", hoockingPowerLavel: 1, useGravity: true },
@@ -29,6 +46,44 @@ export var GAME_CONFIG;
     };
     GAME_CONFIG.HookConfig = {
         [HookType.standart]: { radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
+    };
+    GAME_CONFIG.BombConfig = {
+        [BombType.standart]: { radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
+    };
+    GAME_CONFIG.BuildingConfig = {
+        [BuildingType.hookTier1]: {
+            radius: 10,
+            image: "planet",
+            abilityType: AbilityType.hook,
+            abilytyConfig: HookType.standart,
+            coast: new Map([
+                ["gold" /* ResourceType.gold */, 10],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
+            nextUpgrades: [BuildingType.hookTier2],
+        },
+        [BuildingType.hookTier2]: {
+            radius: 10,
+            image: "planet",
+            abilityType: AbilityType.hook,
+            abilytyConfig: HookType.standart,
+            coast: new Map([
+                ["gold" /* ResourceType.gold */, 10],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
+            nextUpgrades: [BuildingType.hookTier3],
+        },
+        [BuildingType.hookTier3]: {
+            radius: 10,
+            image: "planet",
+            abilityType: AbilityType.hook,
+            abilytyConfig: HookType.standart,
+            coast: new Map([
+                ["gold" /* ResourceType.gold */, 10],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
+            nextUpgrades: [],
+        },
     };
 })(GAME_CONFIG || (GAME_CONFIG = {}));
 export var GAME_LD;
@@ -45,6 +100,7 @@ export var GAME_LD;
     let planets = [];
     let meteors = [];
     let objects = []; // here will be all objects, with duplicates in planets, meteors etc
+    GAME_LD.startBuilding = new Building(GAME_CONFIG.BuildingType.hookTier1);
     function init() {
         GAME_LD.lastFrame = new Date().getTime();
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));

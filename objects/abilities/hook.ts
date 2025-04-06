@@ -1,4 +1,4 @@
-import { Ability } from "./ability.js";
+import { Launchee } from "./ability.js";
 import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
@@ -6,7 +6,7 @@ import { Circle } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
 
 
-export class Hook extends Ability{
+export class Hook extends Launchee{
   forwardSpeed: number;
   backwardSpeed: number;
   powerLavel: number;
@@ -21,6 +21,9 @@ export class Hook extends Ability{
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;
+  }
+  launch(direction: Vector, force: number): void {
+    this.addVelocity(direction.multiply(force*this.forwardSpeed))
   }
 
   step(delta: number){
