@@ -9,6 +9,7 @@ export class Circle {
   useGravity: boolean = false;
   velocity: Vector = new Vector(0, 0);
   my_array: (typeof this)[] = null; // set this when obj is created. Then use it when deleting obj.
+  stability: number;
 
   constructor(
     coordinates: Vector,
@@ -44,7 +45,7 @@ export class Circle {
   //   if (vel) obj.addVelocity(vel);
   //   obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
   // }
-  addParent(obj: Circle){
+  addParent(obj: Circle) {
     GAME_LD.addCircleObject(obj);
   }
 

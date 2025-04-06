@@ -33,6 +33,9 @@ export var GAME_CONFIG;
         BuildingType["hookTier1"] = "hookTier1";
         BuildingType["hookTier2"] = "hookTier2";
         BuildingType["hookTier3"] = "hookTier3";
+        BuildingType["bombTier1"] = "bombTier1";
+        // bombTier2 = "bombTier2",
+        // bombTier3 = "bombTier3",
     })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
     let AbilityType;
     (function (AbilityType) {
@@ -41,18 +44,31 @@ export var GAME_CONFIG;
         AbilityType["spaseShip"] = "spaseShip";
     })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { radius: 40, image: "planet", mass: 200, useGravity: false },
+        [PlanetType.planet]: { stability: 4, radius: 40, image: "planet", mass: 200, useGravity: false },
     };
     GAME_CONFIG.MeteorConfig = {
-        [MeteorType.smallMeteor]: { radius: 3, image: "planet", hoockingPowerLavel: 1, useGravity: true },
-        [MeteorType.mediumMeteor]: { radius: 5, image: "planet", hoockingPowerLavel: 2, useGravity: true },
-        [MeteorType.largeMeteor]: { radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true },
+        [MeteorType.smallMeteor]: { stability: 1, radius: 3, image: "planet", useGravity: true },
+        [MeteorType.mediumMeteor]: { stability: 2, radius: 5, image: "planet", useGravity: true },
+        [MeteorType.largeMeteor]: { stability: 3, radius: 10, image: "planet", useGravity: true },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standartHook]: { radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
+        [HookType.standartHook]: { stability: 10, radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
     };
     GAME_CONFIG.BombConfig = {
-        [BombType.standartBomb]: { radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
+        [BombType.standartBomb]: {
+            stability: 10,
+            radius: 10,
+            image: "planet",
+            useGravity: false,
+            speed: 800,
+            maxDist: 1000,
+            explosionRadius: 30,
+            blastWaveRadius: 50,
+            explosionStregth: 1,
+            blastWaveStregth: 3,
+            blastWaveVelocityAdd: 100,
+            explosionImages: ['planet', 'planet', 'planet'],
+        },
     };
     GAME_CONFIG.BuildingConfig = {
         [BuildingType.hookTier1]: {
@@ -88,6 +104,17 @@ export var GAME_CONFIG;
             ]),
             nextUpgrades: [],
         },
+        [BuildingType.bombTier1]: {
+            radius: 15,
+            image: "planet",
+            abilityType: AbilityType.bomb,
+            abilytyConfig: BombType.standartBomb,
+            coast: new Map([
+                ["gold" /* ResourceType.gold */, 10],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
+            nextUpgrades: [],
+        },
     };
 })(GAME_CONFIG || (GAME_CONFIG = {}));
 export var GAME_LD;
@@ -100,13 +127,14 @@ export var GAME_LD;
         Meteor: 1 << 1,
         Hook: 1 << 2,
         SpaseShip: 1 << 3,
+        Bomb: 1 << 4,
     };
     let planets = [];
     let meteors = [];
     let objects = []; // here will be all objects, with duplicates in planets, meteors etc
     function init() {
         GAME_LD.lastFrame = new Date().getTime();
-        GAME_LD.startBuilding = new Building(GAME_CONFIG.BuildingType.hookTier1);
+        GAME_LD.startBuilding = new Building(GAME_CONFIG.BuildingType.bombTier1);
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));

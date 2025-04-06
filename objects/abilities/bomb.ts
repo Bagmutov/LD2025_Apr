@@ -3,16 +3,97 @@ import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle } from "../circle.js";
-import { Meteor } from "../meteor.js";
 import { LD_GLOB } from "../../main.js";
-import { Hook } from "./hook.js";
-import { Building } from "../buildings/building.js";
 
 
-export class Bomb extends Launchee{
+export class Bomb extends Launchee {
+  speed: number;
+  maxDist: number;
 
-  constructor(type: GAME_CONFIG.BombType, planet: Planet){
+  explosionRadius: number;
+  blastWaveRadius: number;
+
+  explosionStregth: number;
+  blastWaveStregth: number;
+  blastWaveVelocityAdd: number;
+
+  explosionImages: HTMLImageElement[] = [];
+  
+  exploseFrame: number;
+  exploseStart = false;
+  
+
+  constructor(type: GAME_CONFIG.BombType, planet: Planet) {
     let config = GAME_CONFIG.BombConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
+    super(
+      config.radius,
+      LD_GLOB.getImage(config.image),
+      planet,
+      config.useGravity
+    );
+    this.speed = config.speed;
+    this.maxDist = config.maxDist;
+    this.explosionRadius = config.explosionRadius;
+    this.blastWaveRadius = config.blastWaveRadius;
+    this.explosionStregth = config.explosionStregth;
+    this.blastWaveStregth = config.blastWaveStregth;
+    this.blastWaveVelocityAdd = config.blastWaveVelocityAdd;
+    for (let immageName of config.explosionImages){
+      this.explosionImages.push(LD_GLOB.getImage(immageName));
+    }
+  }
+  launch(direction: Vector, force: number): void {
+    this.addVelocity(direction.multiply(force * this.speed));
+  }
+
+  draw(dst: CanvasRenderingContext2D): void {
+    if (!this.exploseStart){
+      super.draw(dst);
+      return;
+    }
+    if (this.exploseFrame < this.explosionImages.length){
+      this.image = this.explosionImages[Math.floor(this.exploseFrame)];
+      this.exploseFrame += 0.5;
+      super.draw(dst);
+    }
+  }
+
+  step(delta: number) {
+    if (this.exploseStart){
+      if (this.exploseFrame >= this.explosionImages.length ){
+        this.destroy();
+      }
+      return;
+    } else if(this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius+this.explosionRadius) {
+      super.step(delta);
+      return;
+    }
+    super.step(delta);
+    if (this.coordinates.sub(this.planet.coordinates).lenSq() > this.maxDist**2 ||
+      GAME_LD.getColisions(
+        this,
+        GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip
+      ).length != 0){
+      this.explode();
+    }
+  }
+
+  explode(){
+    this.exploseStart = true;
+    this.exploseFrame = 0;
+    this.radius = this.explosionRadius;
+    let objectsUnderExplosion = GAME_LD.getColisions(this, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
+    for (let circle of objectsUnderExplosion){
+      if (circle.stability < this.explosionStregth){
+        circle.destroy();
+      }
+    }
+    let blastWaveCircle = new Circle(this.coordinates, this.blastWaveRadius, this.image, false);
+    let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
+    for (let circle of objectsUnderBlastWave){
+      if (circle.stability < this.blastWaveStregth) {
+        circle.addVelocity(circle.coordinates.sub(this.coordinates).normalize().multiply(this.blastWaveVelocityAdd))
+      }
+    }
   }
 }

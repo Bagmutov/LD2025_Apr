@@ -27,13 +27,10 @@ export class Hook extends Launchee{
   }
 
   step(delta: number){
-    console.log(1);
     if (this.coordinates.sub(this.planet.coordinates).len() > this.maxLenth){
-        console.log(2);
         this.isPushed = false;
     }
     if (!this.isPushed){
-        console.log(3);
         this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
         if (this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
           this.destroy()
@@ -42,17 +39,14 @@ export class Hook extends Launchee{
     super.step(delta);
 
     if (this.hokedObjest == null){
-        console.log(4);
         let tempHokedObjects = GAME_LD.getColisions(this, GAME_LD.Layers.Meteor);
         if (tempHokedObjects.length != 0){
-            console.log(5);
             this.hokedObjest = tempHokedObjects[0];
             this.isPushed = false;
             this.hokedObjest.useGravity = false;
             this.hokedObjest.coordinates = this.coordinates;
         }
     } else{
-        console.log(6);
         this.hokedObjest.coordinates = this.coordinates;
     }
   }
