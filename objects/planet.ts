@@ -48,7 +48,7 @@ export class Planet extends Circle {
   }
   draw(dst: CanvasRenderingContext2D): void {
     if (this.building != null){
-      this.building.draw(dst);
+      this.building.drawMe(dst, this.coordinates, this.radius);
     }
     super.draw(dst);
     if(this.launch_xy){
