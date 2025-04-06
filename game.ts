@@ -72,6 +72,7 @@ export namespace GAME_LD {
   let meteors: Meteor[] = [];
 
   let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
+  let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
 
   export function init() {
     lastFrame = new Date().getTime();
@@ -134,11 +135,19 @@ export namespace GAME_LD {
     for (let planet of planets) {
       planet.draw(dst);
     }
+    for (let planet of planets) {
+      planet.draw(dst);
+    }
     for (let meteor of meteors) {
       meteor.draw(dst);
     }
   }
 
+  export function stepGame() {
+    let delta = (new Date().getTime() - lastFrame) / 1000;
+    for(let obj of objects){
+        obj.step(delta);
+    }
   export function stepGame() {
     let delta = (new Date().getTime() - lastFrame) / 1000;
     for(let obj of objects){

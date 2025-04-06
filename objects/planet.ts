@@ -5,6 +5,8 @@ import { crtButton } from "./button.js";
 import { Circle } from "./circle.js";
 import { Meteor } from "./meteor.js";
 import { Vector } from "./vector.js";
+import { Meteor } from "./meteor.js";
+import { Vector } from "./vector.js";
 
 export class Planet extends Circle {
   hp: number;
