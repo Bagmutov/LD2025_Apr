@@ -3,20 +3,55 @@ import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
 import { arrDel } from "./tools.js";
+export var GAME_CONFIG;
+(function (GAME_CONFIG) {
+    let PlanetType;
+    (function (PlanetType) {
+        PlanetType["planet"] = "planet";
+    })(PlanetType = GAME_CONFIG.PlanetType || (GAME_CONFIG.PlanetType = {}));
+    let MeteorType;
+    (function (MeteorType) {
+        MeteorType["smallMeteor"] = "smallMeteor";
+        MeteorType["mediumMeteor"] = "mediumMeteor";
+        MeteorType["largeMeteor"] = "largeMeteor";
+    })(MeteorType = GAME_CONFIG.MeteorType || (GAME_CONFIG.MeteorType = {}));
+    let HookType;
+    (function (HookType) {
+        HookType[HookType["standart"] = 0] = "standart";
+    })(HookType = GAME_CONFIG.HookType || (GAME_CONFIG.HookType = {}));
+    GAME_CONFIG.PlanetConfig = {
+        [PlanetType.planet]: { radius: 20, image: "planet", mass: 200 },
+    };
+    GAME_CONFIG.MeteorConfig = {
+        [MeteorType.smallMeteor]: { radius: 3, image: "planet", hoockingPowerLavel: 1 },
+        [MeteorType.mediumMeteor]: { radius: 5, image: "planet", hoockingPowerLavel: 2 },
+        [MeteorType.largeMeteor]: { radius: 10, image: "planet", hoockingPowerLavel: 3 },
+    };
+    GAME_CONFIG.HookConfig = {
+        [HookType.standart]: { radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100 },
+    };
+})(GAME_CONFIG || (GAME_CONFIG = {}));
 export var GAME_LD;
 (function (GAME_LD) {
     GAME_LD.keyMap = {};
     GAME_LD.mouseMap = {};
+    GAME_LD.Layers = {
+        None: 0,
+        Planet: 1 << 0,
+        Meteor: 1 << 1,
+        Hook: 1 << 2,
+        SpaseShip: 1 << 3,
+    };
     let planets = [];
     let meteors = [];
     let objects = []; // here will be all objects, with duplicates in planets, meteors etc
     function init() {
         GAME_LD.lastFrame = new Date().getTime();
-        addCircleObject(new Planet(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6, 50, LD_GLOB.getImage("planet"), 25, 5));
-        addCircleObject(new Planet(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3, 50, LD_GLOB.getImage("planet"), 25, 5));
+        addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
+        addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
         planets[0].addVelocity(new Vector(100, 0));
         planets[1].addVelocity(new Vector(-100, 0));
-        addCircleObject(new Meteor(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200, 10, LD_GLOB.getImage("planet"), 10, new Vector(100, 0)));
+        addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));
     }
     GAME_LD.init = init;
     function addCircleObject(obj) {
@@ -42,22 +77,39 @@ export var GAME_LD;
     function getAcseleration(point) {
         let res = new Vector(0, 0);
         for (let planet of planets) {
-            let a = planet.coordinates
+            let dir = planet.coordinates
                 .sub(point);
-            if (a.x == 0)
+            let len = dir.len();
+            if (len == 0)
                 continue; // to avoid division by 0
-            res = res.add(a.normalize().multiply(planets[0].G));
+            let a = dir.multiply(planet.mass / len * .03);
+            res = res.add(a);
         }
         return res;
     }
     GAME_LD.getAcseleration = getAcseleration;
-    function getColision(circle) {
-        let colisions;
-        for (let circle of objects) {
+    // layer: cумма нескольких collisionLayer
+    function getColisions(circle, layer) {
+        let colisions = [];
+        if ((layer & GAME_LD.Layers.Planet) != 0) {
+            for (let obj of planets) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
         }
+        if ((layer & GAME_LD.Layers.Meteor) != 0) {
+            for (let obj of meteors) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
+        }
+        return colisions;
     }
-    GAME_LD.getColision = getColision;
+    GAME_LD.getColisions = getColisions;
     function drawGame(dst) {
+        for (let planet of planets) {
+            planet.draw(dst);
+        }
         for (let planet of planets) {
             planet.draw(dst);
         }

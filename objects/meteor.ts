@@ -2,6 +2,7 @@ import { Circle } from "./circle.js";
 import { Vector } from "./vector.js";
 import { GAME_CONFIG, GAME_LD } from "../game.js";
 import { dist2 } from "../tools.js";
+import { LD_GLOB } from "../main.js";
 
 export class Meteor extends Circle {
   velocity: Vector;
@@ -12,7 +13,7 @@ export class Meteor extends Circle {
     velocity: Vector
   ) {
     let config = GAME_CONFIG.MeteorConfig[type]
-    super(coordinate, config.radius, config.image);
+    super(coordinate, config.radius, LD_GLOB.getImage(config.image));
     this.velocity = velocity;
     this.useGravity = true;
   }
@@ -23,7 +24,7 @@ export class Meteor extends Circle {
     
     let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
     if (colisions.length != 0){
-      this.explode(); 
+      // this.explode(); 
     }
   }
   explode(){

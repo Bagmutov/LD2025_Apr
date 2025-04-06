@@ -116,7 +116,7 @@ function initCanvas() {
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
 const imageNames = ["planet"] as const;
-type imageNamesTp = (typeof imageNames)[number];
+export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;
 // Load images into an array

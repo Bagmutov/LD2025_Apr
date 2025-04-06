@@ -1,4 +1,4 @@
-import { LD_GLOB } from "./main.js";
+import { imageNamesTp, LD_GLOB } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
@@ -11,7 +11,7 @@ export namespace GAME_CONFIG {
   }
   export type PlanetConfigData = {
     radius: number;
-    image: HTMLImageElement;
+    image: imageNamesTp;
     mass: number;
   }
   export enum MeteorType {
@@ -21,7 +21,7 @@ export namespace GAME_CONFIG {
   }
   export type MeteorConfigData = {
     radius: number;
-    image: HTMLImageElement;
+    image: imageNamesTp;
     hoockingPowerLavel: number
   }
   export enum HookType {
@@ -29,7 +29,7 @@ export namespace GAME_CONFIG {
   }
   export type HookConfigData = {
     radius: number;
-    image: HTMLImageElement;
+    image: imageNamesTp;
     speed: number;
     powerLavel: number;
     maxLenth: number;
@@ -37,15 +37,15 @@ export namespace GAME_CONFIG {
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {radius: 20, image: LD_GLOB.getImage("planet"), mass: 200},
+    [PlanetType.planet]: {radius: 20, image: "planet", mass: 200},
   };
   export const MeteorConfig: Record<MeteorType, MeteorConfigData> = {
-    [MeteorType.smallMeteor]: {radius: 3, image: LD_GLOB.getImage("planet"), hoockingPowerLavel: 1},
-    [MeteorType.mediumMeteor]: {radius: 5, image: LD_GLOB.getImage("planet"), hoockingPowerLavel: 2},
-    [MeteorType.largeMeteor]: {radius: 10, image: LD_GLOB.getImage("planet"), hoockingPowerLavel: 3},
+    [MeteorType.smallMeteor]: {radius: 3, image: "planet", hoockingPowerLavel: 1},
+    [MeteorType.mediumMeteor]: {radius: 5, image: "planet", hoockingPowerLavel: 2},
+    [MeteorType.largeMeteor]: {radius: 10, image: "planet", hoockingPowerLavel: 3},
   };
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standart]: {radius: 3, image: LD_GLOB.getImage("planet"), speed: 10, powerLavel: 10, maxLenth: 100},
+    [HookType.standart]: {radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100},
   };
 
 }
@@ -83,7 +83,7 @@ export namespace GAME_LD {
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),
         GAME_CONFIG.MeteorType.mediumMeteor,
-        new Vector(100, 0)
+        new Vector(0, 0)
       )
     );
   }
@@ -109,14 +109,14 @@ export namespace GAME_LD {
             .sub(point);
         let len = dir.len()
         if(len==0)continue;   // to avoid division by 0
-        let a = dir.multiply(planet.mass / len**3)
+        let a = dir.multiply(planet.mass / len*.03)
         res = res.add(a);
     }
     return res;
   }
   // layer: cумма нескольких collisionLayer
-  export function getColisions(circle: Circle, layer: number ){
-    let colisions: Circle[];
+  export function getColisions(circle: Circle, layer: number ):Circle[]{
+    let colisions: Circle[] = [];
     if ((layer & Layers.Planet) != 0){
       for (let obj of planets) {
         if (circle.checkCollision(obj)) colisions.push(obj);

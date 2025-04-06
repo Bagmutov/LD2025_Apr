@@ -4,6 +4,7 @@ import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle } from "../circle.js";
 import { Meteor } from "../meteor.js";
+import { LD_GLOB } from "../../main.js";
 
 
 export class Hook extends Ability{
@@ -15,7 +16,7 @@ export class Hook extends Ability{
 
   constructor(direction: Vector, type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(direction.multiply(config.speed), config.radius, config.image, planet);
+    super(direction.multiply(config.speed), config.radius, LD_GLOB.getImage(config.image), planet);
     this.speed = config.speed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;

@@ -33,9 +33,9 @@ export class Circle {
     this.coordinates = this.coordinates.add(this.velocity.multiply(delta));
   }
 
-  launchObject(obj:Circle, vel:Vector){
+  launchObject(obj:Circle, vel:Vector = null){
     GAME_LD.addCircleObject(obj);
-    obj.addVelocity(vel);
+    if(vel)obj.addVelocity(vel);
     obj.coordinates = new Vector(this.coordinates.x, this.coordinates.y);
   }
 
