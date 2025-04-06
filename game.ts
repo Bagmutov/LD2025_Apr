@@ -32,7 +32,8 @@ export namespace GAME_CONFIG {
   export type HookConfigData = {
     radius: number;
     image: imageNamesTp;
-    speed: number;
+    forwardSpeed: number;
+    backwardSpeed: number;
     powerLavel: number;
     maxLenth: number;
     useGravity: boolean;
@@ -48,7 +49,7 @@ export namespace GAME_CONFIG {
     [MeteorType.largeMeteor]: {radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true},
   };
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standart]: {radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100, useGravity: false},
+    [HookType.standart]: {radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false},
   };
 
 }
@@ -135,8 +136,8 @@ export namespace GAME_LD {
     for (let planet of planets) {
       planet.draw(dst);
     }
-    for (let planet of planets) {
-      planet.draw(dst);
+    for (let object of objects) {
+      object.draw(dst);
     }
     for (let meteor of meteors) {
       meteor.draw(dst);

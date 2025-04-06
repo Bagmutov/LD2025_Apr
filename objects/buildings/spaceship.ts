@@ -10,8 +10,8 @@ import { Hook } from "../abilities/hook.js";
 
 export class Spaceship extends Hook{
 
-  constructor(direction: Vector, type: GAME_CONFIG.HookType, planet: Planet){
-    super(direction, type, planet);
+  constructor(type: GAME_CONFIG.HookType, planet: Planet){
+    super(type, planet);
   }
 
 }

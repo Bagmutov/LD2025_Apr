@@ -28,7 +28,7 @@ export var GAME_CONFIG;
         [MeteorType.largeMeteor]: { radius: 10, image: "planet", hoockingPowerLavel: 3, useGravity: true },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standart]: { radius: 3, image: "planet", speed: 10, powerLavel: 10, maxLenth: 100, useGravity: false },
+        [HookType.standart]: { radius: 10, image: "planet", forwardSpeed: 1, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, useGravity: false },
     };
 })(GAME_CONFIG || (GAME_CONFIG = {}));
 export var GAME_LD;
@@ -108,8 +108,8 @@ export var GAME_LD;
         for (let planet of planets) {
             planet.draw(dst);
         }
-        for (let planet of planets) {
-            planet.draw(dst);
+        for (let object of objects) {
+            object.draw(dst);
         }
         for (let meteor of meteors) {
             meteor.draw(dst);

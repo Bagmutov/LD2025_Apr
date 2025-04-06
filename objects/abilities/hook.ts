@@ -3,43 +3,53 @@ import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle } from "../circle.js";
-import { Meteor } from "../meteor.js";
 import { LD_GLOB } from "../../main.js";
 
 
 export class Hook extends Ability{
-  speed: number;
+  forwardSpeed: number;
+  backwardSpeed: number;
   powerLavel: number;
   maxLenth: number;
   hokedObjest: Circle;
-  isPushed: boolean
+  isPushed: boolean = true;
 
-  constructor(direction: Vector, type: GAME_CONFIG.HookType, planet: Planet) {
+  constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(direction.multiply(config.speed), config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
-    this.speed = config.speed;
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.useGravity);
+    this.forwardSpeed = config.forwardSpeed;
+    this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;
   }
 
   step(delta: number){
+    console.log(1);
     if (this.coordinates.sub(this.planet.coordinates).len() > this.maxLenth){
+        console.log(2);
         this.isPushed = false;
     }
     if (!this.isPushed){
-        this.velocity = this.coordinates.sub(this.planet.coordinates).normalize().multiply(this.speed);
+        console.log(3);
+        this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
+        if (this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
+          this.destroy()
+        }
     }
-    this.coordinates.add(this.velocity);
+    super.step(delta);
 
     if (this.hokedObjest == null){
+        console.log(4);
         let tempHokedObjects = GAME_LD.getColisions(this, GAME_LD.Layers.Meteor);
         if (tempHokedObjects.length != 0){
+            console.log(5);
             this.hokedObjest = tempHokedObjects[0];
             this.isPushed = false;
             this.hokedObjest.useGravity = false;
             this.hokedObjest.coordinates = this.coordinates;
         }
     } else{
+        console.log(6);
         this.hokedObjest.coordinates = this.coordinates;
     }
   }

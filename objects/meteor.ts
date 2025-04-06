@@ -23,10 +23,7 @@ export class Meteor extends Circle {
     
     let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
     if (colisions.length != 0){
-      this.explode(); 
+      this.destroy(); 
     }
-  }
-  explode(){
-    GAME_LD.delCircleObject(this);
   }
 }
