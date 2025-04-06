@@ -1,7 +1,5 @@
 import { GAME_LD } from "../game.js";
 import { drawCircle, dist2, makeCopy } from "../tools.js";
-import { GAME_LD } from "../game.js";
-import { drawCircle, dist2, makeCopy } from "../tools.js";
 import { Vector } from "./vector.js";
 
 export class Circle {
@@ -51,10 +49,6 @@ export class Circle {
       ) <
       this.radius + other.radius
     );
-  }
-
-  addVelocity(dxy:Vector){
-    this.velocity = this.velocity.add(dxy);
   }
 
   addVelocity(dxy:Vector){
