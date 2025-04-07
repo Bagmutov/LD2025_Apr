@@ -16,7 +16,7 @@ export class Hook extends Launchee{
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability, planet.coordinates);
     this.forwardSpeed = config.forwardSpeed;
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
@@ -36,7 +36,7 @@ export class Hook extends Launchee{
   }
 
   step(delta: number){
-    if (this.coordinates.sub(this.planet.coordinates).len() > this.maxLenth){
+    if (this.coordinates.sub(this.planet.coordinates).len() > this.radius){
         this.isPushed = false;
     }
     // if (!this.isPushed){
@@ -57,12 +57,18 @@ export class Hook extends Launchee{
     super.step(delta);
 
     if (this.hokedObject == null){
-        let tempHokedObjects = GAME_LD.getColisions(this, GAME_LD.Layers.Meteor);
-        if (tempHokedObjects.length != 0){
-            this.hokedObject = tempHokedObjects[0];
-            this.isPushed = false;
-            this.hokedObject.phisicMode = PhisicMode.none;
-            this.hokedObject.coordinates = this.coordinates;
+        let tempHokedObjects = GAME_LD.getColisions(
+          this,
+          GAME_LD.Layers.Meteor
+        );
+        for (let obj of tempHokedObjects){
+          if (obj != this && obj != this.planet){
+              this.hokedObject = obj;
+              this.isPushed = false;
+              this.hokedObject.phisicMode = PhisicMode.none;
+              this.hokedObject.coordinates = this.coordinates;
+              break;
+          }
         }
     } else{
         this.hokedObject.coordinates = this.coordinates;

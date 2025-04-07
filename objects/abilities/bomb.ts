@@ -5,6 +5,7 @@ import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB } from "../../main.js";
 import { Button, crtButton, delButton } from "../button.js";
+import { MeteorDisease } from "../meteor_disease.js";
 
 
 export class Bomb extends Launchee {
@@ -34,6 +35,7 @@ export class Bomb extends Launchee {
       config.phisicMode,
       config.speed,
       config.stability,
+      planet.coordinates,
     );
     this.forwardSpeed = config.speed;
     this.maxDist2 = config.maxDist**2;
@@ -77,9 +79,13 @@ export class Bomb extends Launchee {
     // }
     super.step(delta);
     this.detonationTimer -= delta;
-    let collisions = GAME_LD.getColisions(this, 
-          GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip
-      );
+    let collisions = GAME_LD.getColisions(
+      this,
+      GAME_LD.Layers.Planet +
+        GAME_LD.Layers.Meteor +
+        GAME_LD.Layers.SpaseShip
+        // GAME_LD.Layers.Disease
+    );
     if (this.detonationTimer<0 || this.coordinates.sub(this.planet.coordinates).lenSq() > this.maxDist2 ||
       collisions.length != 0&&collisions[0]!=this.planet){
       this.explode();
@@ -90,8 +96,13 @@ export class Bomb extends Launchee {
     this.exploseStart = true;
     this.exploseFrame = 0;
     this.radius = this.explosionRadius;
-    let objectsUnderExplosion = GAME_LD.getColisions(this, 
-                  GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
+    let objectsUnderExplosion = GAME_LD.getColisions(
+      this,
+      GAME_LD.Layers.Planet +
+        GAME_LD.Layers.Meteor +
+        GAME_LD.Layers.SpaseShip +
+        GAME_LD.Layers.Disease
+    );
     for (let circle of objectsUnderExplosion){
       if (circle.stability < this.explosionStregth){
         circle.destroy();
@@ -104,8 +115,14 @@ export class Bomb extends Launchee {
       PhisicMode.none,
       this.stability
     );
-    let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, 
-                GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip + GAME_LD.Layers.Items);// + GAME_LD.Layers.Disease
+    let objectsUnderBlastWave = GAME_LD.getColisions(
+      blastWaveCircle,
+      GAME_LD.Layers.Planet +
+        GAME_LD.Layers.Meteor +
+        GAME_LD.Layers.SpaseShip +
+        GAME_LD.Layers.Items +
+        GAME_LD.Layers.Disease
+    );//  
     for (let circle of objectsUnderBlastWave){
       if (circle.stability < this.blastWaveStregth) {
         const dif = circle.coordinates.sub(this.coordinates);
