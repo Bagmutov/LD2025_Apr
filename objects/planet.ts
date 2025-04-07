@@ -1,10 +1,12 @@
 import { GAME_LD, GAME_CONFIG } from "../game.js";
 import { LD_GLOB } from "../main.js";
 import { drawLine } from "../tools.js";
+import { SpaceShip } from "./abilities/spaseShip.js";
 import { Building } from "./buildings/building.js";
 import { Button, crtButton, delButton } from "./button.js";
 import { Circle } from "./circle.js";
 import { Inventory } from "./resource/inventory.js";
+import { ResourceType } from "./resource/resource.js";
 import { Vector } from "./vector.js";
 
 
@@ -29,7 +31,9 @@ export class Planet extends Circle {
       config.stability,
     );
     this.mass = config.mass;
-    // this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
+    if (config.startBuilding){
+      this.build(GAME_LD.buildings[config.startBuilding]);
+    }
   }
   draw(dst: CanvasRenderingContext2D): void {
     super.draw(dst);
@@ -53,8 +57,11 @@ export class Planet extends Circle {
     // dst.font =  20 + "px Shantell Sans";
     dst.fillText(`${this.inventory.countOfResources.iron}`,
         this.coordinates.x+this.radius, this.coordinates.y);
-    dst.fillText(`${this.inventory.countOfResources.gold}`,
-        this.coordinates.x+this.radius, this.coordinates.y+20);
+    dst.fillText(
+      `${this.inventory.countOfResources.iron}`,
+      this.coordinates.x + this.radius,
+      this.coordinates.y + 20
+    );
   }
   build(bld:Building){
     const icon_rad=15;
@@ -106,9 +113,12 @@ export class Planet extends Circle {
         };
         but.ms_up = () => {
           if(this.temp_launch){
-            // let launchee = new Spaceship();
-            // GAME_LD.addCircleObject(launchee);
-            // launchee.launch(this.launch_xy.normalize(), this.launch_xy.len());
+            let launchee = new SpaceShip(GAME_CONFIG.SpaceShipType.standartSpaseShip, this);
+            this.addParent(launchee);
+            launchee.launch(
+              this.launch_xy.normalize(-1),
+              this.launch_xy.len() / this.launch_xy_max_len
+            );
             this.temp_launch = false;
           }else if (this.building != null && this.building.config.abilityConfig!=null) {
             let launchee = this.building.buildLaunchee(this);

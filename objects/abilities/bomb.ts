@@ -8,7 +8,7 @@ import { Button, crtButton, delButton } from "../button.js";
 
 
 export class Bomb extends Launchee {
-  speed: number;
+  forwardSpeed: number;
   maxDist: number;
 
   explosionRadius: number;
@@ -32,9 +32,10 @@ export class Bomb extends Launchee {
       LD_GLOB.getImage(config.image),
       planet,
       config.phisicMode,
+      config.speed,
       config.stability,
     );
-    this.speed = config.speed;
+    this.forwardSpeed = config.speed;
     this.maxDist = config.maxDist;
     this.explosionRadius = config.explosionRadius;
     this.blastWaveRadius = config.blastWaveRadius;
@@ -48,9 +49,6 @@ export class Bomb extends Launchee {
       this.explodeButton.ms_down = () => {
         this.explode();
       }
-  }
-  launch(direction: Vector, force: number): void {
-    this.addVelocity(direction.multiply(force * this.speed));
   }
 
   draw(dst: CanvasRenderingContext2D): void {

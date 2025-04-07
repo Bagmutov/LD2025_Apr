@@ -8,7 +8,6 @@ import { drawLine } from "../../tools.js";
 
 
 export class Hook extends Launchee{
-  forwardSpeed: number;
   backwardSpeed: number;
   powerLavel: number;
   maxLenth: number;
@@ -17,14 +16,11 @@ export class Hook extends Launchee{
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
     let config = GAME_CONFIG.HookConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.stability);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability);
     this.forwardSpeed = config.forwardSpeed;
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;
-  }
-  launch(direction: Vector, force: number): void {
-    this.addVelocity(direction.multiply(force*this.forwardSpeed))
   }
   draw(dst: CanvasRenderingContext2D): void {
     drawLine(
