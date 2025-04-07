@@ -9,7 +9,7 @@
    id="svg1"
    inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
    sodipodi:docname="ship_broken.svg"
-   inkscape:export-filename="icon3.png"
+   inkscape:export-filename="ship_broken.png"
    inkscape:export-xdpi="24"
    inkscape:export-ydpi="24"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,7 +28,7 @@
      inkscape:document-units="px"
      inkscape:zoom="5.4416667"
      inkscape:cx="55.038285"
-     inkscape:cy="50.444104"
+     inkscape:cy="72.496171"
      inkscape:window-width="1440"
      inkscape:window-height="872"
      inkscape:window-x="0"
@@ -53,7 +53,7 @@
          sodipodi:nodetypes="cccccccc" />
       <path
          style="fill:none;stroke:#ec8585;stroke-width:8.77116;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
-         d="M 60,64.184347 48.790199,95.533864 60,110.34433"
+         d="M 60,64.184347 48.790199,95.533864 28.575804,104.83131"
          id="path5"
          sodipodi:nodetypes="ccc" />
       <path

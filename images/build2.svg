@@ -44,7 +44,7 @@
      id="layer1"
      style="display:inline">
     <circle
-       style="fill:#85ecc1;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
+       style="fill:#85ecc1;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
        id="path1"
        cx="60"
        cy="60"
