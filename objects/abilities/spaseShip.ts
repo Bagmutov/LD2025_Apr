@@ -10,7 +10,7 @@ export class SpaceShip extends Launchee{
 
   constructor(type: GAME_CONFIG.SpaceShipType, planet: Planet){
     let config = GAME_CONFIG.SpaceShipConfig[type];
-    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability);
+    super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability, planet.coordinates);
     this.imgBroken = LD_GLOB.getImage(config.image_broken);
     playSound('voice',.1);
   }
@@ -37,9 +37,12 @@ export class SpaceShip extends Launchee{
     let planetColision = GAME_LD.getColisions(this, GAME_LD.Layers.Planet);
     if (planetColision.length != 0 && planetColision[0]!=this.planet){
       let collisionPlanet = planetColision[0] as Planet;
-      if(!this.broken && !(collisionPlanet.building && collisionPlanet.building.config.evil)){
+      if(!this.broken && !collisionPlanet.building && !(collisionPlanet.building && collisionPlanet.building.config.evil)){
         collisionPlanet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
         collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 1);
+        this.destroy();
+      } else if (!this.broken && collisionPlanet.building){
+        collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 0.5);
         this.destroy();
       } else {
         this.makeMeBroken();

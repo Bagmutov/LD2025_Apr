@@ -19,6 +19,7 @@ export namespace LD_GLOB {
     main_5: "#0ab177ff",
     main_6: "#00d57aff",
     main_7: "#87efc4ff",
+    red: "#F53030ff",
   };
   export let pervDraw: number;
 
@@ -218,6 +219,7 @@ export function playSound(
   loop: boolean = false
 ): AudioBufferSourceNode {
   if(!audio_context)return;
+  console.log(`${sound_name}`);
   let buffer: AudioBuffer = all_buffers[sound_name];
   var source = audio_context.createBufferSource(); // creates a sound source
   const gainNode = audio_context.createGain();

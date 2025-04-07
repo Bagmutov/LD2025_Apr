@@ -13,9 +13,10 @@ export class Launchee extends Circle {
     planet: Planet,
     phisicMode: PhisicMode,
     forwardSpeed: number,
-    stability: number
+    stability: number,
+    coordinates: Vector,
   ) {
-    super(planet.coordinates, radius, image, phisicMode, stability);
+    super(coordinates, radius, image, phisicMode, stability);
     this.planet = planet;
     this.forwardSpeed = forwardSpeed;
   }

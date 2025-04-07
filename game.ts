@@ -18,12 +18,14 @@ export namespace GAME_CONFIG {
   export enum PlanetType {
     planet = "planet",
     startPlanet = "startPlanet",
+    diseasePlanet = "diseasePlanet",
   }
   export type PlanetConfigData = {
     stability: number;
     radius: number;
     image: imageNamesTp;
     mass: number;
+    diseaseValue: number;
     startBuilding: BuildingType;
     phisicMode: PhisicMode;
   };
@@ -40,7 +42,9 @@ export namespace GAME_CONFIG {
     innerResource: Map<ResourceType, number>;
   };
   export enum HookType {
-    standartHook = 'standartHook',
+    hookTier1 = 'hookTier1',
+    hookTier2 = 'hookTier2',
+    hookTier3 = 'hookTier3',
   }
   export type HookConfigData = {
     stability: number;
@@ -75,6 +79,26 @@ export namespace GAME_CONFIG {
     explosionImages: imageNamesTp[];
     itemCost: Map<ResourceType, number>;
   };
+
+  export enum TrapType {
+    standartTrap = "standartBomb",
+  }
+  export type TrapConfigData = {
+    stability: number;
+    radius: number;
+    image: imageNamesTp;
+    phisicMode: PhisicMode;
+    speed: number;
+    maxDist: number;
+
+    trapRadius: number;
+    trapStregth: number;
+    trapVelocityAdd: number;
+    activeImage: imageNamesTp;
+    activeDuration: number;
+    itemCost: Map<ResourceType, number>;
+  };
+
   export enum SpaceShipType {
     standartSpaseShip = 'standartSpaseShip',
   }
@@ -87,18 +111,26 @@ export namespace GAME_CONFIG {
     powerLavel: number;
     phisicMode: PhisicMode;
   };
+
+
+
   export enum BuildingType {
     hookTier1,
     hookTier2,
     hookTier3,
     bombTier1,
+    trapTier1,
     starting,
     disease1,
+    disease2,
+    disease3,
   }
   export enum AbilityType {
     hook = "hook",
     bomb = "bomb",
+    trap = "trap",
     spaseShip = "spaseShip",
+    diesese = "diesese",
   }
   export type BuildingConfigData = {
     radius: number;
@@ -106,7 +138,7 @@ export namespace GAME_CONFIG {
     image_build: imageNamesTp;
     image_icon: imageNamesTp;
 
-    abilityConfig: HookType | BombType | SpaceShipType;
+    abilityConfig: HookType | BombType | SpaceShipType | TrapType | MeteorDiseaseType;
     abilityType: AbilityType;
     cost: Map<ResourceType, number>;
     nextUpgrades: BuildingType[];
@@ -121,7 +153,8 @@ export namespace GAME_CONFIG {
       radius: 40,
       image: "planet",
       mass: 200,
-      startBuilding: null, 
+      diseaseValue: 0,
+      startBuilding: null,
       phisicMode: PhisicMode.braking,
     },
     [PlanetType.startPlanet]: {
@@ -129,7 +162,17 @@ export namespace GAME_CONFIG {
       radius: 50,
       image: "planet",
       mass: 200,
+      diseaseValue: 0,
       startBuilding: BuildingType.starting,
+      phisicMode: PhisicMode.braking,
+    },
+    [PlanetType.diseasePlanet]: {
+      stability: 10,
+      radius: 40,
+      image: "planet",
+      mass: 200,
+      diseaseValue: 10,
+      startBuilding: BuildingType.disease1,
       phisicMode: PhisicMode.braking,
     },
   };
@@ -173,7 +216,36 @@ export namespace GAME_CONFIG {
 
 
   export const HookConfig: Record<HookType, HookConfigData> = {
-    [HookType.standartHook]: {stability: 10,radius: 10, image: "icon1", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart},
+    [HookType.hookTier1]: {
+      stability: 10,
+      radius: 10, 
+      image: "icon1", 
+      forwardSpeed: 400,
+      backwardSpeed: 400, 
+      powerLavel: 1,
+      maxLenth: 250, 
+      phisicMode: PhisicMode.standart
+    },
+    [HookType.hookTier2]: {
+      stability: 10,
+      radius: 20, 
+      image: "icon1", 
+      forwardSpeed: 800, 
+      backwardSpeed: 1000, 
+      powerLavel: 3, 
+      maxLenth: 400, 
+      phisicMode: PhisicMode.standart
+    },
+    [HookType.hookTier3]: {
+      stability: 10,
+      radius: 30,
+      image: "icon1", 
+      forwardSpeed: 1500, 
+      backwardSpeed: 2000, 
+      powerLavel: 10,
+      maxLenth: 1000, 
+      phisicMode: PhisicMode.standart
+    },
   };
   export const BombConfig: Record<BombType, BombConfigData> = {
     [BombType.standartBomb]: {
@@ -198,6 +270,26 @@ export namespace GAME_CONFIG {
       ])
     },
   };
+  export const TrapConfig: Record<TrapType, TrapConfigData> = {
+    [TrapType.standartTrap]: {
+    stability: 10,
+    radius: 20,
+    image: "build0", //TODO
+    phisicMode: PhisicMode.braking,
+    speed: 200,
+    maxDist: 9999,
+
+    trapRadius: 300,
+    trapStregth: 7,
+    trapVelocityAdd: 10,
+    activeImage: 'build1',
+    activeDuration: 4,
+    itemCost: new Map<ResourceType, number>([
+      [ResourceType.gold, 5],
+      [ResourceType.iron, 10],
+    ])
+    },
+  };
 
   export const SpaceShipConfig: Record<SpaceShipType, SpaceShipConfigData> = {
     [SpaceShipType.standartSpaseShip] : {
@@ -215,8 +307,8 @@ export namespace GAME_CONFIG {
   export const Other = {
     spaceship_cost: 
       new Map<ResourceType, number>([
-        [ResourceType.iron, 1],
-        [ResourceType.gold, 0],
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 4],
       ]),
     space_icon_name: 'icon3',
     space_icon_rad: 15,
@@ -224,13 +316,48 @@ export namespace GAME_CONFIG {
     space_img_rad: 15,
     space_build_image: <HTMLImageElement>null,
   }
-  export const MeteorDiseaseConfig = {
-    radius:10,
-    image:'disease' as imageNamesTp,
-    phisicMode:PhisicMode.standart,
-    stability:1,
-    vel:20
+  export enum MeteorDiseaseType {
+    tier1 = 'tier1',
+    tier2 = 'tier2',
+    tier3 = 'tier3',
   }
+  export type MeteorDiseaseConfigData = {
+    radius: number;
+    image: imageNamesTp;
+    phisicMode: PhisicMode;
+    stability: number;
+    diseaseAdd: number;
+    vel: number;
+  };
+  export const MeteorDiseaseConfig: Record<
+    MeteorDiseaseType,
+    MeteorDiseaseConfigData
+  > = {
+    [MeteorDiseaseType.tier1]: {
+      radius: 10,
+      image: "disease",
+      phisicMode: PhisicMode.standart,
+      stability: 3,
+      vel: 20,
+      diseaseAdd: 3,
+    },
+    [MeteorDiseaseType.tier2]: {
+      radius: 5,
+      image: "disease",
+      phisicMode: PhisicMode.standart,
+      stability: 2,
+      vel: 200,
+      diseaseAdd: 2,
+    },
+    [MeteorDiseaseType.tier3]: {
+      radius: 20,
+      image: "disease",
+      phisicMode: PhisicMode.standart,
+      stability: 7,
+      vel: 40,
+      diseaseAdd: 10,
+    },
+  };
   export const SpawnerConfig = {
     met_vel:100,
     disease_vel:100,
@@ -254,7 +381,7 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilityConfig: HookType.standartHook,
+      abilityConfig: HookType.hookTier1,
       cost: new Map<ResourceType, number>([
         [ResourceType.iron, 2],
         [ResourceType.gold, 0],
@@ -266,7 +393,7 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilityConfig: HookType.standartHook,
+      abilityConfig: HookType.hookTier2,
       cost: new Map<ResourceType, number>([
         [ResourceType.iron, 2],
         [ResourceType.gold, 0],
@@ -278,7 +405,7 @@ export namespace GAME_CONFIG {
       image_build: "build1",
       image_icon: "icon1",
       abilityType: AbilityType.hook,
-      abilityConfig: HookType.standartHook,
+      abilityConfig: HookType.hookTier3,
       cost: new Map<ResourceType, number>([
         [ResourceType.iron, 2],
         [ResourceType.gold, 2],
@@ -288,22 +415,54 @@ export namespace GAME_CONFIG {
     [BuildingType.bombTier1]: {
       radius: 15,
       image_build: "build2",
-      image_icon: 'icon2',
+      image_icon: "icon2",
       abilityType: AbilityType.bomb,
       abilityConfig: BombType.standartBomb,
       cost: new Map<ResourceType, number>([
         [ResourceType.iron, 0],
         [ResourceType.gold, 2],
       ]),
+      nextUpgrades: [BuildingType.trapTier1],
+    },
+    [BuildingType.trapTier1]: {
+      radius: 15,
+      image_build: "build2",
+      image_icon: "icon2",
+      abilityType: AbilityType.trap,
+      abilityConfig: TrapType.standartTrap,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.iron, 10],
+        [ResourceType.gold, 10],
+      ]),
       nextUpgrades: [],
     },
     [BuildingType.disease1]: {
-      evil:true,
+      evil: true,
       radius: 15,
       image_build: "disease",
-      image_icon: 'ship_broken',
-      abilityType: null,
-      abilityConfig: null,
+      image_icon: "ship_broken",
+      abilityType: AbilityType.diesese,
+      abilityConfig: MeteorDiseaseType.tier1,
+      cost: null,
+      nextUpgrades: [],
+    },
+    [BuildingType.disease2]: {
+      evil: true,
+      radius: 15,
+      image_build: "disease",
+      image_icon: "ship_broken",
+      abilityType: AbilityType.diesese,
+      abilityConfig: MeteorDiseaseType.tier2,
+      cost: null,
+      nextUpgrades: [],
+    },
+    [BuildingType.disease3]: {
+      evil: true,
+      radius: 15,
+      image_build: "disease",
+      image_icon: "ship_broken",
+      abilityType: AbilityType.diesese,
+      abilityConfig: MeteorDiseaseType.tier3,
       cost: null,
       nextUpgrades: [],
     },
@@ -327,6 +486,7 @@ export namespace GAME_LD {
     Items:       1 << 2,
     SpaseShip:   1 << 3,
     Disease:     1 << 4,
+    All:         1 << 5,
   };
 
   export let planets: Planet[] = [];
@@ -359,13 +519,11 @@ export namespace GAME_LD {
 
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.7), GAME_CONFIG.PlanetType.planet));
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.5,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
-    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.planet);
-    obj.build(buildings[GAME_CONFIG.BuildingType.starting]);
-    obj.inventory.addResource(ResourceType.iron, 15);
-    obj.inventory.addResource(ResourceType.gold, 15);
+    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.startPlanet);
+    obj.inventory.addResource(ResourceType.iron, 30);
+    obj.inventory.addResource(ResourceType.gold, 30);
     addCircleObject(obj);
-    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.planet);
-    obj.build(buildings[GAME_CONFIG.BuildingType.disease1]);
+    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.diseasePlanet);
     addCircleObject(obj);
     
     addCircleObject(
@@ -398,6 +556,18 @@ export namespace GAME_LD {
     }
     objects.push(obj);
   }
+  export function addPlanetsInDiseased(obj: Planet) {
+    if (objects.indexOf(obj) >= 0){
+      return;
+    }
+    diseasedPlanets.push(obj);
+    GAME_LD.checkWinLoseConditions();
+  }
+  export function delPlanetsFromDiseased(obj: Planet) {
+    arrDel(diseasedPlanets, obj);
+    GAME_LD.checkWinLoseConditions();
+  }
+
   export function delCircleObject(obj:Circle){
     arrDel(objects, obj);
     if(obj.my_array)arrDel(obj.my_array, obj);
@@ -446,17 +616,29 @@ export namespace GAME_LD {
         if (circle.checkCollision(obj)) colisions.push(obj)
       }
     }
+    if ((layer & Layers.All) != 0) {
+      for (let obj of objects) {
+        if (circle.checkCollision(obj)) colisions.push(obj);
+      }
+    }
     return colisions;
   }
 
   export function checkWinLoseConditions(){
-    let player_objs=0;
-    planets.forEach(el=>{if(el.building && !el.building.config.evil)player_objs+=1;});
-    spaceships.forEach(el=>{if(!el.broken)player_objs+=1;});
-    if(player_objs==0){
+    let player_planets=0;
+    planets.forEach(el=>{if(el.building && !el.building.config.evil)player_planets+=1;});
+    let is_all_spaseShipDie = false;
+    for (let s of spaceships){
+      is_all_spaseShipDie = is_all_spaseShipDie || !s.broken;
+    }
+    if(player_planets==0 && is_all_spaseShipDie){
       restart();
       LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
       playSound('death',.1);
+    }
+    if(diseasedPlanets.length == 0){
+      restart();
+      LD_GLOB.menu_text = "The space is ours! Victory!";
     }
   }
   export function restart(){

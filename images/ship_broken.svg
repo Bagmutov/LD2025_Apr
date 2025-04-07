@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="120"
+   height="120"
+   viewBox="0 0 120 120"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
+   sodipodi:docname="ship_broken.svg"
+   inkscape:export-filename="ship_broken.png"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="5.4416667"
+     inkscape:cx="55.038285"
+     inkscape:cy="72.496171"
+     inkscape:window-width="1440"
+     inkscape:window-height="872"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <g
+       id="g1"
+       style="stroke:#ec8585;stroke-opacity:1">
+      <path
+         id="path4"
+         style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;paint-order:markers fill stroke"
+         d="M 85.543644,36.294029 C 85.543645,49.386476 74.107365,60.000002 60,60.000002 c -7.544661,0 -6.974665,-11.305145 -11.650654,-16.132105 -4.067396,-4.198718 -13.89299,-1.483301 -13.89299,-7.573868 0,-5.242393 1.83359,-10.087337 4.938056,-14.012603 C 44.043096,16.403661 51.541415,12.588057 60,12.588057 c 7.147785,0 7.361777,8.237667 11.998059,12.628901 4.514206,4.275611 13.545585,4.618181 13.545585,11.077071 z"
+         sodipodi:nodetypes="cccccccc" />
+      <path
+         style="fill:none;stroke:#ec8585;stroke-width:8.77116;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         d="M 60,64.184347 48.790199,95.533864 28.575804,104.83131"
+         id="path5"
+         sodipodi:nodetypes="ccc" />
+      <path
+         style="fill:none;stroke:#ec8585;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         d="M 97.947932,89.678407 81.294027,80.581929 66.11026,95.375191 60,77.182235 41.345816,67.724277 26.957008,80.914886 14.885146,51.638591"
+         id="path6"
+         sodipodi:nodetypes="ccccccc" />
+    </g>
+  </g>
+</svg>
