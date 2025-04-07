@@ -141,31 +141,31 @@ export namespace GAME_CONFIG {
     [MeteorType.smallMeteor]: {
       stability: 1,
       radius: 8,
-      image: "planet",
+      image: "planet_blue",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
+        [ResourceType.iron, 1],
         [ResourceType.gold, 0],
-        [ResourceType.iron, 10],
       ]),
     },
     [MeteorType.mediumMeteor]: {
       stability: 2,
       radius: 12,
-      image: "planet",
+      image: "planet_blue",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
+        [ResourceType.iron, 2],
         [ResourceType.gold, 0],
-        [ResourceType.iron, 10],
       ]),
     },
     [MeteorType.largeMeteor]: {
       stability: 3,
       radius: 20,
-      image: "planet",
+      image: "planet_yellow",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
-        [ResourceType.gold, 0],
-        [ResourceType.iron, 1],
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 1],
       ]),
     },
   };
@@ -193,8 +193,8 @@ export namespace GAME_CONFIG {
       
       explosionImages: ['build0', 'build2'],
       itemCost:new Map<ResourceType, number>([
-        [ResourceType.gold, 1],
         [ResourceType.iron, 0],
+        [ResourceType.gold, 1],
       ])
     },
   };
@@ -215,8 +215,8 @@ export namespace GAME_CONFIG {
   export const Other = {
     spaceship_cost: 
       new Map<ResourceType, number>([
-        [ResourceType.gold, 0],
         [ResourceType.iron, 1],
+        [ResourceType.gold, 0],
       ]),
     space_icon_name: 'icon3',
     space_icon_rad: 15,
@@ -244,8 +244,8 @@ export namespace GAME_CONFIG {
       abilityType: null,
       abilityConfig: null,
       cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 0],
         [ResourceType.iron, 0],
+        [ResourceType.gold, 0],
       ]),
       nextUpgrades: [BuildingType.hookTier1, BuildingType.bombTier1],
     },
@@ -256,8 +256,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 10],
-        [ResourceType.iron, 10],
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 0],
       ]),
       nextUpgrades: [BuildingType.hookTier2],
     },
@@ -268,8 +268,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 10],
-        [ResourceType.iron, 10],
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 0],
       ]),
       nextUpgrades: [BuildingType.hookTier3],
     },
@@ -280,8 +280,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.standartHook,
       cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 10],
-        [ResourceType.iron, 10],
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 2],
       ]),
       nextUpgrades: [],
     },
@@ -292,8 +292,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.bomb,
       abilityConfig: BombType.standartBomb,
       cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 10],
-        [ResourceType.iron, 10],
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 2],
       ]),
       nextUpgrades: [],
     },
@@ -304,10 +304,7 @@ export namespace GAME_CONFIG {
       image_icon: 'ship_broken',
       abilityType: null,
       abilityConfig: null,
-      cost: new Map<ResourceType, number>([
-        [ResourceType.gold, 10],
-        [ResourceType.iron, 10],
-      ]),
+      cost: null,
       nextUpgrades: [],
     },
   };

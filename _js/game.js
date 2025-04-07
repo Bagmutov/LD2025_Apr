@@ -73,31 +73,31 @@ export var GAME_CONFIG;
         [MeteorType.smallMeteor]: {
             stability: 1,
             radius: 8,
-            image: "planet",
+            image: "planet_blue",
             phisicMode: PhisicMode.gravity,
             innerResource: new Map([
+                ["iron" /* ResourceType.iron */, 1],
                 ["gold" /* ResourceType.gold */, 0],
-                ["iron" /* ResourceType.iron */, 10],
             ]),
         },
         [MeteorType.mediumMeteor]: {
             stability: 2,
             radius: 12,
-            image: "planet",
+            image: "planet_blue",
             phisicMode: PhisicMode.gravity,
             innerResource: new Map([
+                ["iron" /* ResourceType.iron */, 2],
                 ["gold" /* ResourceType.gold */, 0],
-                ["iron" /* ResourceType.iron */, 10],
             ]),
         },
         [MeteorType.largeMeteor]: {
             stability: 3,
             radius: 20,
-            image: "planet",
+            image: "planet_yellow",
             phisicMode: PhisicMode.gravity,
             innerResource: new Map([
-                ["gold" /* ResourceType.gold */, 0],
-                ["iron" /* ResourceType.iron */, 1],
+                ["iron" /* ResourceType.iron */, 2],
+                ["gold" /* ResourceType.gold */, 1],
             ]),
         },
     };
@@ -119,8 +119,8 @@ export var GAME_CONFIG;
             blastWaveVelocityAdd: 200,
             explosionImages: ['build0', 'build2'],
             itemCost: new Map([
-                ["gold" /* ResourceType.gold */, 1],
                 ["iron" /* ResourceType.iron */, 0],
+                ["gold" /* ResourceType.gold */, 1],
             ])
         },
     };
@@ -137,8 +137,8 @@ export var GAME_CONFIG;
     };
     GAME_CONFIG.Other = {
         spaceship_cost: new Map([
-            ["gold" /* ResourceType.gold */, 0],
             ["iron" /* ResourceType.iron */, 1],
+            ["gold" /* ResourceType.gold */, 0],
         ]),
         space_icon_name: 'icon3',
         space_icon_rad: 15,
@@ -166,8 +166,8 @@ export var GAME_CONFIG;
             abilityType: null,
             abilityConfig: null,
             cost: new Map([
-                ["gold" /* ResourceType.gold */, 0],
                 ["iron" /* ResourceType.iron */, 0],
+                ["gold" /* ResourceType.gold */, 0],
             ]),
             nextUpgrades: [BuildingType.hookTier1, BuildingType.bombTier1],
         },
@@ -178,8 +178,8 @@ export var GAME_CONFIG;
             abilityType: AbilityType.hook,
             abilityConfig: HookType.standartHook,
             cost: new Map([
-                ["gold" /* ResourceType.gold */, 10],
-                ["iron" /* ResourceType.iron */, 10],
+                ["iron" /* ResourceType.iron */, 2],
+                ["gold" /* ResourceType.gold */, 0],
             ]),
             nextUpgrades: [BuildingType.hookTier2],
         },
@@ -190,8 +190,8 @@ export var GAME_CONFIG;
             abilityType: AbilityType.hook,
             abilityConfig: HookType.standartHook,
             cost: new Map([
-                ["gold" /* ResourceType.gold */, 10],
-                ["iron" /* ResourceType.iron */, 10],
+                ["iron" /* ResourceType.iron */, 2],
+                ["gold" /* ResourceType.gold */, 0],
             ]),
             nextUpgrades: [BuildingType.hookTier3],
         },
@@ -202,8 +202,8 @@ export var GAME_CONFIG;
             abilityType: AbilityType.hook,
             abilityConfig: HookType.standartHook,
             cost: new Map([
-                ["gold" /* ResourceType.gold */, 10],
-                ["iron" /* ResourceType.iron */, 10],
+                ["iron" /* ResourceType.iron */, 2],
+                ["gold" /* ResourceType.gold */, 2],
             ]),
             nextUpgrades: [],
         },
@@ -214,8 +214,8 @@ export var GAME_CONFIG;
             abilityType: AbilityType.bomb,
             abilityConfig: BombType.standartBomb,
             cost: new Map([
-                ["gold" /* ResourceType.gold */, 10],
-                ["iron" /* ResourceType.iron */, 10],
+                ["iron" /* ResourceType.iron */, 0],
+                ["gold" /* ResourceType.gold */, 2],
             ]),
             nextUpgrades: [],
         },
@@ -226,10 +226,7 @@ export var GAME_CONFIG;
             image_icon: 'ship_broken',
             abilityType: null,
             abilityConfig: null,
-            cost: new Map([
-                ["gold" /* ResourceType.gold */, 10],
-                ["iron" /* ResourceType.iron */, 10],
-            ]),
+            cost: null,
             nextUpgrades: [],
         },
     };

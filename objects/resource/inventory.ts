@@ -14,7 +14,7 @@ export class Inventory {
   moveResourceFromOtherInventory(other: Inventory, persent: number = 1): void {
     for (const res of Object.keys(this.countOfResources)) {
       let curValue = this.countOfResources[res];
-      this.countOfResources[res] = curValue + Math.floor(other.countOfResources[res]*persent);
+      this.countOfResources[res] = curValue + Math.ceil(other.countOfResources[res]*persent);
       other.countOfResources[res] = Math.floor(other.countOfResources[res] * (1 - persent));
     }
   }

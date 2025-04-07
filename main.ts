@@ -116,7 +116,7 @@ function initCanvas() {
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken'] as const;
+const imageNames = ["planet","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken'] as const;
 export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;
