@@ -21,7 +21,7 @@ export class Spawner{
         }else {
             this.xy_spawn = new Vector(target.x,LD_GLOB.canvas.height+offscreen);
         }
-        this.vel_spawn = this.xy_spawn.sub(this.target)
+        this.vel_spawn = this.target.sub(this.xy_spawn)
                         .normalize((obj_type=='meteor')?GAME_CONFIG.SpawnerConfig.met_vel:GAME_CONFIG.SpawnerConfig.disease_vel);
     }
     spawn(){

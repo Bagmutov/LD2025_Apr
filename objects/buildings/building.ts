@@ -74,7 +74,10 @@ export class Building {
       case GAME_CONFIG.AbilityType.hook:
         return new Hook(<any>this.config.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.bomb:
-        return new Bomb(<any>this.config.abilityConfig, planet);
+        if(planet.inventory.canPay(GAME_CONFIG.BombConfig[(this.config.abilityConfig)].itemCost)){
+          planet.inventory.pay(GAME_CONFIG.BombConfig[(this.config.abilityConfig)].itemCost)
+          return new Bomb(<any>this.config.abilityConfig, planet);
+        } else return null;
       case GAME_CONFIG.AbilityType.spaseShip:
         return new SpaceShip(<any>this.config.abilityConfig, planet);
     }

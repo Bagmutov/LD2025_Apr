@@ -1,6 +1,6 @@
 import { GAME_LD, GAME_CONFIG } from "../game.js";
 import { LD_GLOB } from "../main.js";
-import { drawLine } from "../tools.js";
+import { drawLine, isRightMB } from "../tools.js";
 import { SpaceShip } from "./abilities/spaseShip.js";
 import { Building } from "./buildings/building.js";
 import { Button, crtButton, delButton } from "./button.js";
@@ -57,8 +57,9 @@ export class Planet extends Circle {
     // dst.font =  20 + "px Shantell Sans";
     dst.fillText(`${this.inventory.countOfResources.iron}`,
         this.coordinates.x+this.radius, this.coordinates.y);
+    dst.fillStyle = LD_GLOB.COLORS.main_7;
     dst.fillText(
-      `${this.inventory.countOfResources.iron}`,
+      `${this.inventory.countOfResources.gold}`,
       this.coordinates.x + this.radius,
       this.coordinates.y + 20
     );
@@ -103,8 +104,9 @@ export class Planet extends Circle {
     if((this.building.config.abilityType != null || this.temp_launch)){
       if(!this.launch_but){
         let but = crtButton(this, 0, 0, this.radius + 5);
-        but.ms_down = () => {
-          this.launch_xy = new Vector(0, 0);
+        but.ms_down = (e) => {
+          if(isRightMB(e)) this.launch_xy = null;
+          else this.launch_xy = new Vector(0, 0);
         };
         but.ms_move = (dx, dy) => {
           this.launch_xy.x = dx;
@@ -123,6 +125,7 @@ export class Planet extends Circle {
             this.temp_launch = false;
           }else if (this.building != null && this.building.config.abilityConfig!=null) {
             let launchee = this.building.buildLaunchee(this);
+            if(!launchee) return;
             this.addParent(launchee);
             launchee.launch(this.launch_xy.normalize(-1), this.launch_xy.len()/this.launch_xy_max_len);
           }

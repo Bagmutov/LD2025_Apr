@@ -1,4 +1,4 @@
-import { arrFindMin, dist2, drawCircle } from "../tools.js";
+import { arrFindMin, dist2, drawCircle, isRightMB } from "../tools.js";
 import { Circle } from "./circle.js";
 import { LD_GLOB } from "../main.js";
 import { GAME_CONFIG, GAME_LD } from "../game.js";
@@ -28,7 +28,13 @@ export function delButton(but:Button){
 
 let ms_dwn_but:Button = null, ms_dwn_xy:{x:number,y:number}=null, ms_over_but:Button = null;
 export function mouseDownButtons(e:MouseEvent){
-    if(ms_over_but){
+    if(isRightMB(e)){
+        if(ms_dwn_but){
+            ms_dwn_but.ms_down(e)
+            ms_dwn_but = null;
+            ms_dwn_xy=null;
+        }
+    }else if(ms_over_but){
         ms_dwn_but = ms_over_but;
         ms_dwn_but.state = 2;
         ms_dwn_xy = {x:e.clientX,y:e.clientY};
@@ -85,7 +91,7 @@ export class Button{
     constructor(public dx:number, public dy:number, public obj:Circle, public rad:number, public icon:HTMLImageElement = null){
 
     }
-    ms_down:()=>void;
+    ms_down:(e:MouseEvent)=>void;
     ms_move:(dx:number, dy:number)=>void;
     ms_up:()=>void;
     ms_click:()=>void;

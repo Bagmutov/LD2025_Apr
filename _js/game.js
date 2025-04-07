@@ -5,9 +5,12 @@ import { Vector } from "./objects/vector.js";
 import { PhisicMode } from "./objects/circle.js";
 import { arrDel } from "./tools.js";
 import { Building } from "./objects/buildings/building.js";
-import { launchDisease } from "./objects/meteor_disease.js";
+import { Bomb } from "./objects/abilities/bomb.js";
+import { launchDisease, MeteorDisease } from "./objects/meteor_disease.js";
 import { Spawner } from "./objects/spawner.js";
 import { clearButtons } from "./objects/button.js";
+import { SpaceShip } from "./objects/abilities/spaseShip.js";
+import { Hook } from "./objects/abilities/hook.js";
 export var GAME_CONFIG;
 (function (GAME_CONFIG) {
     let PlanetType;
@@ -99,32 +102,37 @@ export var GAME_CONFIG;
         },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standartHook]: { stability: 10, radius: 10, image: "planet", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart },
+        [HookType.standartHook]: { stability: 10, radius: 10, image: "icon1", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart },
     };
     GAME_CONFIG.BombConfig = {
         [BombType.standartBomb]: {
             stability: 10,
             radius: 20,
             image: 'build2',
-            phisicMode: PhisicMode.standart,
+            phisicMode: PhisicMode.braking,
             speed: 400,
-            maxDist: 1000,
+            maxDist: 9999,
             explosionRadius: 40,
-            blastWaveRadius: 70,
+            blastWaveRadius: 200,
             explosionStregth: 1,
             blastWaveStregth: 8,
             blastWaveVelocityAdd: 200,
             explosionImages: ['build0', 'build2'],
+            itemCost: new Map([
+                ["gold" /* ResourceType.gold */, 1],
+                ["iron" /* ResourceType.iron */, 0],
+            ])
         },
     };
     GAME_CONFIG.SpaceShipConfig = {
         [SpaceShipType.standartSpaseShip]: {
-            stability: 10,
+            stability: 1,
             radius: 10,
-            image: 'planet',
+            image: 'icon3',
+            image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,
-            phisicMode: PhisicMode.standart
+            phisicMode: PhisicMode.gravity
         }
     };
     GAME_CONFIG.Other = {
@@ -215,7 +223,7 @@ export var GAME_CONFIG;
             evil: true,
             radius: 15,
             image_build: "disease",
-            image_icon: 'bomb',
+            image_icon: 'ship_broken',
             abilityType: null,
             abilityConfig: null,
             cost: new Map([
@@ -234,12 +242,15 @@ export var GAME_LD;
         None: 0,
         Planet: 1 << 0,
         Meteor: 1 << 1,
-        Hook: 1 << 2,
+        Items: 1 << 2,
         SpaseShip: 1 << 3,
-        Bomb: 1 << 4,
+        Disease: 1 << 4,
     };
     GAME_LD.planets = [];
-    let meteors = [];
+    GAME_LD.meteors = [];
+    GAME_LD.spaceships = [];
+    GAME_LD.items = [];
+    GAME_LD.meteorsDis = [];
     let meteorSpawners = [];
     GAME_LD.diseasedPlanets = []; //This is horrible. We assume obj wouldn't loose diseased building ever
     let diseaseSpawners = [];
@@ -262,11 +273,12 @@ export var GAME_LD;
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .5, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
         let obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .8), GAME_CONFIG.PlanetType.planet);
         obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
+        obj.inventory.addResource("iron" /* ResourceType.iron */, 5);
         addCircleObject(obj);
         obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .2), GAME_CONFIG.PlanetType.planet);
         obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
         addCircleObject(obj);
-        addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(200, 30)));
+        addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2 + 200, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));
     }
     GAME_LD.init = init;
     function addCircleObject(obj) {
@@ -277,8 +289,20 @@ export var GAME_LD;
             obj.my_array = GAME_LD.planets;
         }
         else if (obj instanceof Meteor) {
-            meteors.push(obj);
-            obj.my_array = meteors;
+            GAME_LD.meteors.push(obj);
+            obj.my_array = GAME_LD.meteors;
+        }
+        else if (obj instanceof MeteorDisease) {
+            GAME_LD.meteorsDis.push(obj);
+            obj.my_array = GAME_LD.meteorsDis;
+        }
+        else if (obj instanceof SpaceShip) {
+            GAME_LD.spaceships.push(obj);
+            obj.my_array = GAME_LD.spaceships;
+        }
+        else if (obj instanceof Hook || obj instanceof Bomb) {
+            GAME_LD.items.push(obj);
+            obj.my_array = GAME_LD.items;
         }
         objects.push(obj);
     }
@@ -304,7 +328,7 @@ export var GAME_LD;
             let len = dir.len();
             if (len == 0)
                 continue; // to avoid division by 0
-            let a = dir.multiply(planet.mass * 500 / Math.max(1000000, Math.pow(len, 3))); //*500 **3
+            let a = dir.multiply(planet.mass * 150 / Math.max(1000000, Math.pow(len, 3))); //*500 **3
             res = res.add(a);
         }
         return res;
@@ -320,7 +344,25 @@ export var GAME_LD;
             }
         }
         if ((layer & GAME_LD.Layers.Meteor) != 0) {
-            for (let obj of meteors) {
+            for (let obj of GAME_LD.meteors) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
+        }
+        if ((layer & GAME_LD.Layers.Disease) != 0) {
+            for (let obj of GAME_LD.meteorsDis) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
+        }
+        if ((layer & GAME_LD.Layers.SpaseShip) != 0) {
+            for (let obj of GAME_LD.spaceships) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
+        }
+        if ((layer & GAME_LD.Layers.Items) != 0) {
+            for (let obj of GAME_LD.items) {
                 if (circle.checkCollision(obj))
                     colisions.push(obj);
             }
@@ -332,7 +374,7 @@ export var GAME_LD;
         let player_planets = 0;
         GAME_LD.planets.forEach(el => { if (el.building && !el.building.config.evil)
             player_planets += 1; });
-        if (player_planets == 0) {
+        if (player_planets == 0 && GAME_LD.spaceships.length == 0) {
             clearAll();
             LD_GLOB.game_state = 'menu';
             LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
@@ -359,7 +401,7 @@ export var GAME_LD;
         for (let object of objects) {
             object.draw(dst);
         }
-        for (let meteor of meteors) {
+        for (let meteor of GAME_LD.meteors) {
             meteor.draw(dst);
         }
         //FOR DEBUG:
@@ -372,7 +414,9 @@ export var GAME_LD;
             dst.fillRect(sp.target.x, sp.target.y, 3, 3);
         }
         dst.fillText(`obj:${objects.length}`, 10, 20);
-        dst.fillText(`met:${meteors.length}`, 10, 40);
+        dst.fillText(`met:${GAME_LD.meteors.length}`, 10, 40);
+        dst.fillText(`dis:${GAME_LD.meteorsDis.length}`, 10, 60);
+        dst.fillText(`ships:${GAME_LD.spaceships.length}`, 10, 80);
     }
     GAME_LD.drawGame = drawGame;
     let stepN = 0;
@@ -386,10 +430,10 @@ export var GAME_LD;
             obj.step(delta);
         }
         if (stepN % 50 == 0) {
-            for (let met of meteors)
-                if (met.coordinates.x < -OFF_BORD || met.coordinates.y < -OFF_BORD ||
-                    met.coordinates.x > LD_GLOB.canvas.width + OFF_BORD || met.coordinates.y > LD_GLOB.canvas.height + OFF_BORD) {
-                    GAME_LD.delCircleObject(this);
+            for (let cir of objects)
+                if (cir.coordinates.x < -OFF_BORD || cir.coordinates.y < -OFF_BORD ||
+                    cir.coordinates.x > LD_GLOB.canvas.width + OFF_BORD || cir.coordinates.y > LD_GLOB.canvas.height + OFF_BORD) {
+                    GAME_LD.delCircleObject(cir);
                 }
         }
         if (stepN % 10 == 0) {
@@ -411,7 +455,7 @@ export var GAME_LD;
         meteorTimer -= delta;
         if (meteorTimer < 0) {
             meteorTimer = Math.max(1, 4 - .5 * meteorSpawners.length) + Math.random() * 5;
-            if (meteorSpawners.length > 0 && meteors.length < GAME_LD.max_meteors)
+            if (meteorSpawners.length > 0 && GAME_LD.meteors.length < GAME_LD.max_meteors)
                 meteorSpawners[~~(Math.random() * meteorSpawners.length)].spawn();
         }
         diseaseTimer -= delta;

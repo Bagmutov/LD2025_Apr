@@ -2,8 +2,8 @@ import { ResourceType } from "./resource";
 
 export class Inventory {
   countOfResources: Record<ResourceType, number> = {
-    [ResourceType.gold]: 100,
-    [ResourceType.iron]: 100,
+    [ResourceType.gold]: 0,
+    [ResourceType.iron]: 0,
   };
 
   addResource(res: ResourceType, count: number): void {

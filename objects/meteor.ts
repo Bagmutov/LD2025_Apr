@@ -23,11 +23,14 @@ export class Meteor extends Circle {
 
   step(delta: number) {
     super.step(delta);
+    let vel = this.velocity.len();
+    // if(vel>200)this.velocity = this.velocity.normalize(200);
     
     let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
     if (colisions.length != 0){
       let colisionPlanet = colisions[0] as Planet, dif = this.coordinates.sub(colisionPlanet.coordinates);
-      this.addVelocity(dif.multiply(30/this.radius));
+      this.addVelocity(dif.multiply(10/this.radius));
+      this.velocity=this.velocity.multiply(.97);
       colisionPlanet.addVelocity(dif.multiply(-2/colisionPlanet.mass));
       // colisionPlanet.inventory.addResoursesMap(this.innerResource);
       // this.destroy(); 

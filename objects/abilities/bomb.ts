@@ -9,7 +9,7 @@ import { Button, crtButton, delButton } from "../button.js";
 
 export class Bomb extends Launchee {
   forwardSpeed: number;
-  maxDist: number;
+  maxDist2: number;
 
   explosionRadius: number;
   blastWaveRadius: number;
@@ -36,7 +36,7 @@ export class Bomb extends Launchee {
       config.stability,
     );
     this.forwardSpeed = config.speed;
-    this.maxDist = config.maxDist;
+    this.maxDist2 = config.maxDist**2;
     this.explosionRadius = config.explosionRadius;
     this.blastWaveRadius = config.blastWaveRadius;
     this.explosionStregth = config.explosionStregth;
@@ -46,9 +46,9 @@ export class Bomb extends Launchee {
       this.explosionImages.push(LD_GLOB.getImage(immageName));
     }
     this.explodeButton = crtButton(this, 0, 0, this.radius + 5);
-      this.explodeButton.ms_down = () => {
-        this.explode();
-      }
+    this.explodeButton.ms_down = () => {
+      this.explode();
+    }
   }
 
   draw(dst: CanvasRenderingContext2D): void {
@@ -63,22 +63,25 @@ export class Bomb extends Launchee {
     }
   }
 
+  detonationTimer = 2;
   step(delta: number) {
     if (this.exploseStart){
       if (this.exploseFrame >= this.explosionImages.length ){
         this.destroy();
       }
       return;
-    } else if(this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius+this.explosionRadius) {
-      super.step(delta);
-      return;
-    }
+    } 
+    // else if(this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius+this.explosionRadius) {
+    //   super.step(delta);
+    //   return;
+    // }
     super.step(delta);
-    if (this.coordinates.sub(this.planet.coordinates).lenSq() > this.maxDist**2 ||
-      GAME_LD.getColisions(
-        this,
-        GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip
-      ).length != 0){
+    this.detonationTimer -= delta;
+    let collisions = GAME_LD.getColisions(this, 
+          GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip
+      );
+    if (this.detonationTimer<0 || this.coordinates.sub(this.planet.coordinates).lenSq() > this.maxDist2 ||
+      collisions.length != 0&&collisions[0]!=this.planet){
       this.explode();
     }
   }
@@ -87,7 +90,8 @@ export class Bomb extends Launchee {
     this.exploseStart = true;
     this.exploseFrame = 0;
     this.radius = this.explosionRadius;
-    let objectsUnderExplosion = GAME_LD.getColisions(this, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
+    let objectsUnderExplosion = GAME_LD.getColisions(this, 
+                  GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
     for (let circle of objectsUnderExplosion){
       if (circle.stability < this.explosionStregth){
         circle.destroy();
@@ -100,15 +104,21 @@ export class Bomb extends Launchee {
       PhisicMode.none,
       this.stability
     );
-    let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip);
+    let objectsUnderBlastWave = GAME_LD.getColisions(blastWaveCircle, 
+                GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip + GAME_LD.Layers.Items);// + GAME_LD.Layers.Disease
     for (let circle of objectsUnderBlastWave){
       if (circle.stability < this.blastWaveStregth) {
-        circle.addVelocity(circle.coordinates.sub(this.coordinates).normalize().multiply(this.blastWaveVelocityAdd))
+        const dif = circle.coordinates.sub(this.coordinates);
+        const pow = (circle.radius+this.blastWaveRadius-dif.len())*this.blastWaveVelocityAdd/this.blastWaveRadius;
+        circle.addVelocity(dif.normalize(pow))
+      }
+      if(circle instanceof Bomb){
+        setTimeout(()=>{if(!circle.exploseStart)circle.explode();},100);
       }
     }
   }
   destroy(): void {
-    delButton(this.explodeButton);
+    if(this.explodeButton)delButton(this.explodeButton);
     super.destroy();
   }
 }
