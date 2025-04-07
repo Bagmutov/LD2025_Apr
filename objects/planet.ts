@@ -6,7 +6,8 @@ import { SpaceShip } from "./abilities/spaseShip.js";
 import { Building } from "./buildings/building.js";
 import { Button, crtButton, delButton } from "./button.js";
 import { Circle } from "./circle.js";
-import { MeteorDisease } from "./meteor_disease.js";
+import { Meteor } from "./meteor.js";
+import { launchDisease, MeteorDisease } from "./meteor_disease.js";
 import { Inventory } from "./resource/inventory.js";
 import { ResourceType } from "./resource/resource.js";
 import { Vector } from "./vector.js";
@@ -84,7 +85,7 @@ export class Planet extends Circle {
     if (this.diseaseValue > 0) {
       dst.fillStyle = LD_GLOB.COLORS.red;
       dst.fillText(
-        `${this.diseaseValue}`,
+        `${Math.floor(this.diseaseValue)}`,
         this.coordinates.x + this.radius,
         this.coordinates.y + this.radius
       );
@@ -163,6 +164,18 @@ export class Planet extends Circle {
     this.updateLaunchButton();
   }
   updateLaunchButton() {
+    if (!this.building){
+      if (this.launch_but) {
+        delButton(this.launch_but);
+        this.launch_but = null;
+      }
+      for (let button of this.upgrade_buttons) {
+        delButton(button);
+      }
+      this.upgrade_buttons = [];
+      return;
+    }
+
     if (!this.building.config.evil && (this.building.config.abilityType != null || this.temp_launch)) {
       if (!this.launch_but) {
         let but = crtButton(this, 0, 0, this.radius + 5);
@@ -206,7 +219,7 @@ export class Planet extends Circle {
         };
         this.launch_but = but;
       }
-    } else {
+    } else{
       if (this.launch_but) {
         delButton(this.launch_but);
         this.launch_but = null;
@@ -262,5 +275,63 @@ export class Planet extends Circle {
       this.addVelocity(dif.multiply(30 / this.mass));
       colisionPlanet.addVelocity(dif.multiply(-30 / this.mass));
     }
+  }
+  
+  destroy(): void {
+    function getRandomVector() {
+      return new Vector(
+        (Math.random() - 0.5) * 100,
+        (Math.random() - 0.5) * 100
+      );
+    }
+
+    for (let i = 0; i < this.diseaseValue; i+=5){
+      launchDisease(
+        null,
+        this.coordinates.add(getRandomVector()),
+      );
+      
+    }
+    
+    while (this.inventory.canPay(GAME_CONFIG.MeteorConfig.largeMeteor.innerResource)){
+      this.inventory.pay(GAME_CONFIG.MeteorConfig.largeMeteor.innerResource);
+      let meteor = new Meteor(
+        this.coordinates.add(getRandomVector()),
+        GAME_CONFIG.MeteorType.largeMeteor,
+        getRandomVector(),
+      );
+      GAME_LD.addCircleObject(meteor)
+    }
+    while (
+      this.inventory.canPay(
+        GAME_CONFIG.MeteorConfig.mediumMeteor.innerResource
+      )
+    ) {
+      this.inventory.pay(GAME_CONFIG.MeteorConfig.mediumMeteor.innerResource);
+      let meteor = new Meteor(
+        this.coordinates.add(getRandomVector()),
+        GAME_CONFIG.MeteorType.mediumMeteor,
+        getRandomVector()
+      );
+      GAME_LD.addCircleObject(meteor);
+    }
+    while (
+      this.inventory.canPay(
+        GAME_CONFIG.MeteorConfig.smallMeteor.innerResource
+      )
+    ) {
+      this.inventory.pay(GAME_CONFIG.MeteorConfig.smallMeteor.innerResource);
+      let meteor = new Meteor(
+        this.coordinates.add(getRandomVector()),
+        GAME_CONFIG.MeteorType.smallMeteor,
+        getRandomVector()
+      );
+      GAME_LD.addCircleObject(meteor);
+    }
+    
+    this.building = null;
+    this.updateLaunchButton();
+    
+    super.destroy()
   }
 }

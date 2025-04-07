@@ -101,10 +101,7 @@ export class Bomb extends Launchee {
     this.radius = this.explosionRadius;
     let objectsUnderExplosion = GAME_LD.getColisions(
       this,
-      GAME_LD.Layers.Planet +
-        GAME_LD.Layers.Meteor +
-        GAME_LD.Layers.SpaseShip +
-        GAME_LD.Layers.Disease
+      GAME_LD.Layers.All
     );
     for (let circle of objectsUnderExplosion){
       if (circle.stability < this.explosionStregth){
@@ -120,11 +117,7 @@ export class Bomb extends Launchee {
     );
     let objectsUnderBlastWave = GAME_LD.getColisions(
       blastWaveCircle,
-      GAME_LD.Layers.Planet +
-        GAME_LD.Layers.Meteor +
-        GAME_LD.Layers.SpaseShip +
-        GAME_LD.Layers.Items +
-        GAME_LD.Layers.Disease
+      GAME_LD.Layers.All
     );//  
     for (let circle of objectsUnderBlastWave){
       if (circle.stability < this.blastWaveStregth) {

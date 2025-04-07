@@ -11,8 +11,9 @@ export class GravityTrap extends Launchee {
   maxDist2: number;
 
   trapRadius: number;
-  
+
   trapStregth: number;
+  trapDelStregth: number;
   trapVelocityAdd: number;
   activeImage: HTMLImageElement;
   activeDuration: number;
@@ -30,7 +31,7 @@ export class GravityTrap extends Launchee {
       config.phisicMode,
       config.speed,
       config.stability,
-      planet.coordinates,
+      planet.coordinates
     );
     this.maxDist2 = config.maxDist;
     this.trapRadius = config.trapRadius;
@@ -38,6 +39,7 @@ export class GravityTrap extends Launchee {
     this.trapVelocityAdd = config.trapVelocityAdd;
     this.activeImage = LD_GLOB.getImage(config.activeImage);
     this.activeDuration = config.activeDuration;
+    this.trapDelStregth = config.trapDelStregth;
 
     this.activateButton = crtButton(this, 0, 0, this.radius + 5);
     this.activateButton.ms_down = () => {
@@ -48,26 +50,23 @@ export class GravityTrap extends Launchee {
   detonationTimer = 6;
   step(delta: number) {
     if (this.isActive) {
-      this.activeDuration -= delta
+      this.activeDuration -= delta;
       if (0 > this.activeDuration) {
         this.destroy();
       } else {
         let trapCollisions = GAME_LD.getColisions(
           this.trapCircle,
-          GAME_LD.Layers.Planet +
-            GAME_LD.Layers.Meteor +
-            GAME_LD.Layers.SpaseShip +
-            GAME_LD.Layers.Disease
+          GAME_LD.Layers.All
         );
-        let meCollisions = GAME_LD.getColisions(
-          this,
-          GAME_LD.Layers.Planet +
-            GAME_LD.Layers.Meteor +
-            GAME_LD.Layers.SpaseShip +
-            GAME_LD.Layers.Disease
-        );
-        for (let circle of trapCollisions){
+        let meCollisions = GAME_LD.getColisions(this, GAME_LD.Layers.All);
+        for (let circle of trapCollisions) {
           if (circle.stability < this.trapStregth) {
+
+            if (circle instanceof Planet){
+              console.log(circle);
+              circle.diseaseValue = Math.max(circle.diseaseValue - .1, 0);
+            }
+
             const dif = circle.coordinates.sub(this.coordinates);
             const pow =
               ((circle.radius + this.radius - dif.len()) *
@@ -76,8 +75,8 @@ export class GravityTrap extends Launchee {
             circle.addVelocity(dif.normalize(pow));
           }
         }
-        for (let circle of meCollisions){
-          if (circle.stability < this.trapStregth-4) {
+        for (let circle of meCollisions) {
+          if (circle.stability < this.trapDelStregth) {
             circle.destroy();
           }
         }
@@ -89,7 +88,10 @@ export class GravityTrap extends Launchee {
     this.detonationTimer -= delta;
     let collisions = GAME_LD.getColisions(
       this,
-      GAME_LD.Layers.Planet + GAME_LD.Layers.Meteor + GAME_LD.Layers.SpaseShip + GAME_LD.Layers.Disease
+      GAME_LD.Layers.Planet +
+        GAME_LD.Layers.Meteor +
+        GAME_LD.Layers.SpaseShip +
+        GAME_LD.Layers.Disease
     );
     if (
       this.detonationTimer < 0 ||
@@ -103,7 +105,13 @@ export class GravityTrap extends Launchee {
     this.isActive = true;
     this.image = this.activeImage;
     this.phisicMode = PhisicMode.none;
-    this.trapCircle = new Circle(this.coordinates, this.trapRadius, this.image, this.phisicMode, this.stability);
+    this.trapCircle = new Circle(
+      this.coordinates,
+      this.trapRadius,
+      this.image,
+      this.phisicMode,
+      this.stability
+    );
     if (this.activateButton) delButton(this.activateButton);
   }
   destroy(): void {

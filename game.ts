@@ -58,7 +58,9 @@ export namespace GAME_CONFIG {
   };
 
   export enum BombType {
-    standartBomb = 'standartBomb',
+    bombTier1 = "bombTier1",
+    bombTier2 = "bombTier2",
+    bombTier3 = "bombTier3",
   }
   export type BombConfigData = {
     stability: number;
@@ -93,6 +95,7 @@ export namespace GAME_CONFIG {
 
     trapRadius: number;
     trapStregth: number;
+    trapDelStregth: number;
     trapVelocityAdd: number;
     activeImage: imageNamesTp;
     activeDuration: number;
@@ -119,6 +122,8 @@ export namespace GAME_CONFIG {
     hookTier2,
     hookTier3,
     bombTier1,
+    bombTier2,
+    bombTier3,
     trapTier1,
     starting,
     disease1,
@@ -167,7 +172,7 @@ export namespace GAME_CONFIG {
       phisicMode: PhisicMode.braking,
     },
     [PlanetType.diseasePlanet]: {
-      stability: 10,
+      stability: 7,
       radius: 40,
       image: "planet",
       mass: 200,
@@ -187,7 +192,7 @@ export namespace GAME_CONFIG {
       image: "planet_blue",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
-        [ResourceType.iron, 1],
+        [ResourceType.iron, 2],
         [ResourceType.gold, 0],
       ]),
     },
@@ -197,8 +202,8 @@ export namespace GAME_CONFIG {
       image: "planet_blue",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
-        [ResourceType.iron, 2],
-        [ResourceType.gold, 0],
+        [ResourceType.iron, 3],
+        [ResourceType.gold, 1],
       ]),
     },
     [MeteorType.largeMeteor]: {
@@ -208,7 +213,7 @@ export namespace GAME_CONFIG {
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
         [ResourceType.iron, 2],
-        [ResourceType.gold, 1],
+        [ResourceType.gold, 4],
       ]),
     },
   };
@@ -248,26 +253,68 @@ export namespace GAME_CONFIG {
     },
   };
   export const BombConfig: Record<BombType, BombConfigData> = {
-    [BombType.standartBomb]: {
+    [BombType.bombTier1]: {
+      stability: 10,
+      radius: 15,
+      image: "build2",
+      phisicMode: PhisicMode.braking,
+      speed: 200,
+      maxDist: 9999,
+
+      explosionRadius: 30,
+      blastWaveRadius: 100,
+
+      explosionStregth: 2,
+      blastWaveStregth: 4,
+      blastWaveVelocityAdd: 50,
+
+      explosionImages: ["build0", "build2"],
+      itemCost: new Map<ResourceType, number>([
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 0],
+      ]),
+    },
+    [BombType.bombTier2]: {
       stability: 10,
       radius: 20,
-      image: 'build2',
+      image: "build2",
       phisicMode: PhisicMode.braking,
-      speed: 400,
+      speed: 300,
       maxDist: 9999,
 
       explosionRadius: 40,
       blastWaveRadius: 200,
 
-      explosionStregth: 1,
-      blastWaveStregth: 8,
+      explosionStregth: 3,
+      blastWaveStregth: 6,
+      blastWaveVelocityAdd: 150,
+
+      explosionImages: ["build0", "build2"],
+      itemCost: new Map<ResourceType, number>([
+        [ResourceType.iron, 4],
+        [ResourceType.gold, 0],
+      ]),
+    },
+    [BombType.bombTier3]: {
+      stability: 10,
+      radius: 20,
+      image: "build2",
+      phisicMode: PhisicMode.braking,
+      speed: 500,
+      maxDist: 9999,
+
+      explosionRadius: 50,
+      blastWaveRadius: 250,
+
+      explosionStregth: 8,
+      blastWaveStregth: 12,
       blastWaveVelocityAdd: 200,
-      
-      explosionImages: ['build0', 'build2'],
-      itemCost:new Map<ResourceType, number>([
-        [ResourceType.iron, 0],
+
+      explosionImages: ["build0", "build2"],
+      itemCost: new Map<ResourceType, number>([
+        [ResourceType.iron, 6],
         [ResourceType.gold, 1],
-      ])
+      ]),
     },
   };
   export const TrapConfig: Record<TrapType, TrapConfigData> = {
@@ -280,7 +327,8 @@ export namespace GAME_CONFIG {
     maxDist: 9999,
 
     trapRadius: 300,
-    trapStregth: 7,
+    trapStregth: 10,
+    trapDelStregth: 5,
     trapVelocityAdd: 10,
     activeImage: 'build1',
     activeDuration: 4,
@@ -383,8 +431,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.hookTier1,
       cost: new Map<ResourceType, number>([
-        [ResourceType.iron, 2],
-        [ResourceType.gold, 0],
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 3],
       ]),
       nextUpgrades: [BuildingType.hookTier2],
     },
@@ -395,8 +443,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.hookTier2,
       cost: new Map<ResourceType, number>([
-        [ResourceType.iron, 2],
-        [ResourceType.gold, 0],
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 6],
       ]),
       nextUpgrades: [BuildingType.hookTier3],
     },
@@ -407,8 +455,8 @@ export namespace GAME_CONFIG {
       abilityType: AbilityType.hook,
       abilityConfig: HookType.hookTier3,
       cost: new Map<ResourceType, number>([
-        [ResourceType.iron, 2],
-        [ResourceType.gold, 2],
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 10],
       ]),
       nextUpgrades: [],
     },
@@ -417,12 +465,36 @@ export namespace GAME_CONFIG {
       image_build: "build2",
       image_icon: "icon2",
       abilityType: AbilityType.bomb,
-      abilityConfig: BombType.standartBomb,
+      abilityConfig: BombType.bombTier1,
       cost: new Map<ResourceType, number>([
         [ResourceType.iron, 0],
-        [ResourceType.gold, 2],
+        [ResourceType.gold, 4],
       ]),
-      nextUpgrades: [BuildingType.trapTier1],
+      nextUpgrades: [BuildingType.trapTier1, BuildingType.bombTier2],
+    },
+    [BuildingType.bombTier2]: {
+      radius: 15,
+      image_build: "build2",
+      image_icon: "icon2",
+      abilityType: AbilityType.bomb,
+      abilityConfig: BombType.bombTier2,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.iron, 0],
+        [ResourceType.gold, 8],
+      ]),
+      nextUpgrades: [BuildingType.trapTier1, BuildingType.bombTier3],
+    },
+    [BuildingType.bombTier3]: {
+      radius: 15,
+      image_build: "build2",
+      image_icon: "icon2",
+      abilityType: AbilityType.bomb,
+      abilityConfig: BombType.bombTier3,
+      cost: new Map<ResourceType, number>([
+        [ResourceType.iron, 5],
+        [ResourceType.gold, 20],
+      ]),
+      nextUpgrades: [],
     },
     [BuildingType.trapTier1]: {
       radius: 15,
@@ -676,10 +748,10 @@ export namespace GAME_LD {
     for (let meteor of meteors) {
       meteor.draw(dst);
     }
+    // dst.fillStyle = LD_GLOB.COLORS.red;
     // for (let planet1 of diseasedPlanets) {
     //   for (let planet2 of diseasedPlanets){
     //     if (planet1 != planet2){
-    //       dst.fillStyle = LD_GLOB.COLORS.red;
     //       drawLine(
     //         dst,
     //         planet1.coordinates.x,
