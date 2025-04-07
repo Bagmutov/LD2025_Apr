@@ -11,13 +11,15 @@ import { Bomb } from "./objects/abilities/bomb.js";
 
 export namespace GAME_CONFIG {
   export enum PlanetType {
-    planet = 'planet',
+    planet = "planet",
+    startPlanet = "startPlanet",
   }
   export type PlanetConfigData = {
     stability: number;
     radius: number;
     image: imageNamesTp;
     mass: number;
+    startBuilding: BuildingType;
     phisicMode: PhisicMode;
   };
   export enum MeteorType {
@@ -30,6 +32,7 @@ export namespace GAME_CONFIG {
     radius: number;
     image: imageNamesTp;
     phisicMode: PhisicMode;
+    innerResource: Map<ResourceType, number>;
   };
   export enum HookType {
     standartHook = 'standartHook',
@@ -104,7 +107,22 @@ export namespace GAME_CONFIG {
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-    [PlanetType.planet]: {stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking},
+    [PlanetType.planet]: {
+      stability: 5,
+      radius: 60,
+      image: "planet",
+      mass: 200,
+      startBuilding: null, 
+      phisicMode: PhisicMode.braking,
+    },
+    [PlanetType.startPlanet]: {
+      stability: 7,
+      radius: 70,
+      image: "planet",
+      mass: 200,
+      startBuilding: BuildingType.starting,
+      phisicMode: PhisicMode.braking,
+    },
   };
 
 
@@ -116,18 +134,30 @@ export namespace GAME_CONFIG {
       radius: 8,
       image: "planet",
       phisicMode: PhisicMode.gravity,
+      innerResource: new Map<ResourceType, number>([
+        [ResourceType.gold, 0],
+        [ResourceType.iron, 10],
+      ]),
     },
     [MeteorType.mediumMeteor]: {
       stability: 2,
       radius: 12,
       image: "planet",
       phisicMode: PhisicMode.gravity,
+      innerResource: new Map<ResourceType, number>([
+        [ResourceType.gold, 0],
+        [ResourceType.iron, 10],
+      ]),
     },
     [MeteorType.largeMeteor]: {
       stability: 3,
       radius: 20,
       image: "planet",
       phisicMode: PhisicMode.gravity,
+      innerResource: new Map<ResourceType, number>([
+        [ResourceType.gold, 0],
+        [ResourceType.iron, 1],
+      ]),
     },
   };
 
@@ -191,7 +221,7 @@ export namespace GAME_CONFIG {
         [ResourceType.gold, 0],
         [ResourceType.iron, 0],
       ]),
-      nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
+      nextUpgrades: [BuildingType.hookTier1, BuildingType.bombTier1],
     },
     [BuildingType.hookTier1]: {
       radius: 15,
@@ -278,7 +308,7 @@ export namespace GAME_LD {
                     .filter((v) => isNaN(Number(v)))){ //creates one building of each type
       buildings[key] = new Building(<any> key);
     }
-    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.6), GAME_CONFIG.PlanetType.planet));
+    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.6), GAME_CONFIG.PlanetType.startPlanet));
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.3,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
     addCircleObject(
       new Meteor(

@@ -10,6 +10,7 @@ export var GAME_CONFIG;
     let PlanetType;
     (function (PlanetType) {
         PlanetType["planet"] = "planet";
+        PlanetType["startPlanet"] = "startPlanet";
     })(PlanetType = GAME_CONFIG.PlanetType || (GAME_CONFIG.PlanetType = {}));
     let MeteorType;
     (function (MeteorType) {
@@ -44,7 +45,22 @@ export var GAME_CONFIG;
         AbilityType["spaseShip"] = "spaseShip";
     })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
-        [PlanetType.planet]: { stability: 5, radius: 70, image: "planet", mass: 200, phisicMode: PhisicMode.braking },
+        [PlanetType.planet]: {
+            stability: 5,
+            radius: 60,
+            image: "planet",
+            mass: 200,
+            startBuilding: null,
+            phisicMode: PhisicMode.braking,
+        },
+        [PlanetType.startPlanet]: {
+            stability: 7,
+            radius: 70,
+            image: "planet",
+            mass: 200,
+            startBuilding: BuildingType.starting,
+            phisicMode: PhisicMode.braking,
+        },
     };
     GAME_CONFIG.MeteorConfig = {
         [MeteorType.smallMeteor]: {
@@ -52,18 +68,30 @@ export var GAME_CONFIG;
             radius: 8,
             image: "planet",
             phisicMode: PhisicMode.gravity,
+            innerResource: new Map([
+                ["gold" /* ResourceType.gold */, 0],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
         },
         [MeteorType.mediumMeteor]: {
             stability: 2,
             radius: 12,
             image: "planet",
             phisicMode: PhisicMode.gravity,
+            innerResource: new Map([
+                ["gold" /* ResourceType.gold */, 0],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
         },
         [MeteorType.largeMeteor]: {
             stability: 3,
             radius: 20,
             image: "planet",
             phisicMode: PhisicMode.gravity,
+            innerResource: new Map([
+                ["gold" /* ResourceType.gold */, 0],
+                ["iron" /* ResourceType.iron */, 1],
+            ]),
         },
     };
     GAME_CONFIG.HookConfig = {
@@ -117,7 +145,7 @@ export var GAME_CONFIG;
                 ["gold" /* ResourceType.gold */, 0],
                 ["iron" /* ResourceType.iron */, 0],
             ]),
-            nextUpgrades: [BuildingType.hookTier1, BuildingType.hookTier2],
+            nextUpgrades: [BuildingType.hookTier1, BuildingType.bombTier1],
         },
         [BuildingType.hookTier1]: {
             radius: 15,
@@ -193,7 +221,7 @@ export var GAME_LD;
             .filter((v) => isNaN(Number(v)))) { //creates one building of each type
             GAME_LD.buildings[key] = new Building(key);
         }
-        addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.planet));
+        addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.startPlanet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(200, 30)));
     }
