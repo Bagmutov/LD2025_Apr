@@ -17,7 +17,7 @@ export var LD_GLOB;
         main_5: "#0ab177ff",
         main_6: "#00d57aff",
         main_7: "#87efc4ff",
-        red: "#F53030ff",
+        red: "#F03030ff",
     };
     function updateLoading() {
         LD_GLOB.loading_percent = Math.max(0, Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall)));
