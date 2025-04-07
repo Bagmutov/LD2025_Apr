@@ -8,8 +8,8 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
-   sodipodi:docname="build0.svg"
-   inkscape:export-filename="build0.png"
+   sodipodi:docname="build2.svg"
+   inkscape:export-filename="build2.png"
    inkscape:export-xdpi="24"
    inkscape:export-ydpi="24"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,36 +27,43 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="5.4416667"
-     inkscape:cx="68.820827"
+     inkscape:cx="44.74732"
      inkscape:cy="60.735069"
      inkscape:window-width="1440"
      inkscape:window-height="872"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showguides="true" />
   <defs
      id="defs1" />
   <g
      inkscape:label="Слой 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     style="display:inline">
     <circle
        style="fill:#85ecc1;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
        id="path1"
        cx="60"
        cy="60"
        r="60" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:99.7127px;font-family:'Adwaita Mono';-inkscape-font-specification:'Adwaita Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#032e1e;stroke:#000000;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
-       x="30.185928"
-       y="96.644447"
-       id="text1"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         x="30.185928"
-         y="96.644447"
-         style="stroke-width:0;fill:#032e1e;fill-opacity:1">?</tspan></text>
+    <g
+       id="g3"
+       transform="translate(-1.2649316,-1.2948847)"
+       style="stroke:#032e1e;stroke-opacity:1">
+      <path
+         style="display:inline;fill:none;fill-opacity:1;stroke:#032e1e;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+         d="m 64.093438,45.783941 c 0,0 8.418256,-13.869233 17.226621,-13.073375 5.007055,0.4524 6.012789,9.913286 11.026033,10.290964 5.404693,0.407169 13.415008,-9.18836 13.415008,-9.18836"
+         id="path3"
+         sodipodi:nodetypes="cssc" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#032e1e;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+         id="path2"
+         cx="50.076569"
+         cy="70.474731"
+         r="28.392036" />
+    </g>
   </g>
 </svg>
