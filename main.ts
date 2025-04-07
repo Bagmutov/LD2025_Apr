@@ -7,10 +7,11 @@ export namespace LD_GLOB {
   export let version = "0.1";
   export let canvas: HTMLCanvasElement;
   export let mainDst: CanvasRenderingContext2D;
-  export let game_state: "loading" | "menu" | "game" = "menu";
-  export let menu_text:string = "MENU. Press Enter.";
+  export let game_state: "loading" | "menu" | "game" = "loading";
+  export let menu_text:string = "Paused. Press Enter.";
   export let loaded: boolean = false;
   export let loading_percent = 0;
+  export let mute:boolean = false;
   export const COLORS = {
     main_1: "#112e50ff",
     main_2: "#0a4c69ff",
@@ -26,12 +27,17 @@ export namespace LD_GLOB {
   export function updateLoading() {
     loading_percent = Math.max(
       0,
-      Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall))
+      Math.min(1, (loaded_imgs + buffN) / (imageNames.length + soundNames.length))
     );
     if (loading_percent == 1) loaded = true;
   }
   export function getImage(name: imageNamesTp): HTMLImageElement {
     return images[name];
+  }
+  export function startMenu(){
+    let rad = background.height * 0.01;
+    background_ctx.drawImage(LD_GLOB.getImage('cosmos'),0,0, LD_GLOB.canvas.width, LD_GLOB.canvas.height)
+    LD_GLOB.game_state = "menu";
   }
 }
 
@@ -75,8 +81,8 @@ function mainLoop() {
 }
 let c_x = 0,
   c_y = 0,
-  background: HTMLCanvasElement,
-  background_ctx: CanvasRenderingContext2D;
+  background: HTMLCanvasElement;
+export let background_ctx: CanvasRenderingContext2D;
 function drawLoadingScreen() {
   LD_GLOB.mainDst.drawImage(background, 0, 0);
   drawCircle(LD_GLOB.mainDst, c_x, c_y, c_x * 0.5 + 5, LD_GLOB.COLORS.main_5);
@@ -117,7 +123,7 @@ function initCanvas() {
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken'] as const;
+const imageNames = ["planet","cosmos","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken','hook_end'] as const;
 export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;
@@ -146,7 +152,7 @@ function initBackground() {
   background = document.createElement("canvas");
   positionCanvas(background);
   background_ctx = background.getContext("2d");
-  let rad = background.height * 0.03;
+  let rad = background.height * 0.01;
   drawRoundRect(
     background_ctx,
     0,
@@ -154,11 +160,11 @@ function initBackground() {
     0,
     LD_GLOB.canvas.width,
     LD_GLOB.canvas.height,
-    LD_GLOB.COLORS.main_1
+    LD_GLOB.COLORS.main_4
   );
-  // drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
-  // drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
-  // drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
+  drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canvas.width - rad * 1 * 2, LD_GLOB.canvas.height - rad * 1 * 2, LD_GLOB.COLORS.main_3);
+  drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canvas.width - rad * 2 * 2, LD_GLOB.canvas.height - rad * 2 * 2, LD_GLOB.COLORS.main_2);
+  drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canvas.width - rad * 3 * 2, LD_GLOB.canvas.height - rad * 3 * 2, LD_GLOB.COLORS.main_1);
 }
 
 //     ----------------------- SOUND --------------------------
@@ -218,8 +224,8 @@ export function playSound(
   wait: number = 0,
   loop: boolean = false
 ): AudioBufferSourceNode {
-  if(!audio_context)return;
-  console.log(`${sound_name}`);
+  if(!audio_context || LD_GLOB.mute)return;
+  // console.log(`${sound_name}`);
   let buffer: AudioBuffer = all_buffers[sound_name];
   var source = audio_context.createBufferSource(); // creates a sound source
   const gainNode = audio_context.createGain();
