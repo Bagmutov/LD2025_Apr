@@ -219,7 +219,7 @@ export namespace GAME_CONFIG {
     [HookType.hookTier1]: {
       stability: 10,
       radius: 10, 
-      image: "icon1", 
+      image: "hook_end", 
       forwardSpeed: 400,
       backwardSpeed: 400, 
       powerLavel: 1,
@@ -229,7 +229,7 @@ export namespace GAME_CONFIG {
     [HookType.hookTier2]: {
       stability: 10,
       radius: 20, 
-      image: "icon1", 
+      image: "hook_end", 
       forwardSpeed: 800, 
       backwardSpeed: 1000, 
       powerLavel: 3, 
@@ -239,7 +239,7 @@ export namespace GAME_CONFIG {
     [HookType.hookTier3]: {
       stability: 10,
       radius: 30,
-      image: "icon1", 
+      image: "hook_end", 
       forwardSpeed: 1500, 
       backwardSpeed: 2000, 
       powerLavel: 10,
@@ -307,8 +307,8 @@ export namespace GAME_CONFIG {
   export const Other = {
     spaceship_cost: 
       new Map<ResourceType, number>([
-        [ResourceType.iron, 0],
-        [ResourceType.gold, 4],
+        [ResourceType.iron, 2],
+        [ResourceType.gold, 0],
       ]),
     space_icon_name: 'icon3',
     space_icon_rad: 15,
@@ -521,18 +521,25 @@ export namespace GAME_LD {
     addSpawner(new Spawner('meteor',getRandomVector(0),GAME_CONFIG.MeteorType.mediumMeteor));
     addSpawner(new Spawner('meteor',getRandomVector(0),GAME_CONFIG.MeteorType.largeMeteor));
 
-    for(let i=0; i<10;i++){
-      addCircleObject(new Planet( getRandomVector(100), GAME_CONFIG.PlanetType.planet));
-    }
-    for(let i=0; i<10;i++){
-      addCircleObject(new Meteor( getRandomVector(50), GAME_CONFIG.MeteorType.smallMeteor, new Vector(Math.random()*100-50,Math.random()*100-50)));
-    }
     let obj = new Planet( new Vector(LD_GLOB.canvas.width-100,LD_GLOB.canvas.height-100), GAME_CONFIG.PlanetType.startPlanet);
-    obj.inventory.addResource(ResourceType.iron, 30);
-    obj.inventory.addResource(ResourceType.gold, 30);
+    obj.inventory.addResource(ResourceType.iron, 6);
+    obj.inventory.addResource(ResourceType.gold, 0);
     addCircleObject(obj);
     obj = new Planet( new Vector(120,120), GAME_CONFIG.PlanetType.diseasePlanet);
     addCircleObject(obj);
+    for(let i=0; i<12;i++){
+      let col =true, count=0;
+      let planet = new Planet( getRandomVector(100), GAME_CONFIG.PlanetType.planet);
+      while(col && count<20){
+        planet.coordinates =  getRandomVector(100);
+        col = (GAME_LD.getColisions(planet,Layers.Planet).length>0);
+        count++;
+      }
+      addCircleObject(planet);
+    }
+    for(let i=0; i<3;i++){
+      addCircleObject(new Meteor( getRandomVector(50), GAME_CONFIG.MeteorType.smallMeteor, new Vector(Math.random()*100-50,Math.random()*100-50)));
+    }
 
 
   }
@@ -654,7 +661,7 @@ export namespace GAME_LD {
     meteorSpawners = [];
     diseasedPlanets = [];
     stepN = 0;
-    diseaseTimer = 0;
+    diseaseTimer = DISEASE_WAIT;
     meteorTimer = 0;
     backmusicTimer = 0;
   }
@@ -686,16 +693,17 @@ export namespace GAME_LD {
     //   }
     // }
     //FOR DEBUG:
-    dst.fillStyle='#ffffff';
-    for(let sp of meteorSpawners){
-      dst.fillRect(sp.target.x,sp.target.y,3,3);
-    }
-    dst.fillStyle='#ffaaff';
-    for(let sp of diseaseSpawners){
-      dst.fillRect(sp.target.x,sp.target.y,3,3);
-    }
-    dst.fillText(`R : Restart`,10,20);
-    dst.fillText(`M : Mute`,10,40);
+    // dst.fillStyle='#ffffff';
+    // for(let sp of meteorSpawners){
+    //   dst.fillRect(sp.target.x,sp.target.y,3,3);
+    // }
+    // dst.fillStyle='#ffaaff';
+    // for(let sp of diseaseSpawners){
+    //   dst.fillRect(sp.target.x,sp.target.y,3,3);
+    // }
+    dst.fillStyle = LD_GLOB.COLORS.main_5;
+    dst.fillText(`R : Restart`,30,40);
+    dst.fillText(`M : Mute`,30,60);
 
 
 
@@ -706,8 +714,9 @@ export namespace GAME_LD {
     // dst.fillText(`items:${items.length}`,10,120);
   }
 
+  const DISEASE_WAIT = 5;
   let stepN=0;
-  let diseaseTimer=0;
+  let diseaseTimer=DISEASE_WAIT;
   let meteorTimer=0;
   const SONG_LEN = 120;
   let backmusicTimer = 2;
@@ -754,7 +763,7 @@ export namespace GAME_LD {
     if(backmusicTimer<0){
       if(!backsnd){
         backsnd=playSound('background',1);
-        backsnd.onended=()=>{backsnd = null;};
+        if(backsnd)backsnd.onended=()=>{backsnd = null;};
         backmusicTimer = SONG_LEN+0;
       } else backmusicTimer += 10;
       console.log(`back`);

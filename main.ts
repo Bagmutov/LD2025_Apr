@@ -7,8 +7,8 @@ export namespace LD_GLOB {
   export let version = "0.1";
   export let canvas: HTMLCanvasElement;
   export let mainDst: CanvasRenderingContext2D;
-  export let game_state: "loading" | "menu" | "game" = "menu";
-  export let menu_text:string = "MENU. Press Enter.";
+  export let game_state: "loading" | "menu" | "game" = "loading";
+  export let menu_text:string = "Paused. Press Enter.";
   export let loaded: boolean = false;
   export let loading_percent = 0;
   export let mute:boolean = false;
@@ -27,7 +27,7 @@ export namespace LD_GLOB {
   export function updateLoading() {
     loading_percent = Math.max(
       0,
-      Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall))
+      Math.min(1, (loaded_imgs + buffN) / (imageNames.length + soundNames.length))
     );
     if (loading_percent == 1) loaded = true;
   }
@@ -118,7 +118,7 @@ function initCanvas() {
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken'] as const;
+const imageNames = ["planet","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken','hook_end'] as const;
 export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;

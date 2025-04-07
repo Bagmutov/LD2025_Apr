@@ -5,8 +5,8 @@ import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 export var LD_GLOB;
 (function (LD_GLOB) {
     LD_GLOB.version = "0.1";
-    LD_GLOB.game_state = "menu";
-    LD_GLOB.menu_text = "MENU. Press Enter.";
+    LD_GLOB.game_state = "loading";
+    LD_GLOB.menu_text = "Paused. Press Enter.";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
     LD_GLOB.mute = false;
@@ -21,7 +21,7 @@ export var LD_GLOB;
         red: "#F03030ff",
     };
     function updateLoading() {
-        LD_GLOB.loading_percent = Math.max(0, Math.min(1, (loaded_imgs + buffN) / (imageNames.length + buffOverall)));
+        LD_GLOB.loading_percent = Math.max(0, Math.min(1, (loaded_imgs + buffN) / (imageNames.length + soundNames.length)));
         if (LD_GLOB.loading_percent == 1)
             LD_GLOB.loaded = true;
     }
@@ -109,7 +109,7 @@ function initCanvas() {
 }
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet", "planet_blue", "planet_yellow", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease', 'ship_broken'];
+const imageNames = ["planet", "planet_blue", "planet_yellow", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease', 'ship_broken', 'hook_end'];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array

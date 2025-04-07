@@ -39,7 +39,7 @@ export class SpaceShip extends Launchee{
       let collisionPlanet = planetColision[0] as Planet;
       if(!this.broken && !collisionPlanet.building && !(collisionPlanet.building && collisionPlanet.building.config.evil)){
         collisionPlanet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
-        collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 1);
+        collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 0.5);
         this.destroy();
       } else if (!this.broken && collisionPlanet.building){
         collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 0.5);
