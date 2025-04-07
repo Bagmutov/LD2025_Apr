@@ -5,7 +5,7 @@ import { drawCircle, drawRoundRect, positionCanvas } from "./tools.js";
 export var LD_GLOB;
 (function (LD_GLOB) {
     LD_GLOB.version = "0.1";
-    LD_GLOB.game_state = "game";
+    LD_GLOB.game_state = "menu";
     LD_GLOB.menu_text = "MENU. Press Enter.";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
@@ -142,7 +142,8 @@ function initBackground() {
     // drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
 }
 //     ----------------------- SOUND --------------------------
-const soundNames = ["bubble_high"];
+const soundNames = ["background", "build", "collis", "death", "disease1",
+    "disease2", "expl", "hook1", "hook2", "hook3", "voice", "pip"];
 var audio_context;
 window.addEventListener("load", initSounds, false);
 function initSounds() {
@@ -183,6 +184,9 @@ function loadSound(url, buf_name) {
     request.send();
 }
 export function playSound(sound_name, vol = 1, wait = 0, loop = false) {
+    if (!audio_context)
+        return;
+    console.log(`${sound_name}`);
     let buffer = all_buffers[sound_name];
     var source = audio_context.createBufferSource(); // creates a sound source
     const gainNode = audio_context.createGain();

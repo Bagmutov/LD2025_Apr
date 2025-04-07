@@ -1,4 +1,4 @@
-import { LD_GLOB } from "./main.js";
+import { LD_GLOB, playSound } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
@@ -180,7 +180,7 @@ export var GAME_CONFIG;
         [TrapType.standartTrap]: {
             stability: 10,
             radius: 20,
-            image: "build0", //TODO
+            image: "build0",
             phisicMode: PhisicMode.braking,
             speed: 200,
             maxDist: 9999,
@@ -199,7 +199,7 @@ export var GAME_CONFIG;
         [SpaceShipType.standartSpaseShip]: {
             stability: 1,
             radius: 10,
-            image: 'icon3', //TODO
+            image: 'icon3',
             image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,
@@ -523,19 +523,22 @@ export var GAME_LD;
             is_all_spaseShipDie = is_all_spaseShipDie || !s.broken;
         }
         if (player_planets == 0 && is_all_spaseShipDie) {
-            clearAll();
-            LD_GLOB.game_state = 'menu';
+            restart();
             LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
-            init();
+            playSound('death', .1);
         }
         if (GAME_LD.diseasedPlanets.length == 0) {
-            clearAll();
-            LD_GLOB.game_state = 'menu';
-            LD_GLOB.menu_text = "You're Win";
-            init();
+            restart();
+            LD_GLOB.menu_text = "The space is ours! Victory!";
         }
     }
     GAME_LD.checkWinLoseConditions = checkWinLoseConditions;
+    function restart() {
+        clearAll();
+        LD_GLOB.game_state = 'menu';
+        init();
+    }
+    GAME_LD.restart = restart;
     function clearAll() {
         while (objects.length)
             delCircleObject(objects[0]);
@@ -546,6 +549,7 @@ export var GAME_LD;
         stepN = 0;
         diseaseTimer = 0;
         meteorTimer = 0;
+        backmusicTimer = 0;
     }
     GAME_LD.clearAll = clearAll;
     function drawGame(dst) {
@@ -594,6 +598,9 @@ export var GAME_LD;
     let stepN = 0;
     let diseaseTimer = 0;
     let meteorTimer = 0;
+    const SONG_LEN = 120;
+    let backmusicTimer = 2;
+    let backsnd;
     const OFF_BORD = GAME_CONFIG.SpawnerConfig.offscreen_dist + 100;
     function stepGame() {
         let delta = (new Date().getTime() - GAME_LD.lastFrame) / 1000;
@@ -637,6 +644,17 @@ export var GAME_LD;
                 launchDisease(GAME_LD.diseasedPlanets[~~(GAME_LD.diseasedPlanets.length * Math.random())]);
             else if (diseaseSpawners.length)
                 diseaseSpawners[~~(Math.random() * diseaseSpawners.length)].spawn();
+        }
+        backmusicTimer -= delta;
+        if (backmusicTimer < 0) {
+            if (!backsnd) {
+                backsnd = playSound('background', 1);
+                backsnd.onended = () => { backsnd = null; };
+                backmusicTimer = SONG_LEN + 0;
+            }
+            else
+                backmusicTimer += 10;
+            console.log(`back`);
         }
         GAME_LD.lastFrame = new Date().getTime();
     }

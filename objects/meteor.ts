@@ -2,7 +2,7 @@ import { Circle } from "./circle.js";
 import { Vector } from "./vector.js";
 import { GAME_CONFIG, GAME_LD } from "../game.js";
 import { dist2 } from "../tools.js";
-import { LD_GLOB } from "../main.js";
+import { LD_GLOB, playSound } from "../main.js";
 import { ResourceType } from "./resource/resource.js";
 import { Planet } from "./planet.js";
 
@@ -21,6 +21,7 @@ export class Meteor extends Circle {
     this.innerResource = config.innerResource;
   }
 
+  snd_obj:Planet;
   step(delta: number) {
     super.step(delta);
     let vel = this.velocity.len();
@@ -32,6 +33,12 @@ export class Meteor extends Circle {
       this.addVelocity(dif.multiply(10/this.radius));
       this.velocity=this.velocity.multiply(.97);
       colisionPlanet.addVelocity(dif.multiply(-2/colisionPlanet.mass));
+      
+      if(this.snd_obj != colisionPlanet){
+        playSound('collis',.1);
+        this.snd_obj = colisionPlanet;
+        setTimeout(()=>{this.snd_obj=null;},200);
+      }
       // colisionPlanet.inventory.addResoursesMap(this.innerResource);
       // this.destroy(); 
     }

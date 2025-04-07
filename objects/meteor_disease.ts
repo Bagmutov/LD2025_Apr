@@ -37,7 +37,9 @@ export class MeteorDisease extends Launchee {
     let collisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet);
     if (collisions.length != 0 && collisions[0] != this.parent) {
       this.destroy();
-      const planet = collisions[0] as Planet;
+      const planet = (collisions[0] as Planet);
+      planet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
+      GAME_LD.delCircleObject(planet);
       planet.diseaseValue += this.diseaseAdd;
     }
   }
@@ -45,6 +47,7 @@ export class MeteorDisease extends Launchee {
 
 //set from_planet OR from_xhy and to_xy
 export function launchDisease(from_planet:Planet=null, from_xy:Vector=null, to_xy:Vector=null){
+  playSound('disease1',.2);
   let building: Building;
   if(from_planet){
     if(GAME_LD.planets.indexOf(from_planet)<0 || !from_planet.building || !from_planet.building.config.evil) return;

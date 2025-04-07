@@ -1,5 +1,5 @@
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
-import { LD_GLOB } from "../../main.js";
+import { LD_GLOB, playSound } from "../../main.js";
 import { Planet } from "../planet.js";
 import { Inventory } from "../resource/inventory.js";
 import { Launchee } from "./launchee.js";
@@ -12,6 +12,7 @@ export class SpaceShip extends Launchee{
     let config = GAME_CONFIG.SpaceShipConfig[type];
     super(config.radius, LD_GLOB.getImage(config.image), planet, config.phisicMode, config.forwardSpeed, config.stability, planet.coordinates);
     this.imgBroken = LD_GLOB.getImage(config.image_broken);
+    playSound('voice',.1);
   }
   draw(dst: CanvasRenderingContext2D): void {
     super.draw(dst);
@@ -20,6 +21,7 @@ export class SpaceShip extends Launchee{
   makeMeBroken(){
     this.broken = true;
     this.image = this.imgBroken;
+    playSound('death',.1);
   }
   step(delta: number){
     super.step(delta);

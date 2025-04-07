@@ -3,7 +3,7 @@ import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
-import { LD_GLOB } from "../../main.js";
+import { LD_GLOB, playSound } from "../../main.js";
 import { Button, crtButton, delButton } from "../button.js";
 import { MeteorDisease } from "../meteor_disease.js";
 
@@ -51,6 +51,8 @@ export class Bomb extends Launchee {
     this.explodeButton.ms_down = () => {
       this.explode();
     }
+    playSound('hook2',.1);
+    setTimeout(()=>{playSound('pip',.1);},1000);
   }
 
   draw(dst: CanvasRenderingContext2D): void {
@@ -93,6 +95,7 @@ export class Bomb extends Launchee {
   }
 
   explode(){
+    playSound('expl',.1);
     this.exploseStart = true;
     this.exploseFrame = 0;
     this.radius = this.explosionRadius;
