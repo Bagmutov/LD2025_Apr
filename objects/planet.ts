@@ -1,5 +1,5 @@
 import { GAME_LD, GAME_CONFIG } from "../game.js";
-import { LD_GLOB } from "../main.js";
+import { LD_GLOB, playSound } from "../main.js";
 import { drawLine, isRightMB } from "../tools.js";
 import { Launchee } from "./abilities/launchee.js";
 import { SpaceShip } from "./abilities/spaseShip.js";
@@ -68,6 +68,11 @@ export class Planet extends Circle {
   }
   show_cost:{iron:number,gold:number} = null;
   build(bld:Building){
+    if(bld.config.evil){
+      playSound('disease2',.1);
+    } else {
+      playSound('build',.1);
+    }
     const icon_rad=15;
     this.building = bld;
     this.show_cost = null;

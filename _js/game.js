@@ -1,4 +1,4 @@
-import { LD_GLOB } from "./main.js";
+import { LD_GLOB, playSound } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
@@ -369,17 +369,24 @@ export var GAME_LD;
     }
     GAME_LD.getColisions = getColisions;
     function checkWinLoseConditions() {
-        let player_planets = 0;
+        let player_objs = 0;
         GAME_LD.planets.forEach(el => { if (el.building && !el.building.config.evil)
-            player_planets += 1; });
-        if (player_planets == 0 && GAME_LD.spaceships.length == 0) {
-            clearAll();
-            LD_GLOB.game_state = 'menu';
+            player_objs += 1; });
+        GAME_LD.spaceships.forEach(el => { if (!el.broken)
+            player_objs += 1; });
+        if (player_objs == 0) {
+            restart();
             LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
-            init();
+            playSound('death', .1);
         }
     }
     GAME_LD.checkWinLoseConditions = checkWinLoseConditions;
+    function restart() {
+        clearAll();
+        LD_GLOB.game_state = 'menu';
+        init();
+    }
+    GAME_LD.restart = restart;
     function clearAll() {
         while (objects.length)
             delCircleObject(objects[0]);
@@ -390,6 +397,7 @@ export var GAME_LD;
         stepN = 0;
         diseaseTimer = 0;
         meteorTimer = 0;
+        backmusicTimer = 0;
     }
     GAME_LD.clearAll = clearAll;
     function drawGame(dst) {
@@ -422,6 +430,9 @@ export var GAME_LD;
     let stepN = 0;
     let diseaseTimer = 0;
     let meteorTimer = 0;
+    const SONG_LEN = 120;
+    let backmusicTimer = 2;
+    let backsnd;
     const OFF_BORD = GAME_CONFIG.SpawnerConfig.offscreen_dist + 100;
     function stepGame() {
         let delta = (new Date().getTime() - GAME_LD.lastFrame) / 1000;
@@ -465,6 +476,17 @@ export var GAME_LD;
                 launchDisease(GAME_LD.diseasedPlanets[~~(GAME_LD.diseasedPlanets.length * Math.random())]);
             else if (diseaseSpawners.length)
                 diseaseSpawners[~~(Math.random() * diseaseSpawners.length)].spawn();
+        }
+        backmusicTimer -= delta;
+        if (backmusicTimer < 0) {
+            if (!backsnd) {
+                backsnd = playSound('background', 1);
+                backsnd.onended = () => { backsnd = null; };
+                backmusicTimer = SONG_LEN + 0;
+            }
+            else
+                backmusicTimer += 10;
+            console.log(`back`);
         }
         GAME_LD.lastFrame = new Date().getTime();
     }

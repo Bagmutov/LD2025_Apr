@@ -1,4 +1,4 @@
-import { imageNamesTp, LD_GLOB } from "./main.js";
+import { imageNamesTp, LD_GLOB, playSound } from "./main.js";
 import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
@@ -450,14 +450,19 @@ export namespace GAME_LD {
   }
 
   export function checkWinLoseConditions(){
-    let player_planets=0;
-    planets.forEach(el=>{if(el.building && !el.building.config.evil)player_planets+=1;});
-    if(player_planets==0 && spaceships.length==0){
-      clearAll();
-      LD_GLOB.game_state='menu';
+    let player_objs=0;
+    planets.forEach(el=>{if(el.building && !el.building.config.evil)player_objs+=1;});
+    spaceships.forEach(el=>{if(!el.broken)player_objs+=1;});
+    if(player_objs==0){
+      restart();
       LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
-      init();
+      playSound('death',.1);
     }
+  }
+  export function restart(){
+    clearAll();
+    LD_GLOB.game_state='menu';
+    init();
   }
 
   export function clearAll(){
@@ -469,6 +474,7 @@ export namespace GAME_LD {
     stepN = 0;
     diseaseTimer = 0;
     meteorTimer = 0;
+    backmusicTimer = 0;
   }
 
   export function drawGame(dst: CanvasRenderingContext2D) {
@@ -501,6 +507,9 @@ export namespace GAME_LD {
   let stepN=0;
   let diseaseTimer=0;
   let meteorTimer=0;
+  const SONG_LEN = 120;
+  let backmusicTimer = 2;
+  let backsnd:AudioBufferSourceNode;
   const OFF_BORD = GAME_CONFIG.SpawnerConfig.offscreen_dist + 100;
   export function stepGame() {
     let delta = (new Date().getTime() - lastFrame) / 1000;
@@ -538,6 +547,15 @@ export namespace GAME_LD {
       diseaseTimer=Math.max(1,4-.5*diseasedPlanets.length)+Math.random()*5;
       if(diseasedPlanets.length>0) launchDisease(diseasedPlanets[~~(diseasedPlanets.length*Math.random())]);
       else if(diseaseSpawners.length)diseaseSpawners[~~(Math.random()*diseaseSpawners.length)].spawn();
+    }
+    backmusicTimer-=delta;
+    if(backmusicTimer<0){
+      if(!backsnd){
+        backsnd=playSound('background',1);
+        backsnd.onended=()=>{backsnd = null;};
+        backmusicTimer = SONG_LEN+0;
+      } else backmusicTimer += 10;
+      console.log(`back`);
     }
     lastFrame = new Date().getTime();
   }

@@ -2,7 +2,7 @@ import { Circle } from "./circle.js";
 import { Vector } from "./vector.js";
 import { GAME_CONFIG, GAME_LD } from "../game.js";
 import { arrFindMin, dist2 } from "../tools.js";
-import { LD_GLOB } from "../main.js";
+import { LD_GLOB, playSound } from "../main.js";
 import { Planet } from "./planet.js";
 
 export class MeteorDisease extends Circle {
@@ -29,6 +29,7 @@ export class MeteorDisease extends Circle {
 
 //set from_planet OR from_xhy and to_xy
 export function launchDisease(from_planet:Planet=null, from_xy:Vector=null, to_xy:Vector=null){
+  playSound('disease1',.2);
   if(from_planet){
     if(GAME_LD.planets.indexOf(from_planet)<0 || !from_planet.building || !from_planet.building.config.evil) return;
     from_xy = from_planet.coordinates;

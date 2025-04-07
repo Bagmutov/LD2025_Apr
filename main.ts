@@ -7,7 +7,7 @@ export namespace LD_GLOB {
   export let version = "0.1";
   export let canvas: HTMLCanvasElement;
   export let mainDst: CanvasRenderingContext2D;
-  export let game_state: "loading" | "menu" | "game" = "game";
+  export let game_state: "loading" | "menu" | "game" = "menu";
   export let menu_text:string = "MENU. Press Enter.";
   export let loaded: boolean = false;
   export let loading_percent = 0;
@@ -162,7 +162,8 @@ function initBackground() {
 
 //     ----------------------- SOUND --------------------------
 
-const soundNames = ["bubble_high"] as const;
+const soundNames = ["background", "build", "collis", "death", "disease1",
+                    "disease2", "expl", "hook1", "hook2", "hook3","voice", "pip"] as const;
 type soundNamesTp = (typeof soundNames)[number];
 var audio_context: AudioContext;
 window.addEventListener("load", initSounds, false);
@@ -216,6 +217,7 @@ export function playSound(
   wait: number = 0,
   loop: boolean = false
 ): AudioBufferSourceNode {
+  if(!audio_context)return;
   let buffer: AudioBuffer = all_buffers[sound_name];
   var source = audio_context.createBufferSource(); // creates a sound source
   const gainNode = audio_context.createGain();

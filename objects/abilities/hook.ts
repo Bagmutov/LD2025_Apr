@@ -3,7 +3,7 @@ import { Planet } from "../planet.js";
 import { Vector } from "../vector.js";
 import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
-import { LD_GLOB } from "../../main.js";
+import { LD_GLOB, playSound } from "../../main.js";
 import { drawLine } from "../../tools.js";
 
 
@@ -21,6 +21,7 @@ export class Hook extends Launchee{
     this.backwardSpeed = config.backwardSpeed;
     this.maxLenth = config.maxLenth;
     this.powerLavel = config.powerLavel;
+    playSound('hook1',.1);
   }
   draw(dst: CanvasRenderingContext2D): void {
     drawLine(
@@ -48,10 +49,10 @@ export class Hook extends Launchee{
           if(this.hokedObject&&this.hokedObject['innerResource']){
             this.planet.inventory.addResoursesMap(this.hokedObject['innerResource']);
             GAME_LD.delCircleObject(this.hokedObject);
+            playSound('hook3',.1);
           }
           this.destroy();
           
-          console.log(`hook destroyd`);
         }
     }
     super.step(delta);
@@ -61,6 +62,7 @@ export class Hook extends Launchee{
         if (tempHokedObjects.length != 0){
             this.hokedObject = tempHokedObjects[0];
             this.isPushed = false;
+            playSound('hook2',.1);
             this.hokedObject.phisicMode = PhisicMode.none;
             this.hokedObject.coordinates = this.coordinates;
         }
