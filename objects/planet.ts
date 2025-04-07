@@ -226,13 +226,22 @@ export class Planet extends Circle {
       this.building = null;
       GAME_LD.delPlanetsFromDiseased(this);
     }
-    if (this.diseaseValue >= 50) {
+    if (
+      this.diseaseValue >= 50 &&
+      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease3] != this.building
+    ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease3]);
       this.updateLaunchButton();
-    } else if (this.diseaseValue >= 20) {
+    } else if (
+      this.diseaseValue >= 20 &&
+      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease2] != this.building
+    ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease2]);
       this.updateLaunchButton();
-    } else if (this.diseaseValue >= 10) {
+    } else if (
+      this.diseaseValue >= 10 &&
+      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1] != this.building
+    ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
       this.updateLaunchButton();
     }

@@ -433,7 +433,7 @@ export var GAME_LD;
     }
     GAME_LD.addCircleObject = addCircleObject;
     function addPlanetsInDiseased(obj) {
-        if (objects.indexOf(obj) >= 0) {
+        if (GAME_LD.diseasedPlanets.indexOf(obj) >= 0) {
             return;
         }
         GAME_LD.diseasedPlanets.push(obj);
@@ -558,6 +558,22 @@ export var GAME_LD;
         for (let meteor of GAME_LD.meteors) {
             meteor.draw(dst);
         }
+        // for (let planet1 of diseasedPlanets) {
+        //   for (let planet2 of diseasedPlanets){
+        //     if (planet1 != planet2){
+        //       dst.fillStyle = LD_GLOB.COLORS.red;
+        //       drawLine(
+        //         dst,
+        //         planet1.coordinates.x,
+        //         planet1.coordinates.y,
+        //         planet2.coordinates.x,
+        //         planet2.coordinates.y,
+        //         null,
+        //         10
+        //       )
+        //     }
+        //   }
+        // }
         //FOR DEBUG:
         dst.fillStyle = '#ffffff';
         for (let sp of meteorSpawners) {

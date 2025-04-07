@@ -3,7 +3,7 @@ import { Meteor } from "./objects/meteor.js";
 import { Planet } from "./objects/planet.js";
 import { Vector } from "./objects/vector.js";
 import { Circle, PhisicMode } from "./objects/circle.js";
-import { arrDel } from "./tools.js";
+import { arrDel, drawLine } from "./tools.js";
 import { ResourceType } from "./objects/resource/resource.js";
 import { Launchee } from "./objects/abilities/launchee.js";
 import { Building } from "./objects/buildings/building.js";
@@ -557,7 +557,7 @@ export namespace GAME_LD {
     objects.push(obj);
   }
   export function addPlanetsInDiseased(obj: Planet) {
-    if (objects.indexOf(obj) >= 0){
+    if (diseasedPlanets.indexOf(obj) >= 0){
       return;
     }
     diseasedPlanets.push(obj);
@@ -666,6 +666,22 @@ export namespace GAME_LD {
     for (let meteor of meteors) {
       meteor.draw(dst);
     }
+    // for (let planet1 of diseasedPlanets) {
+    //   for (let planet2 of diseasedPlanets){
+    //     if (planet1 != planet2){
+    //       dst.fillStyle = LD_GLOB.COLORS.red;
+    //       drawLine(
+    //         dst,
+    //         planet1.coordinates.x,
+    //         planet1.coordinates.y,
+    //         planet2.coordinates.x,
+    //         planet2.coordinates.y,
+    //         null,
+    //         10
+    //       )
+    //     }
+    //   }
+    // }
     //FOR DEBUG:
     dst.fillStyle='#ffffff';
     for(let sp of meteorSpawners){
