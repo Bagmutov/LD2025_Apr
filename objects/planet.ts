@@ -1,6 +1,7 @@
 import { GAME_LD, GAME_CONFIG } from "../game.js";
 import { LD_GLOB } from "../main.js";
 import { drawLine, isRightMB } from "../tools.js";
+import { Launchee } from "./abilities/launchee.js";
 import { SpaceShip } from "./abilities/spaseShip.js";
 import { Building } from "./buildings/building.js";
 import { Button, crtButton, delButton } from "./button.js";
@@ -15,6 +16,7 @@ export class Planet extends Circle {
   inventory: Inventory = new Inventory();
   launch_xy: Vector = null;
   launch_xy_max_len = 200;
+  launch_xy_min_pow = 400;
   temp_launch:boolean = false; //indicates that spaceship is bought and ready for one time launch
 
   building: Building = null;
@@ -129,19 +131,17 @@ export class Planet extends Circle {
             this.launch_xy = this.launch_xy.normalize(this.launch_xy_max_len);
         };
         but.ms_up = () => {
+          let launchee:Launchee;
           if(this.temp_launch){
-            let launchee = new SpaceShip(GAME_CONFIG.SpaceShipType.standartSpaseShip, this);
-            this.addParent(launchee);
-            launchee.launch(
-              this.launch_xy.normalize(-1),
-              this.launch_xy.len() / this.launch_xy_max_len
-            );
+            launchee = new SpaceShip(GAME_CONFIG.SpaceShipType.standartSpaseShip, this);
             this.temp_launch = false;
           }else if (this.building != null && this.building.config.abilityConfig!=null) {
-            let launchee = this.building.buildLaunchee(this);
-            if(!launchee) return;
+            launchee = this.building.buildLaunchee(this);
+          }
+          if(launchee){
+            launchee.coordinates = this.coordinates.add(this.launch_xy.normalize(-10));
+            launchee.launch(this.launch_xy.normalize(-1), (this.launch_xy.len()+this.launch_xy_min_pow)/(this.launch_xy_max_len+this.launch_xy_min_pow));
             this.addParent(launchee);
-            launchee.launch(this.launch_xy.normalize(-1), this.launch_xy.len()/this.launch_xy_max_len);
           }
           this.updateLaunchButton();
           this.launch_xy = null;

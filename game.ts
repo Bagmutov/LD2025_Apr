@@ -361,7 +361,8 @@ export namespace GAME_LD {
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.5,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
     let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.planet);
     obj.build(buildings[GAME_CONFIG.BuildingType.starting]);
-    obj.inventory.addResource(ResourceType.iron, 5);
+    obj.inventory.addResource(ResourceType.iron, 15);
+    obj.inventory.addResource(ResourceType.gold, 15);
     addCircleObject(obj);
     obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.planet);
     obj.build(buildings[GAME_CONFIG.BuildingType.disease1]);
@@ -490,9 +491,11 @@ export namespace GAME_LD {
       dst.fillRect(sp.target.x,sp.target.y,3,3);
     }
     dst.fillText(`obj:${objects.length}`,10,20);
-    dst.fillText(`met:${meteors.length}`,10,40);
-    dst.fillText(`dis:${meteorsDis.length}`,10,60);
-    dst.fillText(`ships:${spaceships.length}`,10,80);
+    dst.fillText(`plnt:${planets.length}`,10,40);
+    dst.fillText(`met:${meteors.length}`,10,60);
+    dst.fillText(`dis:${meteorsDis.length}`,10,80);
+    dst.fillText(`ships:${spaceships.length}`,10,100);
+    dst.fillText(`items:${items.length}`,10,120);
   }
 
   let stepN=0;

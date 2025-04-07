@@ -39,14 +39,19 @@ export class Hook extends Launchee{
     if (this.coordinates.sub(this.planet.coordinates).len() > this.maxLenth){
         this.isPushed = false;
     }
-    if (!this.isPushed){
-        this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
-        if (this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
+    // if (!this.isPushed){
+    {
+        // this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
+        const dif = this.planet.coordinates.sub(this.coordinates);
+        this.addVelocity(dif.normalize().multiply(this.backwardSpeed*.03));
+        if (dif.dot_prod(this.velocity)>0 && this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
           if(this.hokedObject&&this.hokedObject['innerResource']){
             this.planet.inventory.addResoursesMap(this.hokedObject['innerResource']);
             GAME_LD.delCircleObject(this.hokedObject);
           }
           this.destroy();
+          
+          console.log(`hook destroyd`);
         }
     }
     super.step(delta);

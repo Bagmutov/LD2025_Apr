@@ -36,8 +36,11 @@ export class Vector {
   }
 
   normalize(new_len:number=1): Vector {
-    let len = this.len();
+    let len = this.len()||0.1;
     return new Vector(this.x / len * new_len, this.y / len * new_len);
+  }
+  dot_prod(vec:Vector): number {
+    return this.x*vec.x+this.y*vec.y;
   }
 }
 

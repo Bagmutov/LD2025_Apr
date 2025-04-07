@@ -28,15 +28,23 @@ export class SpaceShip extends Launchee{
     if (meteorColision.length != 0){
       // this.destroy();
       this.makeMeBroken();
+      let met = meteorColision[0], dif = this.coordinates.sub(met.coordinates);
+      this.addVelocity(dif.multiply(10/this.radius));
+      met.addVelocity(dif.multiply(-10/met.radius));
     }
     let planetColision = GAME_LD.getColisions(this, GAME_LD.Layers.Planet);
     if (planetColision.length != 0 && planetColision[0]!=this.planet){
       let collisionPlanet = planetColision[0] as Planet;
       if(!this.broken && !(collisionPlanet.building && collisionPlanet.building.config.evil)){
         collisionPlanet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
-        collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, .5);
+        collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 1);
+        this.destroy();
+      } else {
+        this.makeMeBroken();
+        let dif = this.coordinates.sub(collisionPlanet.coordinates);
+        this.addVelocity(dif.multiply(10/this.radius));
+        collisionPlanet.addVelocity(dif.multiply(-4/collisionPlanet.mass));
       }
-      this.destroy();
     }
   }
 }
