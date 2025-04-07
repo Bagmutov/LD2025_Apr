@@ -180,7 +180,7 @@ export var GAME_CONFIG;
         [TrapType.standartTrap]: {
             stability: 10,
             radius: 20,
-            image: "build0",
+            image: "build0", //TODO
             phisicMode: PhisicMode.braking,
             speed: 200,
             maxDist: 9999,
@@ -199,7 +199,7 @@ export var GAME_CONFIG;
         [SpaceShipType.standartSpaseShip]: {
             stability: 1,
             radius: 10,
-            image: 'icon3',
+            image: 'icon3', //TODO
             image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,
