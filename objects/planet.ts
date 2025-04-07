@@ -94,6 +94,7 @@ export class Planet extends Circle {
       }
     } else {
       GAME_LD.diseasedPlanets.push(this);
+      GAME_LD.checkWinLoseConditions();
     }
     this.upgrade_buttons.push(but)
     this.updateLaunchButton();
@@ -139,5 +140,12 @@ export class Planet extends Circle {
   }
   step(delta: number) {
     super.step(delta);
+    
+    let colisions = GAME_LD.getColisions(this, GAME_LD.Layers.Planet)
+    if (colisions.length != 0){
+      let colisionPlanet = colisions[0] as Planet, dif = this.coordinates.sub(colisionPlanet.coordinates);
+      this.addVelocity(dif.multiply(30/this.mass));
+      colisionPlanet.addVelocity(dif.multiply(-30/this.mass));
+    }
   }
 }

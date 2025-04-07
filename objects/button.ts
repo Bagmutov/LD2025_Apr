@@ -72,6 +72,9 @@ export function drawButtons(ctx:CanvasRenderingContext2D) {
         drawCircle(ctx,but.x,but.y,but.rad, LD_GLOB.COLORS.main_7,2+but.state);
     }
 }
+export function clearButtons(){
+    while(all_buttons.length)delButton(all_buttons[0]);
+}
 
 let all_buttons:Button[] = [];
 export class Button{

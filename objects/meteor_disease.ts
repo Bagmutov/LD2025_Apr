@@ -8,7 +8,7 @@ import { Planet } from "./planet.js";
 export class MeteorDisease extends Circle {
   velocity: Vector;
 
-  constructor( coordinate: Vector, velocity: Vector, public parent:Planet) {
+  constructor( coordinate: Vector, velocity: Vector, public parent:Planet = null) {
     let config = GAME_CONFIG.MeteorDiseaseConfig;
     super(coordinate, config.radius, LD_GLOB.getImage(config.image), config.phisicMode, config.stability);
     this.velocity = velocity;
@@ -23,20 +23,22 @@ export class MeteorDisease extends Circle {
       this.destroy();
       const planet = (collisions[0] as Planet);
       planet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
-      // setTimeout(launchDisease,Math.random()*1000+1000,planet);
     }
   }
 }
 
-export function launchDisease(planet:Planet){
-  if(GAME_LD.planets.indexOf(planet)>=0 && planet.building && planet.building.config.evil){
-    let min=arrFindMin(GAME_LD.planets,(el)=>(
-      el.building&&el.building.config.evil)?1000*1000:
-      dist2(el.coordinates.x-planet.coordinates.x,el.coordinates.y-planet.coordinates.y)+Math.random()*90000
-    );
-    let dxy = min.o.coordinates.sub(planet.coordinates);
-    let met = new MeteorDisease(planet.coordinates,dxy.normalize(GAME_CONFIG.MeteorDiseaseConfig.vel),planet);
-    GAME_LD.addCircleObject(met);
-    // setTimeout(launchDisease,Math.random()*1000+1000,planet);
+//set from_planet OR from_xhy and to_xy
+export function launchDisease(from_planet:Planet=null, from_xy:Vector=null, to_xy:Vector=null){
+  if(from_planet){
+    if(GAME_LD.planets.indexOf(from_planet)<0 || !from_planet.building || !from_planet.building.config.evil) return;
+    from_xy = from_planet.coordinates;
+    to_xy = from_planet.coordinates;
   }
+  let min=arrFindMin(GAME_LD.planets,(el)=>(
+    el.building&&el.building.config.evil)?1000*1000:
+          dist2(el.coordinates.x-to_xy.x,el.coordinates.y-to_xy.y)+Math.random()*90000
+  );
+  let dxy = min.o.coordinates.sub(from_xy);
+  let met = new MeteorDisease(from_xy,dxy.normalize(GAME_CONFIG.MeteorDiseaseConfig.vel),from_planet||null);
+  GAME_LD.addCircleObject(met);
 }

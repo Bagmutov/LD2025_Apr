@@ -9,6 +9,8 @@ import { Launchee } from "./objects/abilities/launchee.js";
 import { Building } from "./objects/buildings/building.js";
 import { Bomb } from "./objects/abilities/bomb.js";
 import { launchDisease } from "./objects/meteor_disease.js";
+import { Spawner } from "./objects/spawner.js";
+import { clearButtons } from "./objects/button.js";
 
 export namespace GAME_CONFIG {
   export enum PlanetType {
@@ -110,7 +112,7 @@ export namespace GAME_CONFIG {
 
   
   export const PlanetConfig: Record<PlanetType, PlanetConfigData> = {
-[PlanetType.planet]: {
+    [PlanetType.planet]: {
       stability: 5,
       radius: 40,
       image: "planet",
@@ -173,7 +175,7 @@ export namespace GAME_CONFIG {
     [BombType.standartBomb]: {
       stability: 10,
       radius: 20,
-      image: 'bomb',
+      image: 'build2',
       phisicMode: PhisicMode.standart,
       speed: 400,
       maxDist: 1000,
@@ -185,7 +187,7 @@ export namespace GAME_CONFIG {
       blastWaveStregth: 8,
       blastWaveVelocityAdd: 200,
 
-      explosionImages: ['bombe1', 'bombe2'],
+      explosionImages: ['build0', 'build2'],
     },
   };
 
@@ -219,6 +221,11 @@ export namespace GAME_CONFIG {
     phisicMode:PhisicMode.standart,
     stability:1,
     vel:20
+  }
+  export const SpawnerConfig = {
+    met_vel:100,
+    disease_vel:100,
+    offscreen_dist:100
   }
   export const BuildingConfig: Record<BuildingType, BuildingConfigData> = {
     [BuildingType.starting]: {
@@ -318,7 +325,10 @@ export namespace GAME_LD {
 
   export let planets: Planet[] = [];
   let meteors: Meteor[] = [];
+  let meteorSpawners:Spawner[] = [];
   export let diseasedPlanets: Planet[] = []; //This is horrible. We assume obj wouldn't loose diseased building ever
+  let diseaseSpawners:Spawner[] = [];
+  export let max_meteors:number = 20; //Just change it when creating lvls
 
   let objects: Circle[] = [];    // here will be all objects, with duplicates in planets, meteors etc
 
@@ -333,14 +343,20 @@ export namespace GAME_LD {
       buildings[key] = new Building(<any> key);
     }
 
+    addSpawner(new Spawner('disease',new Vector(600,500)));
+    addSpawner(new Spawner('meteor',new Vector(600,200),GAME_CONFIG.MeteorType.smallMeteor));
+    addSpawner(new Spawner('meteor',new Vector(100,200),GAME_CONFIG.MeteorType.mediumMeteor));
+    addSpawner(new Spawner('meteor',new Vector(100,500),GAME_CONFIG.MeteorType.largeMeteor));
+
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.7), GAME_CONFIG.PlanetType.planet));
     addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.5,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
-    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.planet);
-    obj.build(buildings[GAME_CONFIG.BuildingType.disease1]);
-    addCircleObject(obj);
-    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.planet);
+    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.planet);
     obj.build(buildings[GAME_CONFIG.BuildingType.starting]);
     addCircleObject(obj);
+    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.planet);
+    obj.build(buildings[GAME_CONFIG.BuildingType.disease1]);
+    addCircleObject(obj);
+    
     addCircleObject(
       new Meteor(
         new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200),
@@ -348,6 +364,8 @@ export namespace GAME_LD {
         new Vector(200, 30)
       )
     );
+
+
   }
   export function addCircleObject(obj:Circle){
     if(objects.indexOf(obj)>=0) throw new Error('Object is added to the scene a second time.');
@@ -364,6 +382,10 @@ export namespace GAME_LD {
     arrDel(objects, obj);
     if(obj.my_array)arrDel(obj.my_array, obj);
   }
+  export function addSpawner(spw:Spawner){
+    if(spw.obj_type=='meteor')meteorSpawners.push(spw);
+    else diseaseSpawners.push(spw);
+  }
   export function getAcseleration(point: Vector){
     let res = new Vector(0,0);
     for(let planet of planets){
@@ -371,7 +393,7 @@ export namespace GAME_LD {
             .sub(point);
         let len = dir.len()
         if(len==0)continue;   // to avoid division by 0
-        let a = dir.multiply(planet.mass*500 / len**3)
+        let a = dir.multiply(planet.mass*500 / Math.max(1000000,len**3))//*500 **3
         res = res.add(a);
     }
     return res;
@@ -392,6 +414,28 @@ export namespace GAME_LD {
     return colisions
   }
 
+  export function checkWinLoseConditions(){
+    let player_planets=0;
+    planets.forEach(el=>{if(el.building && !el.building.config.evil)player_planets+=1;});
+    if(player_planets==0){
+      clearAll();
+      LD_GLOB.game_state='menu';
+      LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
+      init();
+    }
+  }
+
+  export function clearAll(){
+    while(objects.length)delCircleObject(objects[0]);
+    clearButtons();
+    diseaseSpawners = [];
+    meteorSpawners = [];
+    diseasedPlanets = [];
+    stepN = 0;
+    diseaseTimer = 0;
+    meteorTimer = 0;
+  }
+
   export function drawGame(dst: CanvasRenderingContext2D) {
     for (let planet of planets) {
       planet.draw(dst);
@@ -402,19 +446,59 @@ export namespace GAME_LD {
     for (let meteor of meteors) {
       meteor.draw(dst);
     }
+    //FOR DEBUG:
+    dst.fillStyle='#ffffff';
+    for(let sp of meteorSpawners){
+      dst.fillRect(sp.target.x,sp.target.y,3,3);
+    }
+    dst.fillStyle='#ffaaff';
+    for(let sp of diseaseSpawners){
+      dst.fillRect(sp.target.x,sp.target.y,3,3);
+    }
+    dst.fillText(`obj:${objects.length}`,10,20);
+    dst.fillText(`met:${meteors.length}`,10,40);
   }
 
-  let diseaseTimer=1;
+  let stepN=0;
+  let diseaseTimer=0;
+  let meteorTimer=0;
+  const OFF_BORD = GAME_CONFIG.SpawnerConfig.offscreen_dist + 100;
   export function stepGame() {
     let delta = (new Date().getTime() - lastFrame) / 1000;
+    stepN++;
     
     for(let obj of objects){
       obj.step(delta);
+    }
+    if(stepN%50==0){
+      for(let met of meteors)
+        if(met.coordinates.x<-OFF_BORD||met.coordinates.y<-OFF_BORD||
+          met.coordinates.x>LD_GLOB.canvas.width+OFF_BORD||met.coordinates.y>LD_GLOB.canvas.height+OFF_BORD){
+            GAME_LD.delCircleObject(this);
+          }
+    }
+    if(stepN%10==0){
+      for(let pl of planets){
+        // if(pl.coordinates.x<pl.radius && pl.velocity.x<0) pl.addVelocity(new Vector(-pl.velocity.x*1.3,0));
+        // if(pl.coordinates.y<pl.radius && pl.velocity.y<0) pl.addVelocity(new Vector(0,-pl.velocity.y*1.3));
+        // if(LD_GLOB.canvas.width-pl.coordinates.x<pl.radius && pl.velocity.x>0) pl.addVelocity(new Vector(-pl.velocity.x*1.3,0));
+        // if(LD_GLOB.canvas.height-pl.coordinates.y<pl.radius && pl.velocity.y>0) pl.addVelocity(new Vector(0,-pl.velocity.y*1.3));
+        if(pl.coordinates.x<pl.radius) pl.addVelocity(new Vector(33,0));
+        if(pl.coordinates.y<pl.radius) pl.addVelocity(new Vector(0,33));
+        if(LD_GLOB.canvas.width-pl.coordinates.x<pl.radius) pl.addVelocity(new Vector(-33,0));
+        if(LD_GLOB.canvas.height-pl.coordinates.y<pl.radius) pl.addVelocity(new Vector(0,-33));
+      }
+    }
+    meteorTimer-=delta;
+    if(meteorTimer<0){
+      meteorTimer=Math.max(1,4-.5*meteorSpawners.length)+Math.random()*5;
+      if(meteorSpawners.length>0 && meteors.length<max_meteors)meteorSpawners[~~(Math.random()*meteorSpawners.length)].spawn();
     }
     diseaseTimer-=delta;
     if(diseaseTimer<0){
       diseaseTimer=Math.max(1,4-.5*diseasedPlanets.length)+Math.random()*5;
       if(diseasedPlanets.length>0) launchDisease(diseasedPlanets[~~(diseasedPlanets.length*Math.random())]);
+      else if(diseaseSpawners.length)diseaseSpawners[~~(Math.random()*diseaseSpawners.length)].spawn();
     }
     lastFrame = new Date().getTime();
   }

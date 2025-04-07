@@ -8,6 +8,7 @@ export namespace LD_GLOB {
   export let canvas: HTMLCanvasElement;
   export let mainDst: CanvasRenderingContext2D;
   export let game_state: "loading" | "menu" | "game" = "game";
+  export let menu_text:string = "MENU. Press Enter.";
   export let loaded: boolean = false;
   export let loading_percent = 0;
   export const COLORS = {
@@ -94,7 +95,7 @@ function drawLoadingScreen() {
 function drawMenu() {
   LD_GLOB.mainDst.drawImage(background, 0, 0);
   LD_GLOB.mainDst.fillStyle = LD_GLOB.COLORS.main_7;
-  LD_GLOB.mainDst.fillText("MENU. Press Enter.", c_x - 80, c_y * 1.9);
+  LD_GLOB.mainDst.fillText(LD_GLOB.menu_text, c_x - 80, c_y * 1.9);
   // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
   GAME_LD.drawGame(LD_GLOB.mainDst);
   drawButtons(LD_GLOB.mainDst);

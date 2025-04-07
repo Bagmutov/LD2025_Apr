@@ -11,7 +11,7 @@ export class Hook extends Launchee{
   backwardSpeed: number;
   powerLavel: number;
   maxLenth: number;
-  hokedObjest: Circle;
+  hokedObject: Circle;
   isPushed: boolean = true;
 
   constructor(type: GAME_CONFIG.HookType, planet: Planet) {
@@ -42,21 +42,25 @@ export class Hook extends Launchee{
     if (!this.isPushed){
         this.velocity = this.planet.coordinates.sub(this.coordinates).normalize().multiply(this.backwardSpeed);
         if (this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
-          this.destroy()
+          if(this.hokedObject&&this.hokedObject['innerResource']){
+            this.planet.inventory.addResoursesMap(this.hokedObject['innerResource']);
+            GAME_LD.delCircleObject(this.hokedObject);
+          }
+          this.destroy();
         }
     }
     super.step(delta);
 
-    if (this.hokedObjest == null){
+    if (this.hokedObject == null){
         let tempHokedObjects = GAME_LD.getColisions(this, GAME_LD.Layers.Meteor);
         if (tempHokedObjects.length != 0){
-            this.hokedObjest = tempHokedObjects[0];
+            this.hokedObject = tempHokedObjects[0];
             this.isPushed = false;
-            this.hokedObjest.phisicMode = PhisicMode.none;
-            this.hokedObjest.coordinates = this.coordinates;
+            this.hokedObject.phisicMode = PhisicMode.none;
+            this.hokedObject.coordinates = this.coordinates;
         }
     } else{
-        this.hokedObjest.coordinates = this.coordinates;
+        this.hokedObject.coordinates = this.coordinates;
     }
   }
 }

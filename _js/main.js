@@ -6,6 +6,7 @@ export var LD_GLOB;
 (function (LD_GLOB) {
     LD_GLOB.version = "0.1";
     LD_GLOB.game_state = "game";
+    LD_GLOB.menu_text = "MENU. Press Enter.";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
     LD_GLOB.COLORS = {
@@ -86,7 +87,7 @@ function drawLoadingScreen() {
 function drawMenu() {
     LD_GLOB.mainDst.drawImage(background, 0, 0);
     LD_GLOB.mainDst.fillStyle = LD_GLOB.COLORS.main_7;
-    LD_GLOB.mainDst.fillText("MENU. Press Enter.", c_x - 80, c_y * 1.9);
+    LD_GLOB.mainDst.fillText(LD_GLOB.menu_text, c_x - 80, c_y * 1.9);
     // LD_GLOB.mainctx.drawImage(LD_GLOB.getImage('face'),100,100);
     GAME_LD.drawGame(LD_GLOB.mainDst);
     drawButtons(LD_GLOB.mainDst);
