@@ -53,7 +53,9 @@ function checkMsOver(e:MouseEvent){
     if(res && res.o && res.d<res.o.rad2){
         ms_over_but = res.o;
         ms_over_but.state = 1;
+        if(ms_over_but.ms_over) ms_over_but.ms_over.call(ms_over_but);
     } else if(ms_over_but){
+        if(ms_over_but.ms_out) ms_over_but.ms_out.call(ms_over_but);
         ms_over_but.state = 0;
         ms_over_but = null;
     }
@@ -91,6 +93,8 @@ export class Button{
     constructor(public dx:number, public dy:number, public obj:Circle, public rad:number, public icon:HTMLImageElement = null){
 
     }
+    ms_over:()=>void;//this means without click
+    ms_out:()=>void;
     ms_down:(e:MouseEvent)=>void;
     ms_move:(dx:number, dy:number)=>void;
     ms_up:()=>void;

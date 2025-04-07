@@ -55,18 +55,20 @@ export class Planet extends Circle {
     }
     dst.fillStyle = LD_GLOB.COLORS.main_6;
     // dst.font =  20 + "px Shantell Sans";
-    dst.fillText(`${this.inventory.countOfResources.iron}`,
+    dst.fillText(`${this.inventory.countOfResources.iron}${this.show_cost?'|'+this.show_cost.iron:''}`,
         this.coordinates.x+this.radius, this.coordinates.y);
     dst.fillStyle = LD_GLOB.COLORS.main_7;
     dst.fillText(
-      `${this.inventory.countOfResources.gold}`,
+      `${this.inventory.countOfResources.gold}${this.show_cost?'|'+this.show_cost.gold:''}`,
       this.coordinates.x + this.radius,
       this.coordinates.y + 20
     );
   }
+  show_cost:{iron:number,gold:number} = null;
   build(bld:Building){
     const icon_rad=15;
     this.building = bld;
+    this.show_cost = null;
     for(let but of this.upgrade_buttons){
       delButton(but);
     }
@@ -74,6 +76,12 @@ export class Planet extends Circle {
     for(let ind in bld.nextUpgrades){
       const next = GAME_LD.buildings[bld.nextUpgrades[ind]];
       but = crtButton(this, Math.cos(ang)*this.radius*1.5,Math.sin(ang)*this.radius*1.5, icon_rad, next.image_icon);
+      but.ms_over = ()=>{
+        this.show_cost = {iron:next.config.cost.get(ResourceType.iron),gold:next.config.cost.get(ResourceType.gold)};
+      }
+      but.ms_out = ()=>{
+        this.show_cost = null;
+      }
       but.ms_click = ()=>{
         if(this.inventory.canPay(next.config.cost)){
           this.inventory.pay(next.config.cost);
@@ -86,6 +94,12 @@ export class Planet extends Circle {
     if(!bld.config.evil){
       but = crtButton(this, Math.cos(-1.57)*this.radius*1.5,Math.sin(-1.57)*this.radius*1.5, icon_rad, 
                       LD_GLOB.getImage(<any>GAME_CONFIG.Other.space_icon_name));
+      but.ms_over = ()=>{
+        this.show_cost = {iron:GAME_CONFIG.Other.spaceship_cost.get(ResourceType.iron),gold:GAME_CONFIG.Other.spaceship_cost.get(ResourceType.gold)};
+      }
+      but.ms_out = ()=>{
+        this.show_cost = null;
+      }
       but.ms_click = ()=>{
         if(this.inventory.canPay(GAME_CONFIG.Other.spaceship_cost)){
           this.inventory.pay(GAME_CONFIG.Other.spaceship_cost);
