@@ -21,30 +21,31 @@ export class Building {
   image_build: HTMLImageElement;
   image_icon: HTMLImageElement;
   radius: number;
-  abilityConfig;
-  abilityType: GAME_CONFIG.AbilityType;
-  cost: Map<ResourceType, number>;
+  // abilityConfig;
+  // abilityType: GAME_CONFIG.AbilityType;
+  // cost: Map<ResourceType, number>;
   nextUpgrades: GAME_CONFIG.BuildingType[] = [];
+  config:GAME_CONFIG.BuildingConfigData;
 
   constructor(type: GAME_CONFIG.BuildingType) {
-    let config = GAME_CONFIG.BuildingConfig[type];
-    this.image_build = LD_GLOB.getImage(config.image_build);
-    this.radius = config.radius;
-    this.image_icon = LD_GLOB.getImage(config.image_icon);
-    this.abilityType = config.abilityType;
-    switch (this.abilityType) {
-      case GAME_CONFIG.AbilityType.hook:
-        this.abilityConfig = config.abilytyConfig as GAME_CONFIG.HookType;
-        break;
-      case GAME_CONFIG.AbilityType.bomb:
-        this.abilityConfig = config.abilytyConfig as GAME_CONFIG.BombType;
-        break;
-      case GAME_CONFIG.AbilityType.spaseShip:
-        this.abilityConfig = config.abilytyConfig;
-        break;
-    }
-    this.cost = config.cost;
-    for (let next of config.nextUpgrades){
+    this.config = GAME_CONFIG.BuildingConfig[type];
+    this.image_build = LD_GLOB.getImage(this.config.image_build);
+    this.radius = this.config.radius;
+    this.image_icon = LD_GLOB.getImage(this.config.image_icon);
+    // this.abilityType = this.config.abilityType;
+    // switch (this.config.abilityType) {
+    //   case GAME_CONFIG.AbilityType.hook:
+    //     this.abilityConfig = this.config.abilytyConfig as GAME_CONFIG.HookType;
+    //     break;
+    //   case GAME_CONFIG.AbilityType.bomb:
+    //     this.abilityConfig = this.config.abilytyConfig as GAME_CONFIG.BombType;
+    //     break;
+    //   case GAME_CONFIG.AbilityType.spaseShip:
+    //     this.abilityConfig = this.config.abilytyConfig;
+    //     break;
+    // }
+    // this.cost = this.config.cost;
+    for (let next of this.config.nextUpgrades){
         this.nextUpgrades.push(next);
     }
   }
@@ -69,13 +70,13 @@ export class Building {
   }
 
   buildLaunchee(planet: Planet): Launchee {
-    switch (this.abilityType) {
+    switch (this.config.abilityType) {
       case GAME_CONFIG.AbilityType.hook:
-        return new Hook(this.abilityConfig, planet);
+        return new Hook(<any>this.config.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.bomb:
-        return new Bomb(this.abilityConfig, planet);
+        return new Bomb(<any>this.config.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.spaseShip:
-        return new SpaceShip(this.abilityConfig, planet);
+        return new SpaceShip(<any>this.config.abilityConfig, planet);
     }
   }
 }

@@ -7,7 +7,7 @@ export namespace LD_GLOB {
   export let version = "0.1";
   export let canvas: HTMLCanvasElement;
   export let mainDst: CanvasRenderingContext2D;
-  export let game_state: "loading" | "menu" | "game" = "menu";
+  export let game_state: "loading" | "menu" | "game" = "game";
   export let loaded: boolean = false;
   export let loading_percent = 0;
   export const COLORS = {
@@ -115,7 +115,7 @@ function initCanvas() {
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet","bomb", "bombe1", "bombe2", 'build0','build1','build2','build3','icon1','icon2','icon3'] as const;
+const imageNames = ["planet","bomb", "bombe1", "bombe2", 'build0','build1','build2','build3','icon1','icon2','icon3','disease'] as const;
 export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;

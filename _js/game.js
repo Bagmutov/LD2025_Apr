@@ -5,6 +5,7 @@ import { Vector } from "./objects/vector.js";
 import { PhisicMode } from "./objects/circle.js";
 import { arrDel } from "./tools.js";
 import { Building } from "./objects/buildings/building.js";
+import { launchDisease } from "./objects/meteor_disease.js";
 export var GAME_CONFIG;
 (function (GAME_CONFIG) {
     let PlanetType;
@@ -37,6 +38,7 @@ export var GAME_CONFIG;
         BuildingType[BuildingType["hookTier3"] = 2] = "hookTier3";
         BuildingType[BuildingType["bombTier1"] = 3] = "bombTier1";
         BuildingType[BuildingType["starting"] = 4] = "starting";
+        BuildingType[BuildingType["disease1"] = 5] = "disease1";
     })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
     let AbilityType;
     (function (AbilityType) {
@@ -61,6 +63,7 @@ export var GAME_CONFIG;
             startBuilding: BuildingType.starting,
             phisicMode: PhisicMode.braking,
         },
+
     };
     GAME_CONFIG.MeteorConfig = {
         [MeteorType.smallMeteor]: {
@@ -117,7 +120,7 @@ export var GAME_CONFIG;
         [SpaceShipType.standartSpaseShip]: {
             stability: 10,
             radius: 10,
-            image: 'planet', //TODO
+            image: 'planet',
             forwardSpeed: 400,
             powerLavel: 4,
             phisicMode: PhisicMode.standart
@@ -134,13 +137,20 @@ export var GAME_CONFIG;
         space_img_rad: 15,
         space_build_image: null,
     };
+    GAME_CONFIG.MeteorDiseaseConfig = {
+        radius: 10,
+        image: 'disease',
+        phisicMode: PhisicMode.standart,
+        stability: 1,
+        vel: 20
+    };
     GAME_CONFIG.BuildingConfig = {
         [BuildingType.starting]: {
             radius: 15,
             image_build: "build0",
             image_icon: "icon1",
             abilityType: null,
-            abilytyConfig: null,
+            abilityConfig: null,
             cost: new Map([
                 ["gold" /* ResourceType.gold */, 0],
                 ["iron" /* ResourceType.iron */, 0],
@@ -152,7 +162,7 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilytyConfig: HookType.standartHook,
+            abilityConfig: HookType.standartHook,
             cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
@@ -160,11 +170,11 @@ export var GAME_CONFIG;
             nextUpgrades: [BuildingType.hookTier2],
         },
         [BuildingType.hookTier2]: {
-            radius: 12,
+            radius: 15,
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilytyConfig: HookType.standartHook,
+            abilityConfig: HookType.standartHook,
             cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
@@ -176,7 +186,7 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilytyConfig: HookType.standartHook,
+            abilityConfig: HookType.standartHook,
             cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
@@ -188,7 +198,20 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: 'bomb',
             abilityType: AbilityType.bomb,
-            abilytyConfig: BombType.standartBomb,
+            abilityConfig: BombType.standartBomb,
+            cost: new Map([
+                ["gold" /* ResourceType.gold */, 10],
+                ["iron" /* ResourceType.iron */, 10],
+            ]),
+            nextUpgrades: [],
+        },
+        [BuildingType.disease1]: {
+            evil: true,
+            radius: 15,
+            image_build: "disease",
+            image_icon: 'bomb',
+            abilityType: null,
+            abilityConfig: null,
             cost: new Map([
                 ["gold" /* ResourceType.gold */, 10],
                 ["iron" /* ResourceType.iron */, 10],
@@ -209,8 +232,9 @@ export var GAME_LD;
         SpaseShip: 1 << 3,
         Bomb: 1 << 4,
     };
-    let planets = [];
+    GAME_LD.planets = [];
     let meteors = [];
+    GAME_LD.diseasedPlanets = []; //This is horrible. We assume obj wouldn't loose diseased building ever
     let objects = []; // here will be all objects, with duplicates in planets, meteors etc
     // export let startBuilding;
     GAME_LD.buildings = {};
@@ -223,6 +247,12 @@ export var GAME_LD;
         }
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .6), GAME_CONFIG.PlanetType.startPlanet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .3, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
+        let obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .2), GAME_CONFIG.PlanetType.planet);
+        obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
+        addCircleObject(obj);
+        obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .8), GAME_CONFIG.PlanetType.planet);
+        obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
+        addCircleObject(obj);
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(200, 30)));
     }
     GAME_LD.init = init;
@@ -230,8 +260,8 @@ export var GAME_LD;
         if (objects.indexOf(obj) >= 0)
             throw new Error('Object is added to the scene a second time.');
         if (obj instanceof Planet) {
-            planets.push(obj);
-            obj.my_array = planets;
+            GAME_LD.planets.push(obj);
+            obj.my_array = GAME_LD.planets;
         }
         else if (obj instanceof Meteor) {
             meteors.push(obj);
@@ -248,7 +278,7 @@ export var GAME_LD;
     GAME_LD.delCircleObject = delCircleObject;
     function getAcseleration(point) {
         let res = new Vector(0, 0);
-        for (let planet of planets) {
+        for (let planet of GAME_LD.planets) {
             let dir = planet.coordinates
                 .sub(point);
             let len = dir.len();
@@ -264,7 +294,7 @@ export var GAME_LD;
     function getColisions(circle, layer) {
         let colisions = [];
         if ((layer & GAME_LD.Layers.Planet) != 0) {
-            for (let obj of planets) {
+            for (let obj of GAME_LD.planets) {
                 if (circle.checkCollision(obj))
                     colisions.push(obj);
             }
@@ -279,7 +309,7 @@ export var GAME_LD;
     }
     GAME_LD.getColisions = getColisions;
     function drawGame(dst) {
-        for (let planet of planets) {
+        for (let planet of GAME_LD.planets) {
             planet.draw(dst);
         }
         for (let object of objects) {
@@ -290,10 +320,17 @@ export var GAME_LD;
         }
     }
     GAME_LD.drawGame = drawGame;
+    let diseaseTimer = 1;
     function stepGame() {
         let delta = (new Date().getTime() - GAME_LD.lastFrame) / 1000;
         for (let obj of objects) {
             obj.step(delta);
+        }
+        diseaseTimer -= delta;
+        if (diseaseTimer < 0) {
+            diseaseTimer = Math.max(1, 4 - .5 * GAME_LD.diseasedPlanets.length) + Math.random() * 5;
+            if (GAME_LD.diseasedPlanets.length > 0)
+                launchDisease(GAME_LD.diseasedPlanets[~~(GAME_LD.diseasedPlanets.length * Math.random())]);
         }
         GAME_LD.lastFrame = new Date().getTime();
     }
