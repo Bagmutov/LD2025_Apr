@@ -42,6 +42,6 @@ function keyUp(e: KeyboardEvent) {
 
 function mouseDown(e: MouseEvent) {
   if (LD_GLOB.game_state == "loading" && LD_GLOB.loaded) {
-    LD_GLOB.game_state = "menu";
+    LD_GLOB.startMenu();
   }
 }

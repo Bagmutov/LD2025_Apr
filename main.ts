@@ -34,6 +34,11 @@ export namespace LD_GLOB {
   export function getImage(name: imageNamesTp): HTMLImageElement {
     return images[name];
   }
+  export function startMenu(){
+    let rad = background.height * 0.01;
+    background_ctx.drawImage(LD_GLOB.getImage('cosmos'),0,0, LD_GLOB.canvas.width, LD_GLOB.canvas.height)
+    LD_GLOB.game_state = "menu";
+  }
 }
 
 namespace LD_STARTER {
@@ -76,8 +81,8 @@ function mainLoop() {
 }
 let c_x = 0,
   c_y = 0,
-  background: HTMLCanvasElement,
-  background_ctx: CanvasRenderingContext2D;
+  background: HTMLCanvasElement;
+export let background_ctx: CanvasRenderingContext2D;
 function drawLoadingScreen() {
   LD_GLOB.mainDst.drawImage(background, 0, 0);
   drawCircle(LD_GLOB.mainDst, c_x, c_y, c_x * 0.5 + 5, LD_GLOB.COLORS.main_5);
@@ -118,7 +123,7 @@ function initCanvas() {
 
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken','hook_end'] as const;
+const imageNames = ["planet","cosmos","planet_blue","planet_yellow", 'build0','build1','build2','build3','icon1','icon2','icon3','disease','ship_broken','hook_end'] as const;
 export type imageNamesTp = (typeof imageNames)[number];
 const images: { [ind: string]: HTMLImageElement } = {};
 let loaded_imgs = 0;

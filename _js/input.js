@@ -39,7 +39,7 @@ function keyUp(e) {
 }
 function mouseDown(e) {
     if (LD_GLOB.game_state == "loading" && LD_GLOB.loaded) {
-        LD_GLOB.game_state = "menu";
+        LD_GLOB.startMenu();
     }
 }
 //# sourceMappingURL=input.js.map

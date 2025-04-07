@@ -30,6 +30,12 @@ export var LD_GLOB;
         return images[name];
     }
     LD_GLOB.getImage = getImage;
+    function startMenu() {
+        let rad = background.height * 0.01;
+        background_ctx.drawImage(LD_GLOB.getImage('cosmos'), 0, 0, LD_GLOB.canvas.width, LD_GLOB.canvas.height);
+        LD_GLOB.game_state = "menu";
+    }
+    LD_GLOB.startMenu = startMenu;
 })(LD_GLOB || (LD_GLOB = {}));
 var LD_STARTER;
 (function (LD_STARTER) {
@@ -73,7 +79,8 @@ function mainLoop() {
         requestAnimationFrame(menuLoop);
     }
 }
-let c_x = 0, c_y = 0, background, background_ctx;
+let c_x = 0, c_y = 0, background;
+export let background_ctx;
 function drawLoadingScreen() {
     LD_GLOB.mainDst.drawImage(background, 0, 0);
     drawCircle(LD_GLOB.mainDst, c_x, c_y, c_x * 0.5 + 5, LD_GLOB.COLORS.main_5);
@@ -109,7 +116,7 @@ function initCanvas() {
 }
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet", "planet_blue", "planet_yellow", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease', 'ship_broken', 'hook_end'];
+const imageNames = ["planet", "cosmos", "planet_blue", "planet_yellow", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease', 'ship_broken', 'hook_end'];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array
