@@ -17,6 +17,7 @@ export var GAME_CONFIG;
     (function (PlanetType) {
         PlanetType["planet"] = "planet";
         PlanetType["startPlanet"] = "startPlanet";
+        PlanetType["diseasePlanet"] = "diseasePlanet";
     })(PlanetType = GAME_CONFIG.PlanetType || (GAME_CONFIG.PlanetType = {}));
     let MeteorType;
     (function (MeteorType) {
@@ -26,12 +27,18 @@ export var GAME_CONFIG;
     })(MeteorType = GAME_CONFIG.MeteorType || (GAME_CONFIG.MeteorType = {}));
     let HookType;
     (function (HookType) {
-        HookType["standartHook"] = "standartHook";
+        HookType["hookTier1"] = "hookTier1";
+        HookType["hookTier2"] = "hookTier2";
+        HookType["hookTier3"] = "hookTier3";
     })(HookType = GAME_CONFIG.HookType || (GAME_CONFIG.HookType = {}));
     let BombType;
     (function (BombType) {
         BombType["standartBomb"] = "standartBomb";
     })(BombType = GAME_CONFIG.BombType || (GAME_CONFIG.BombType = {}));
+    let TrapType;
+    (function (TrapType) {
+        TrapType["standartTrap"] = "standartBomb";
+    })(TrapType = GAME_CONFIG.TrapType || (GAME_CONFIG.TrapType = {}));
     let SpaceShipType;
     (function (SpaceShipType) {
         SpaceShipType["standartSpaseShip"] = "standartSpaseShip";
@@ -42,14 +49,19 @@ export var GAME_CONFIG;
         BuildingType[BuildingType["hookTier2"] = 1] = "hookTier2";
         BuildingType[BuildingType["hookTier3"] = 2] = "hookTier3";
         BuildingType[BuildingType["bombTier1"] = 3] = "bombTier1";
-        BuildingType[BuildingType["starting"] = 4] = "starting";
-        BuildingType[BuildingType["disease1"] = 5] = "disease1";
+        BuildingType[BuildingType["trapTier1"] = 4] = "trapTier1";
+        BuildingType[BuildingType["starting"] = 5] = "starting";
+        BuildingType[BuildingType["disease1"] = 6] = "disease1";
+        BuildingType[BuildingType["disease2"] = 7] = "disease2";
+        BuildingType[BuildingType["disease3"] = 8] = "disease3";
     })(BuildingType = GAME_CONFIG.BuildingType || (GAME_CONFIG.BuildingType = {}));
     let AbilityType;
     (function (AbilityType) {
         AbilityType["hook"] = "hook";
         AbilityType["bomb"] = "bomb";
+        AbilityType["trap"] = "trap";
         AbilityType["spaseShip"] = "spaseShip";
+        AbilityType["diesese"] = "diesese";
     })(AbilityType = GAME_CONFIG.AbilityType || (GAME_CONFIG.AbilityType = {}));
     GAME_CONFIG.PlanetConfig = {
         [PlanetType.planet]: {
@@ -57,6 +69,7 @@ export var GAME_CONFIG;
             radius: 40,
             image: "planet",
             mass: 200,
+            diseaseValue: 0,
             startBuilding: null,
             phisicMode: PhisicMode.braking,
         },
@@ -65,7 +78,17 @@ export var GAME_CONFIG;
             radius: 50,
             image: "planet",
             mass: 200,
+            diseaseValue: 0,
             startBuilding: BuildingType.starting,
+            phisicMode: PhisicMode.braking,
+        },
+        [PlanetType.diseasePlanet]: {
+            stability: 10,
+            radius: 40,
+            image: "planet",
+            mass: 200,
+            diseaseValue: 10,
+            startBuilding: BuildingType.disease1,
             phisicMode: PhisicMode.braking,
         },
     };
@@ -102,7 +125,36 @@ export var GAME_CONFIG;
         },
     };
     GAME_CONFIG.HookConfig = {
-        [HookType.standartHook]: { stability: 10, radius: 10, image: "icon1", forwardSpeed: 800, backwardSpeed: 1000, powerLavel: 10, maxLenth: 300, phisicMode: PhisicMode.standart },
+        [HookType.hookTier1]: {
+            stability: 10,
+            radius: 10,
+            image: "icon1",
+            forwardSpeed: 400,
+            backwardSpeed: 400,
+            powerLavel: 1,
+            maxLenth: 250,
+            phisicMode: PhisicMode.standart
+        },
+        [HookType.hookTier2]: {
+            stability: 10,
+            radius: 20,
+            image: "icon1",
+            forwardSpeed: 800,
+            backwardSpeed: 1000,
+            powerLavel: 3,
+            maxLenth: 400,
+            phisicMode: PhisicMode.standart
+        },
+        [HookType.hookTier3]: {
+            stability: 10,
+            radius: 30,
+            image: "icon1",
+            forwardSpeed: 1500,
+            backwardSpeed: 2000,
+            powerLavel: 10,
+            maxLenth: 1000,
+            phisicMode: PhisicMode.standart
+        },
     };
     GAME_CONFIG.BombConfig = {
         [BombType.standartBomb]: {
@@ -124,11 +176,30 @@ export var GAME_CONFIG;
             ])
         },
     };
+    GAME_CONFIG.TrapConfig = {
+        [TrapType.standartTrap]: {
+            stability: 10,
+            radius: 20,
+            image: "build0", //TODO
+            phisicMode: PhisicMode.braking,
+            speed: 200,
+            maxDist: 9999,
+            trapRadius: 300,
+            trapStregth: 7,
+            trapVelocityAdd: 10,
+            activeImage: 'build1',
+            activeDuration: 4,
+            itemCost: new Map([
+                ["gold" /* ResourceType.gold */, 5],
+                ["iron" /* ResourceType.iron */, 10],
+            ])
+        },
+    };
     GAME_CONFIG.SpaceShipConfig = {
         [SpaceShipType.standartSpaseShip]: {
             stability: 1,
             radius: 10,
-            image: 'icon3',
+            image: 'icon3', //TODO
             image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,
@@ -137,8 +208,8 @@ export var GAME_CONFIG;
     };
     GAME_CONFIG.Other = {
         spaceship_cost: new Map([
-            ["iron" /* ResourceType.iron */, 1],
-            ["gold" /* ResourceType.gold */, 0],
+            ["iron" /* ResourceType.iron */, 0],
+            ["gold" /* ResourceType.gold */, 4],
         ]),
         space_icon_name: 'icon3',
         space_icon_rad: 15,
@@ -146,12 +217,37 @@ export var GAME_CONFIG;
         space_img_rad: 15,
         space_build_image: null,
     };
+    let MeteorDiseaseType;
+    (function (MeteorDiseaseType) {
+        MeteorDiseaseType["tier1"] = "tier1";
+        MeteorDiseaseType["tier2"] = "tier2";
+        MeteorDiseaseType["tier3"] = "tier3";
+    })(MeteorDiseaseType = GAME_CONFIG.MeteorDiseaseType || (GAME_CONFIG.MeteorDiseaseType = {}));
     GAME_CONFIG.MeteorDiseaseConfig = {
-        radius: 10,
-        image: 'disease',
-        phisicMode: PhisicMode.standart,
-        stability: 1,
-        vel: 20
+        [MeteorDiseaseType.tier1]: {
+            radius: 10,
+            image: "disease",
+            phisicMode: PhisicMode.standart,
+            stability: 3,
+            vel: 20,
+            diseaseAdd: 3,
+        },
+        [MeteorDiseaseType.tier2]: {
+            radius: 5,
+            image: "disease",
+            phisicMode: PhisicMode.standart,
+            stability: 2,
+            vel: 200,
+            diseaseAdd: 2,
+        },
+        [MeteorDiseaseType.tier3]: {
+            radius: 20,
+            image: "disease",
+            phisicMode: PhisicMode.standart,
+            stability: 7,
+            vel: 40,
+            diseaseAdd: 10,
+        },
     };
     GAME_CONFIG.SpawnerConfig = {
         met_vel: 100,
@@ -176,7 +272,7 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilityConfig: HookType.standartHook,
+            abilityConfig: HookType.hookTier1,
             cost: new Map([
                 ["iron" /* ResourceType.iron */, 2],
                 ["gold" /* ResourceType.gold */, 0],
@@ -188,7 +284,7 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilityConfig: HookType.standartHook,
+            abilityConfig: HookType.hookTier2,
             cost: new Map([
                 ["iron" /* ResourceType.iron */, 2],
                 ["gold" /* ResourceType.gold */, 0],
@@ -200,7 +296,7 @@ export var GAME_CONFIG;
             image_build: "build1",
             image_icon: "icon1",
             abilityType: AbilityType.hook,
-            abilityConfig: HookType.standartHook,
+            abilityConfig: HookType.hookTier3,
             cost: new Map([
                 ["iron" /* ResourceType.iron */, 2],
                 ["gold" /* ResourceType.gold */, 2],
@@ -210,12 +306,24 @@ export var GAME_CONFIG;
         [BuildingType.bombTier1]: {
             radius: 15,
             image_build: "build2",
-            image_icon: 'icon2',
+            image_icon: "icon2",
             abilityType: AbilityType.bomb,
             abilityConfig: BombType.standartBomb,
             cost: new Map([
                 ["iron" /* ResourceType.iron */, 0],
                 ["gold" /* ResourceType.gold */, 2],
+            ]),
+            nextUpgrades: [BuildingType.trapTier1],
+        },
+        [BuildingType.trapTier1]: {
+            radius: 15,
+            image_build: "build2",
+            image_icon: "icon2",
+            abilityType: AbilityType.trap,
+            abilityConfig: TrapType.standartTrap,
+            cost: new Map([
+                ["iron" /* ResourceType.iron */, 10],
+                ["gold" /* ResourceType.gold */, 10],
             ]),
             nextUpgrades: [],
         },
@@ -223,9 +331,29 @@ export var GAME_CONFIG;
             evil: true,
             radius: 15,
             image_build: "disease",
-            image_icon: 'ship_broken',
-            abilityType: null,
-            abilityConfig: null,
+            image_icon: "ship_broken",
+            abilityType: AbilityType.diesese,
+            abilityConfig: MeteorDiseaseType.tier1,
+            cost: null,
+            nextUpgrades: [],
+        },
+        [BuildingType.disease2]: {
+            evil: true,
+            radius: 15,
+            image_build: "disease",
+            image_icon: "ship_broken",
+            abilityType: AbilityType.diesese,
+            abilityConfig: MeteorDiseaseType.tier2,
+            cost: null,
+            nextUpgrades: [],
+        },
+        [BuildingType.disease3]: {
+            evil: true,
+            radius: 15,
+            image_build: "disease",
+            image_icon: "ship_broken",
+            abilityType: AbilityType.diesese,
+            abilityConfig: MeteorDiseaseType.tier3,
             cost: null,
             nextUpgrades: [],
         },
@@ -242,6 +370,7 @@ export var GAME_LD;
         Items: 1 << 2,
         SpaseShip: 1 << 3,
         Disease: 1 << 4,
+        All: 1 << 5,
     };
     GAME_LD.planets = [];
     GAME_LD.meteors = [];
@@ -268,13 +397,11 @@ export var GAME_LD;
         addSpawner(new Spawner('meteor', new Vector(100, 500), GAME_CONFIG.MeteorType.largeMeteor));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .6, LD_GLOB.canvas.height * .7), GAME_CONFIG.PlanetType.planet));
         addCircleObject(new Planet(new Vector(LD_GLOB.canvas.width * .5, LD_GLOB.canvas.height * .3), GAME_CONFIG.PlanetType.planet));
-        let obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .8), GAME_CONFIG.PlanetType.planet);
-        obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.starting]);
-        obj.inventory.addResource("iron" /* ResourceType.iron */, 15);
-        obj.inventory.addResource("gold" /* ResourceType.gold */, 15);
+        let obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .8), GAME_CONFIG.PlanetType.startPlanet);
+        obj.inventory.addResource("iron" /* ResourceType.iron */, 30);
+        obj.inventory.addResource("gold" /* ResourceType.gold */, 30);
         addCircleObject(obj);
-        obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .2), GAME_CONFIG.PlanetType.planet);
-        obj.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
+        obj = new Planet(new Vector(LD_GLOB.canvas.width * .2, LD_GLOB.canvas.height * .2), GAME_CONFIG.PlanetType.diseasePlanet);
         addCircleObject(obj);
         addCircleObject(new Meteor(new Vector(LD_GLOB.canvas.width / 2 + 200, LD_GLOB.canvas.height / 2 - 200), GAME_CONFIG.MeteorType.mediumMeteor, new Vector(0, 0)));
     }
@@ -305,6 +432,19 @@ export var GAME_LD;
         objects.push(obj);
     }
     GAME_LD.addCircleObject = addCircleObject;
+    function addPlanetsInDiseased(obj) {
+        if (objects.indexOf(obj) >= 0) {
+            return;
+        }
+        GAME_LD.diseasedPlanets.push(obj);
+        GAME_LD.checkWinLoseConditions();
+    }
+    GAME_LD.addPlanetsInDiseased = addPlanetsInDiseased;
+    function delPlanetsFromDiseased(obj) {
+        arrDel(GAME_LD.diseasedPlanets, obj);
+        GAME_LD.checkWinLoseConditions();
+    }
+    GAME_LD.delPlanetsFromDiseased = delPlanetsFromDiseased;
     function delCircleObject(obj) {
         arrDel(objects, obj);
         if (obj.my_array)
@@ -365,6 +505,12 @@ export var GAME_LD;
                     colisions.push(obj);
             }
         }
+        if ((layer & GAME_LD.Layers.All) != 0) {
+            for (let obj of objects) {
+                if (circle.checkCollision(obj))
+                    colisions.push(obj);
+            }
+        }
         return colisions;
     }
     GAME_LD.getColisions = getColisions;
@@ -372,10 +518,20 @@ export var GAME_LD;
         let player_planets = 0;
         GAME_LD.planets.forEach(el => { if (el.building && !el.building.config.evil)
             player_planets += 1; });
-        if (player_planets == 0 && GAME_LD.spaceships.length == 0) {
+        let is_all_spaseShipDie = false;
+        for (let s of GAME_LD.spaceships) {
+            is_all_spaseShipDie = is_all_spaseShipDie || !s.broken;
+        }
+        if (player_planets == 0 && is_all_spaseShipDie) {
             clearAll();
             LD_GLOB.game_state = 'menu';
             LD_GLOB.menu_text = 'Humanity is dead. Press Enter.';
+            init();
+        }
+        if (GAME_LD.diseasedPlanets.length == 0) {
+            clearAll();
+            LD_GLOB.game_state = 'menu';
+            LD_GLOB.menu_text = "You're Win";
             init();
         }
     }

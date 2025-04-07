@@ -1,9 +1,11 @@
 import { GAME_CONFIG } from "../../game.js";
 import { LD_GLOB } from "../../main.js";
 import { Bomb } from "../abilities/bomb.js";
+import { GravityTrap } from "../abilities/gravitytrap.js";
 import { Hook } from "../abilities/hook.js";
 import { Launchee } from "../abilities/launchee.js";
 import { SpaceShip } from "../abilities/spaseShip.js";
+import { MeteorDisease } from "../meteor_disease.js";
 import { Planet } from "../planet.js";
 import { ResourceType } from "../resource/resource.js";
 
@@ -74,12 +76,42 @@ export class Building {
       case GAME_CONFIG.AbilityType.hook:
         return new Hook(<any>this.config.abilityConfig, planet);
       case GAME_CONFIG.AbilityType.bomb:
-        if(planet.inventory.canPay(GAME_CONFIG.BombConfig[(this.config.abilityConfig)].itemCost)){
-          planet.inventory.pay(GAME_CONFIG.BombConfig[(this.config.abilityConfig)].itemCost)
+        if (
+          planet.inventory.canPay(
+            GAME_CONFIG.BombConfig[this.config.abilityConfig].itemCost
+          )
+        ) {
+          planet.inventory.pay(
+            GAME_CONFIG.BombConfig[this.config.abilityConfig].itemCost
+          );
           return new Bomb(<any>this.config.abilityConfig, planet);
         } else return null;
       case GAME_CONFIG.AbilityType.spaseShip:
         return new SpaceShip(<any>this.config.abilityConfig, planet);
+      case GAME_CONFIG.AbilityType.bomb:
+        if (
+          planet.inventory.canPay(
+            GAME_CONFIG.BombConfig[this.config.abilityConfig].itemCost
+          )
+        ) {
+          planet.inventory.pay(
+            GAME_CONFIG.BombConfig[this.config.abilityConfig].itemCost
+          );
+          return new Bomb(<any>this.config.abilityConfig, planet);
+        } else return null;
+      case GAME_CONFIG.AbilityType.trap:
+        if (
+          planet.inventory.canPay(
+            GAME_CONFIG.TrapConfig[this.config.abilityConfig].itemCost
+          )
+        ) {
+          planet.inventory.pay(
+            GAME_CONFIG.TrapConfig[this.config.abilityConfig].itemCost
+          );
+          return new GravityTrap(<any>this.config.abilityConfig, planet);
+        } else return null;
+      case GAME_CONFIG.AbilityType.diesese:
+        return new MeteorDisease(planet.coordinates, <any>this.config.abilityConfig, planet);
     }
   }
 }
