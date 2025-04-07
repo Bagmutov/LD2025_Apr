@@ -9,6 +9,7 @@ export var LD_GLOB;
     LD_GLOB.menu_text = "MENU. Press Enter.";
     LD_GLOB.loaded = false;
     LD_GLOB.loading_percent = 0;
+    LD_GLOB.mute = false;
     LD_GLOB.COLORS = {
         main_1: "#112e50ff",
         main_2: "#0a4c69ff",
@@ -135,11 +136,11 @@ function initBackground() {
     background = document.createElement("canvas");
     positionCanvas(background);
     background_ctx = background.getContext("2d");
-    let rad = background.height * 0.03;
-    drawRoundRect(background_ctx, 0, 0, 0, LD_GLOB.canvas.width, LD_GLOB.canvas.height, LD_GLOB.COLORS.main_1);
-    // drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
-    // drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
-    // drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
+    let rad = background.height * 0.01;
+    drawRoundRect(background_ctx, 0, 0, 0, LD_GLOB.canvas.width, LD_GLOB.canvas.height, LD_GLOB.COLORS.main_4);
+    drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canvas.width - rad * 1 * 2, LD_GLOB.canvas.height - rad * 1 * 2, LD_GLOB.COLORS.main_3);
+    drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canvas.width - rad * 2 * 2, LD_GLOB.canvas.height - rad * 2 * 2, LD_GLOB.COLORS.main_2);
+    drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canvas.width - rad * 3 * 2, LD_GLOB.canvas.height - rad * 3 * 2, LD_GLOB.COLORS.main_1);
 }
 //     ----------------------- SOUND --------------------------
 const soundNames = ["background", "build", "collis", "death", "disease1",
@@ -184,9 +185,9 @@ function loadSound(url, buf_name) {
     request.send();
 }
 export function playSound(sound_name, vol = 1, wait = 0, loop = false) {
-    if (!audio_context)
+    if (!audio_context || LD_GLOB.mute)
         return;
-    console.log(`${sound_name}`);
+    // console.log(`${sound_name}`);
     let buffer = all_buffers[sound_name];
     var source = audio_context.createBufferSource(); // creates a sound source
     const gainNode = audio_context.createGain();

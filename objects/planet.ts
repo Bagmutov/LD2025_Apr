@@ -62,23 +62,25 @@ export class Planet extends Circle {
         4
       );
     }
-    dst.fillStyle = LD_GLOB.COLORS.main_6;
-    // dst.font =  20 + "px Shantell Sans";
-    dst.fillText(
-      `${this.inventory.countOfResources.iron}${
-        this.show_cost ? "|" + this.show_cost.iron : ""
-      }`,
-      this.coordinates.x + this.radius,
-      this.coordinates.y
-    );
-    dst.fillStyle = LD_GLOB.COLORS.main_7;
-    dst.fillText(
-      `${this.inventory.countOfResources.gold}${
-        this.show_cost ? "|" + this.show_cost.gold : ""
-      }`,
-      this.coordinates.x + this.radius,
-      this.coordinates.y + 20
-    );
+    if(this.building && !this.building.config.evil){
+      dst.fillStyle = LD_GLOB.COLORS.main_6;
+      // dst.font =  20 + "px Shantell Sans";
+      dst.fillText(
+        `${this.inventory.countOfResources.iron}${
+          this.show_cost ? "|" + this.show_cost.iron : ""
+        }`,
+        this.coordinates.x + this.radius,
+        this.coordinates.y
+      );
+      dst.fillStyle = LD_GLOB.COLORS.main_7;
+      dst.fillText(
+        `${this.inventory.countOfResources.gold}${
+          this.show_cost ? "|" + this.show_cost.gold : ""
+        }`,
+        this.coordinates.x + this.radius,
+        this.coordinates.y + 20
+      );
+    }
     if (this.diseaseValue > 0) {
       dst.fillStyle = LD_GLOB.COLORS.red;
       dst.fillText(

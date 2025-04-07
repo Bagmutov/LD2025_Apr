@@ -11,6 +11,7 @@ export namespace LD_GLOB {
   export let menu_text:string = "MENU. Press Enter.";
   export let loaded: boolean = false;
   export let loading_percent = 0;
+  export let mute:boolean = false;
   export const COLORS = {
     main_1: "#112e50ff",
     main_2: "#0a4c69ff",
@@ -146,7 +147,7 @@ function initBackground() {
   background = document.createElement("canvas");
   positionCanvas(background);
   background_ctx = background.getContext("2d");
-  let rad = background.height * 0.03;
+  let rad = background.height * 0.01;
   drawRoundRect(
     background_ctx,
     0,
@@ -154,11 +155,11 @@ function initBackground() {
     0,
     LD_GLOB.canvas.width,
     LD_GLOB.canvas.height,
-    LD_GLOB.COLORS.main_1
+    LD_GLOB.COLORS.main_4
   );
-  // drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canv.width - rad * 1 * 2, LD_GLOB.canv.height - rad * 1 * 2, LD_GLOB.COLORS.main_2);
-  // drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canv.width - rad * 2 * 2, LD_GLOB.canv.height - rad * 2 * 2, LD_GLOB.COLORS.main_3);
-  // drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canv.width - rad * 3 * 2, LD_GLOB.canv.height - rad * 3 * 2, LD_GLOB.COLORS.main_4);
+  drawRoundRect(background_ctx, rad * 1, rad * 1, rad * 1, LD_GLOB.canvas.width - rad * 1 * 2, LD_GLOB.canvas.height - rad * 1 * 2, LD_GLOB.COLORS.main_3);
+  drawRoundRect(background_ctx, rad * 2, rad * 2, rad * 2, LD_GLOB.canvas.width - rad * 2 * 2, LD_GLOB.canvas.height - rad * 2 * 2, LD_GLOB.COLORS.main_2);
+  drawRoundRect(background_ctx, rad * 3, rad * 3, rad * 3, LD_GLOB.canvas.width - rad * 3 * 2, LD_GLOB.canvas.height - rad * 3 * 2, LD_GLOB.COLORS.main_1);
 }
 
 //     ----------------------- SOUND --------------------------
@@ -218,8 +219,8 @@ export function playSound(
   wait: number = 0,
   loop: boolean = false
 ): AudioBufferSourceNode {
-  if(!audio_context)return;
-  console.log(`${sound_name}`);
+  if(!audio_context || LD_GLOB.mute)return;
+  // console.log(`${sound_name}`);
   let buffer: AudioBuffer = all_buffers[sound_name];
   var source = audio_context.createBufferSource(); // creates a sound source
   const gainNode = audio_context.createGain();

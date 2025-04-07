@@ -21,6 +21,13 @@ function keyDown(e: KeyboardEvent) {
       LD_GLOB.game_state = "menu";
     }
   }
+  if(e.key == 'r'){
+    GAME_LD.restart();
+  }
+  if(e.key == 'm'){
+    LD_GLOB.mute = !LD_GLOB.mute;
+    if(LD_GLOB.mute && GAME_LD.backsnd)GAME_LD.backsnd.stop();
+  }
 
   if (e.key in GAME_LD.keyMap) {
     GAME_LD.keyMap[e.key] = true;

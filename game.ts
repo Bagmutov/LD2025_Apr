@@ -504,6 +504,10 @@ export namespace GAME_LD {
   // export let startBuilding;
   export const buildings:{ [k in GAME_CONFIG.BuildingType]?: Building } = {};
 
+  function getRandomVector(border:number):Vector{
+    return new Vector(border+Math.random()*(LD_GLOB.canvas.width-border*2),border+Math.random()*(LD_GLOB.canvas.height-border*2));
+  }
+
   export function init() {
     lastFrame = new Date().getTime();
     GAME_CONFIG.Other.space_build_image = LD_GLOB.getImage(<any>GAME_CONFIG.Other.space_img_name);
@@ -512,27 +516,23 @@ export namespace GAME_LD {
       buildings[key] = new Building(<any> key);
     }
 
-    addSpawner(new Spawner('disease',new Vector(600,500)));
-    addSpawner(new Spawner('meteor',new Vector(600,200),GAME_CONFIG.MeteorType.smallMeteor));
-    addSpawner(new Spawner('meteor',new Vector(100,200),GAME_CONFIG.MeteorType.mediumMeteor));
-    addSpawner(new Spawner('meteor',new Vector(100,500),GAME_CONFIG.MeteorType.largeMeteor));
+    addSpawner(new Spawner('disease',getRandomVector(0)));
+    addSpawner(new Spawner('meteor',getRandomVector(0),GAME_CONFIG.MeteorType.smallMeteor));
+    addSpawner(new Spawner('meteor',getRandomVector(0),GAME_CONFIG.MeteorType.mediumMeteor));
+    addSpawner(new Spawner('meteor',getRandomVector(0),GAME_CONFIG.MeteorType.largeMeteor));
 
-    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.6,LD_GLOB.canvas.height *.7), GAME_CONFIG.PlanetType.planet));
-    addCircleObject(new Planet( new Vector(LD_GLOB.canvas.width *.5,LD_GLOB.canvas.height *.3), GAME_CONFIG.PlanetType.planet));
-    let obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.8), GAME_CONFIG.PlanetType.startPlanet);
+    for(let i=0; i<10;i++){
+      addCircleObject(new Planet( getRandomVector(100), GAME_CONFIG.PlanetType.planet));
+    }
+    for(let i=0; i<10;i++){
+      addCircleObject(new Meteor( getRandomVector(50), GAME_CONFIG.MeteorType.smallMeteor, new Vector(Math.random()*100-50,Math.random()*100-50)));
+    }
+    let obj = new Planet( new Vector(LD_GLOB.canvas.width-100,LD_GLOB.canvas.height-100), GAME_CONFIG.PlanetType.startPlanet);
     obj.inventory.addResource(ResourceType.iron, 30);
     obj.inventory.addResource(ResourceType.gold, 30);
     addCircleObject(obj);
-    obj = new Planet( new Vector(LD_GLOB.canvas.width *.2,LD_GLOB.canvas.height *.2), GAME_CONFIG.PlanetType.diseasePlanet);
+    obj = new Planet( new Vector(120,120), GAME_CONFIG.PlanetType.diseasePlanet);
     addCircleObject(obj);
-    
-    addCircleObject(
-      new Meteor(
-        new Vector(LD_GLOB.canvas.width / 2+200, LD_GLOB.canvas.height / 2 - 200),
-        GAME_CONFIG.MeteorType.mediumMeteor,
-        new Vector(0, 0)
-      )
-    );
 
 
   }
@@ -678,12 +678,16 @@ export namespace GAME_LD {
     for(let sp of diseaseSpawners){
       dst.fillRect(sp.target.x,sp.target.y,3,3);
     }
-    dst.fillText(`obj:${objects.length}`,10,20);
-    dst.fillText(`plnt:${planets.length}`,10,40);
-    dst.fillText(`met:${meteors.length}`,10,60);
-    dst.fillText(`dis:${meteorsDis.length}`,10,80);
-    dst.fillText(`ships:${spaceships.length}`,10,100);
-    dst.fillText(`items:${items.length}`,10,120);
+    dst.fillText(`R : Restart`,10,20);
+    dst.fillText(`M : Mute`,10,40);
+
+
+
+    // dst.fillText(`plnt:${planets.length}`,10,40);
+    // dst.fillText(`met:${meteors.length}`,10,60);
+    // dst.fillText(`dis:${meteorsDis.length}`,10,80);
+    // dst.fillText(`ships:${spaceships.length}`,10,100);
+    // dst.fillText(`items:${items.length}`,10,120);
   }
 
   let stepN=0;
@@ -691,7 +695,7 @@ export namespace GAME_LD {
   let meteorTimer=0;
   const SONG_LEN = 120;
   let backmusicTimer = 2;
-  let backsnd:AudioBufferSourceNode;
+  export let backsnd:AudioBufferSourceNode;
   const OFF_BORD = GAME_CONFIG.SpawnerConfig.offscreen_dist + 100;
   export function stepGame() {
     let delta = (new Date().getTime() - lastFrame) / 1000;
@@ -726,7 +730,7 @@ export namespace GAME_LD {
     }
     diseaseTimer-=delta;
     if(diseaseTimer<0){
-      diseaseTimer=Math.max(1,4-.5*diseasedPlanets.length)+Math.random()*5;
+      diseaseTimer=Math.max(1,10-.7*diseasedPlanets.length)+Math.random()*5;
       if(diseasedPlanets.length>0) launchDisease(diseasedPlanets[~~(diseasedPlanets.length*Math.random())]);
       else if(diseaseSpawners.length)diseaseSpawners[~~(Math.random()*diseaseSpawners.length)].spawn();
     }
