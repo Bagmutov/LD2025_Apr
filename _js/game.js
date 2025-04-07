@@ -201,8 +201,8 @@ export var GAME_CONFIG;
         },
         [BuildingType.bombTier1]: {
             radius: 15,
-            image_build: "build1",
-            image_icon: 'bomb',
+            image_build: "build2",
+            image_icon: 'icon2',
             abilityType: AbilityType.bomb,
             abilityConfig: BombType.standartBomb,
             cost: new Map([
