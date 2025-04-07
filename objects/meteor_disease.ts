@@ -23,6 +23,7 @@ export class MeteorDisease extends Circle {
       this.destroy();
       const planet = (collisions[0] as Planet);
       planet.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
+      GAME_LD.delCircleObject(planet);
     }
   }
 }

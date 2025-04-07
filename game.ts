@@ -324,7 +324,7 @@ export namespace GAME_LD {
     None:        0,
     Planet:      1 << 0,
     Meteor:      1 << 1,
-    Items:   1 << 2,
+    Items:       1 << 2,
     SpaseShip:   1 << 3,
     Disease:     1 << 4,
   };
