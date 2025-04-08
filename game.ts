@@ -156,7 +156,7 @@ export namespace GAME_CONFIG {
     [PlanetType.planet]: {
       stability: 5,
       radius: 40,
-      image: "planet",
+      image: 'planet_blue',
       mass: 200,
       diseaseValue: 0,
       startBuilding: null,
@@ -165,7 +165,7 @@ export namespace GAME_CONFIG {
     [PlanetType.startPlanet]: {
       stability: 7,
       radius: 50,
-      image: "planet",
+      image: 'earth',
       mass: 200,
       diseaseValue: 0,
       startBuilding: BuildingType.starting,
@@ -174,7 +174,7 @@ export namespace GAME_CONFIG {
     [PlanetType.diseasePlanet]: {
       stability: 7,
       radius: 40,
-      image: "planet",
+      image: 'disease_planet',
       mass: 200,
       diseaseValue: 10,
       startBuilding: BuildingType.disease1,
@@ -383,7 +383,7 @@ export namespace GAME_CONFIG {
   > = {
     [MeteorDiseaseType.tier1]: {
       radius: 10,
-      image: "disease",
+      image: 'disease_meteor',
       phisicMode: PhisicMode.standart,
       stability: 3,
       vel: 20,
@@ -391,15 +391,15 @@ export namespace GAME_CONFIG {
     },
     [MeteorDiseaseType.tier2]: {
       radius: 5,
-      image: "disease",
+      image: 'disease',
       phisicMode: PhisicMode.standart,
       stability: 2,
-      vel: 200,
+      vel: 60,
       diseaseAdd: 2,
     },
     [MeteorDiseaseType.tier3]: {
       radius: 20,
-      image: "disease",
+      image: 'disease_meteor',
       phisicMode: PhisicMode.standart,
       stability: 7,
       vel: 40,
@@ -595,7 +595,7 @@ export namespace GAME_LD {
 
     let obj = new Planet( new Vector(LD_GLOB.canvas.width-100,LD_GLOB.canvas.height-100), GAME_CONFIG.PlanetType.startPlanet);
     obj.inventory.addResource(ResourceType.iron, 6);
-    obj.inventory.addResource(ResourceType.gold, 0);
+    obj.inventory.addResource(ResourceType.gold, 6);
     addCircleObject(obj);
     obj = new Planet( new Vector(120,120), GAME_CONFIG.PlanetType.diseasePlanet);
     addCircleObject(obj);

@@ -44,7 +44,6 @@ var LD_STARTER;
         initBackground();
         initInput();
         initImages();
-        GAME_LD.init();
         console.log(`Starting LD 2025 v${LD_GLOB.version}`);
         loadingLoop();
     }
@@ -60,7 +59,12 @@ function loadingLoop() {
         requestAnimationFrame(loadingLoop);
     }
 }
+let game_load = false;
 function menuLoop() {
+    if (!game_load) {
+        GAME_LD.init();
+        game_load = true;
+    }
     drawMenu();
     if (LD_GLOB.game_state == "game") {
         requestAnimationFrame(mainLoop);
@@ -114,9 +118,37 @@ function initCanvas() {
     c_x = LD_GLOB.canvas.width / 2;
     c_y = LD_GLOB.canvas.height / 2;
 }
+function resizeCanvas() {
+    LD_GLOB.canvas.width = window.innerWidth;
+    LD_GLOB.canvas.height = window.innerHeight;
+    background.width = window.innerWidth;
+    background.height = window.innerHeight;
+    c_x = LD_GLOB.canvas.width / 2;
+    c_y = LD_GLOB.canvas.height / 2;
+    background_ctx.drawImage(LD_GLOB.getImage('cosmos'), 0, 0, LD_GLOB.canvas.width, LD_GLOB.canvas.height);
+}
 //     ----------------------- IMAGES --------------------------
 const imageFolder = "./images/";
-const imageNames = ["planet", "cosmos", "planet_blue", "planet_yellow", 'build0', 'build1', 'build2', 'build3', 'icon1', 'icon2', 'icon3', 'disease', 'ship_broken', 'hook_end'];
+const imageNames = [
+    "planet",
+    "earth",
+    "cosmos",
+    "planet_blue",
+    "planet_blue2",
+    "planet_yellow",
+    "build0",
+    "build1",
+    "build2",
+    "build3",
+    "icon1",
+    "icon2",
+    "icon3",
+    "disease",
+    "disease_planet",
+    "disease_meteor",
+    "ship_broken",
+    "hook_end",
+];
 const images = {};
 let loaded_imgs = 0;
 // Load images into an array
@@ -154,6 +186,7 @@ const soundNames = ["background", "build", "collis", "death", "disease1",
     "disease2", "expl", "hook1", "hook2", "hook3", "voice", "pip"];
 var audio_context;
 window.addEventListener("load", initSounds, false);
+window.addEventListener('resize', resizeCanvas);
 function initSounds() {
     try {
         audio_context = new AudioContext();

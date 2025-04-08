@@ -71,7 +71,7 @@ export var GAME_CONFIG;
         [PlanetType.planet]: {
             stability: 5,
             radius: 40,
-            image: "planet",
+            image: 'planet_blue',
             mass: 200,
             diseaseValue: 0,
             startBuilding: null,
@@ -80,7 +80,7 @@ export var GAME_CONFIG;
         [PlanetType.startPlanet]: {
             stability: 7,
             radius: 50,
-            image: "planet",
+            image: 'earth',
             mass: 200,
             diseaseValue: 0,
             startBuilding: BuildingType.starting,
@@ -89,7 +89,7 @@ export var GAME_CONFIG;
         [PlanetType.diseasePlanet]: {
             stability: 7,
             radius: 40,
-            image: "planet",
+            image: 'disease_planet',
             mass: 200,
             diseaseValue: 10,
             startBuilding: BuildingType.disease1,
@@ -220,7 +220,7 @@ export var GAME_CONFIG;
         [TrapType.standartTrap]: {
             stability: 10,
             radius: 20,
-            image: "build0",
+            image: "build0", //TODO
             phisicMode: PhisicMode.braking,
             speed: 200,
             maxDist: 9999,
@@ -240,7 +240,7 @@ export var GAME_CONFIG;
         [SpaceShipType.standartSpaseShip]: {
             stability: 1,
             radius: 10,
-            image: 'icon3',
+            image: 'icon3', //TODO
             image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,
@@ -267,7 +267,7 @@ export var GAME_CONFIG;
     GAME_CONFIG.MeteorDiseaseConfig = {
         [MeteorDiseaseType.tier1]: {
             radius: 10,
-            image: "disease",
+            image: 'disease_meteor',
             phisicMode: PhisicMode.standart,
             stability: 3,
             vel: 20,
@@ -275,15 +275,15 @@ export var GAME_CONFIG;
         },
         [MeteorDiseaseType.tier2]: {
             radius: 5,
-            image: "disease",
+            image: 'disease',
             phisicMode: PhisicMode.standart,
             stability: 2,
-            vel: 200,
+            vel: 60,
             diseaseAdd: 2,
         },
         [MeteorDiseaseType.tier3]: {
             radius: 20,
-            image: "disease",
+            image: 'disease_meteor',
             phisicMode: PhisicMode.standart,
             stability: 7,
             vel: 40,
@@ -465,7 +465,7 @@ export var GAME_LD;
         addSpawner(new Spawner('meteor', getRandomVector(0), GAME_CONFIG.MeteorType.largeMeteor));
         let obj = new Planet(new Vector(LD_GLOB.canvas.width - 100, LD_GLOB.canvas.height - 100), GAME_CONFIG.PlanetType.startPlanet);
         obj.inventory.addResource("iron" /* ResourceType.iron */, 6);
-        obj.inventory.addResource("gold" /* ResourceType.gold */, 0);
+        obj.inventory.addResource("gold" /* ResourceType.gold */, 6);
         addCircleObject(obj);
         obj = new Planet(new Vector(120, 120), GAME_CONFIG.PlanetType.diseasePlanet);
         addCircleObject(obj);

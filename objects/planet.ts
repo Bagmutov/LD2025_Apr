@@ -42,6 +42,14 @@ export class Planet extends Circle {
     }
   }
   draw(dst: CanvasRenderingContext2D): void {
+    if (this.building == null){
+      this.image = LD_GLOB.getImage("planet_blue");
+    } else if (this.building.config.evil){
+      this.image = LD_GLOB.getImage('disease_planet');
+    } else{
+      this.image = LD_GLOB.getImage('earth');
+    }
+
     super.draw(dst);
     if (this.temp_launch) {
       dst.drawImage(
@@ -233,7 +241,7 @@ export class Planet extends Circle {
   step(delta: number) {
     if (this.diseaseValue > 0) {
       this.disease_timer += delta;
-      if (this.disease_timer > 2) {
+      if (this.disease_timer > 5) {
         this.disease_timer = 0;
         this.diseaseValue += 1;
       }
@@ -248,19 +256,21 @@ export class Planet extends Circle {
     }
     if (
       this.diseaseValue >= 50 &&
-      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease3] != this.building
+      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease3].config.abilityType !=
+        this.building.config.abilityType
     ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease3]);
       this.updateLaunchButton();
     } else if (
       this.diseaseValue >= 20 &&
-      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease2] != this.building
+      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease2].config.abilityType !=
+        this.building.config.abilityType
     ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease2]);
       this.updateLaunchButton();
     } else if (
       this.diseaseValue >= 10 &&
-      GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1] != this.building
+      (!this.building || !this.building.config.evil)
     ) {
       this.build(GAME_LD.buildings[GAME_CONFIG.BuildingType.disease1]);
       this.updateLaunchButton();
