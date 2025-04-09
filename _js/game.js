@@ -71,7 +71,7 @@ export var GAME_CONFIG;
         [PlanetType.planet]: {
             stability: 5,
             radius: 40,
-            image: 'planet_blue',
+            image: 'planet_blue2',
             mass: 200,
             diseaseValue: 0,
             startBuilding: null,
@@ -100,7 +100,7 @@ export var GAME_CONFIG;
         [MeteorType.smallMeteor]: {
             stability: 1,
             radius: 8,
-            image: "planet_blue",
+            image: "planet_blue2",
             phisicMode: PhisicMode.gravity,
             innerResource: new Map([
                 ["iron" /* ResourceType.iron */, 2],
@@ -110,7 +110,7 @@ export var GAME_CONFIG;
         [MeteorType.mediumMeteor]: {
             stability: 2,
             radius: 12,
-            image: "planet_blue",
+            image: "planet_blue2",
             phisicMode: PhisicMode.gravity,
             innerResource: new Map([
                 ["iron" /* ResourceType.iron */, 3],
@@ -220,7 +220,7 @@ export var GAME_CONFIG;
         [TrapType.standartTrap]: {
             stability: 10,
             radius: 20,
-            image: "build0", //TODO
+            image: "build0",
             phisicMode: PhisicMode.braking,
             speed: 200,
             maxDist: 9999,
@@ -240,7 +240,7 @@ export var GAME_CONFIG;
         [SpaceShipType.standartSpaseShip]: {
             stability: 1,
             radius: 10,
-            image: 'icon3', //TODO
+            image: 'icon3',
             image_broken: 'ship_broken',
             forwardSpeed: 400,
             powerLavel: 4,

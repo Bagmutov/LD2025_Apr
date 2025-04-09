@@ -5,6 +5,7 @@ import { GAME_CONFIG, GAME_LD } from "../../game.js";
 import { Circle, PhisicMode } from "../circle.js";
 import { LD_GLOB, playSound } from "../../main.js";
 import { drawLine } from "../../tools.js";
+import { ResourceType } from "../resource/resource.js";
 
 
 export class Hook extends Launchee{
@@ -48,6 +49,10 @@ export class Hook extends Launchee{
         if (dif.dot_prod(this.velocity)>0 && this.coordinates.sub(this.planet.coordinates).len() < this.planet.radius){
           if(this.hokedObject&&this.hokedObject['innerResource']){
             this.planet.inventory.addResoursesMap(this.hokedObject['innerResource']);
+            this.hokedObject['innerResource'] = new Map<ResourceType, number>([
+              [ResourceType.iron, 0],
+              [ResourceType.gold, 0]
+            ]);
             GAME_LD.delCircleObject(this.hokedObject);
             playSound('hook3',.1);
           }

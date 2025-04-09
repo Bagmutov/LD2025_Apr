@@ -43,7 +43,7 @@ export class Planet extends Circle {
   }
   draw(dst: CanvasRenderingContext2D): void {
     if (this.building == null){
-      this.image = LD_GLOB.getImage("planet_blue");
+      this.image = LD_GLOB.getImage("planet_blue2");
     } else if (this.building.config.evil){
       this.image = LD_GLOB.getImage('disease_planet');
     } else{
@@ -295,13 +295,14 @@ export class Planet extends Circle {
       );
     }
 
-    for (let i = 0; i < this.diseaseValue; i+=5){
-      launchDisease(
-        null,
-        this.coordinates.add(getRandomVector()),
-      );
+    // for (let i = 0; i < this.diseaseValue; i+=5){
+    //   launchDisease(
+    //     null,
+    //     this.coordinates,
+    //     this.coordinates.add(getRandomVector())
+    //   );
       
-    }
+    // }
     
     while (this.inventory.canPay(GAME_CONFIG.MeteorConfig.largeMeteor.innerResource)){
       this.inventory.pay(GAME_CONFIG.MeteorConfig.largeMeteor.innerResource);

@@ -45,7 +45,8 @@ export class SpaceShip extends Launchee{
         collisionPlanet.inventory.moveResourceFromOtherInventory(this.planet.inventory, 0.5);
         this.destroy();
       } else {
-        this.makeMeBroken();
+        this.destroy();
+        // this.makeMeBroken();
         let dif = this.coordinates.sub(collisionPlanet.coordinates);
         this.addVelocity(dif.multiply(10/this.radius));
         collisionPlanet.addVelocity(dif.multiply(-4/collisionPlanet.mass));

@@ -119,7 +119,7 @@ function initCanvas() {
   LD_GLOB.canvas = <HTMLCanvasElement>document.getElementById("can");
   positionCanvas(LD_GLOB.canvas);
   LD_GLOB.mainDst = LD_GLOB.canvas.getContext("2d");
-  LD_GLOB.mainDst.font = 20 + "px Shantell Sans";
+  LD_GLOB.mainDst.font = 25 + "px Shantell Sans";
   c_x = LD_GLOB.canvas.width / 2;
   c_y = LD_GLOB.canvas.height / 2;
 }
@@ -128,6 +128,7 @@ function resizeCanvas() {
   LD_GLOB.canvas.height = window.innerHeight;
   background.width = window.innerWidth;
   background.height = window.innerHeight;
+  LD_GLOB.mainDst.font = 25 + "px Shantell Sans";
   c_x = LD_GLOB.canvas.width / 2;
   c_y = LD_GLOB.canvas.height / 2;
   background_ctx.drawImage(LD_GLOB.getImage('cosmos'),0,0, LD_GLOB.canvas.width, LD_GLOB.canvas.height);
@@ -139,7 +140,7 @@ const imageNames = [
   "planet",
   "earth",
   "cosmos",
-  "planet_blue",
+  // "planet_blue",
   "planet_blue2",
   "planet_yellow",
   "build0",

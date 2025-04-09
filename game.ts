@@ -156,7 +156,7 @@ export namespace GAME_CONFIG {
     [PlanetType.planet]: {
       stability: 5,
       radius: 40,
-      image: 'planet_blue',
+      image: 'planet_blue2',
       mass: 200,
       diseaseValue: 0,
       startBuilding: null,
@@ -189,7 +189,7 @@ export namespace GAME_CONFIG {
     [MeteorType.smallMeteor]: {
       stability: 1,
       radius: 8,
-      image: "planet_blue",
+      image: "planet_blue2",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
         [ResourceType.iron, 2],
@@ -199,7 +199,7 @@ export namespace GAME_CONFIG {
     [MeteorType.mediumMeteor]: {
       stability: 2,
       radius: 12,
-      image: "planet_blue",
+      image: "planet_blue2",
       phisicMode: PhisicMode.gravity,
       innerResource: new Map<ResourceType, number>([
         [ResourceType.iron, 3],
